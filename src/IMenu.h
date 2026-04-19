@@ -4,7 +4,7 @@
 class IMenu{
     public:
         virtual ~IMenu() = default;
-        virtual enum nextCommand() = 0;
+        virtual int nextCommand() = 0;
 };
 
 
