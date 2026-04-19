@@ -1,10 +1,10 @@
 #ifndef ICOMMAND_H
 #define ICOMMAND_H
 
-Class ICommand{
+class ICommand{
     public:
-        virtual ~ICommand = default;
+        virtual ~ICommand();
         virtual void execute() = 0;
 };
 
-#endif 
+#endif
