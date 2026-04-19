@@ -16,7 +16,7 @@ class StorageTest: public ::testing::Test{
         void SetUp() override {
             std::filesystem::remove(TEST_FILE);
         }
-        void Teardown() override {
+        void TearDown() override {
             std::filesystem::remove(TEST_FILE); 
         }
 
