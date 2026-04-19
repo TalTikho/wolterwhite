@@ -11,7 +11,7 @@
 static const std::string TEST_FILE = "data/test_storage.txt";
 
 // Removes the test file before/after each test so tests don't bleed into each other
-class StorgeTest: public ::testing::Test{
+class StorageTest: public ::testing::Test{
     protected:
         void SetUp() override {
             std::filesystem::remove(TEST_FILE);
