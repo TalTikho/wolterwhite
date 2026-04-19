@@ -92,4 +92,23 @@ TEST_F(StorageTest, EmptySystemNoCrash) {
         EXPECT_TRUE(data.empty()) << "Data should be empty when no file exists";
     });
 }
-   
+
+//====================================================================================================
+// Test 5: TwiceTheCharm
+//====================================================================================================
+TEST_F(StorageTest, DuplicateProductNotStoredTwice) {
+    FileDataStorage storage(TEST_FILE);
+
+    // Saving as a same user, same product, added twice
+    storage.save(1, {101});
+    storage.save(1, {101});
+
+    auto data = storage.loadAll();
+
+    // Asserts: user 1 exists
+    ASSERT_TRUE(data.count(1) > 0) << "User 1 should exist";
+
+    // Asserts: product 101 appears exactly once, not twice
+    EXPECT_EQ(data.at(1).count(101), 1) << "Product 101 should appear exactly once";
+    EXPECT_EQ(data.at(1).size(), 1) << "User 1 should have exactly 1 product total";
+}
