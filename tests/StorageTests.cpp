@@ -112,3 +112,25 @@ TEST_F(StorageTest, DuplicateProductNotStoredTwice) {
     EXPECT_EQ(data.at(1).count(101), 1) << "Product 101 should appear exactly once";
     EXPECT_EQ(data.at(1).size(), 1) << "User 1 should have exactly 1 product total";
 }
+
+//====================================================================================================
+// Test 6: TwiceTheCharmButCrashed
+//====================================================================================================
+TEST_F(StorageTest, DuplicateProductNotStoredTwiceAfterRestart) {
+    // save duplicate, then destroy
+    {
+        FileDataStorage storage(TEST_FILE);
+        storage.save(1, {101});
+        storage.save(1, {101});
+    }
+    // storage destroyed — cold restart simulation
+
+    // Reconstruct from file
+    FileDataStorage freshStorage(TEST_FILE);
+    auto data = freshStorage.loadAll();
+
+    // Asserts: same as test 5 - product 101 appears exactly once, not twice
+    ASSERT_TRUE(data.count(1) > 0) << "User 1 should exist after reload";
+    EXPECT_EQ(data.at(1).count(101), 1) << "Product 101 should appear exactly once after reload";
+    EXPECT_EQ(data.at(1).size(), 1) << "User 1 should have exactly 1 product total after reload";
+}
