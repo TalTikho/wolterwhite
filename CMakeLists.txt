@@ -3,20 +3,21 @@ project(wolterwhite CXX)
 
 add_executable(wolterwhite
     # Main
-    src/App.cpp
+    # src/App.cpp
+    src/main.cpp
 
     # Commands
-    src/HelpCommand.cpp
-    src/AddProductCommand.cpp
-    src/RecommendCommand.cpp
+    # src/HelpCommand.cpp
+    # src/AddProductCommand.cpp
+    # src/RecommendCommand.cpp
 
-    # System
-    src/RecommendEngine.cpp
-    src/UserProductMap.cpp
-    src/ConsoleMenu.cpp
-    src/FileDataStorage.cpp
-    src/SimilarityScorer.cpp
-    src/RelevanceRank.cpp
+    # # System
+    # src/RecommendEngine.cpp
+    # src/UserProductMap.cpp
+    # src/ConsoleMenu.cpp
+    # src/FileDataStorage.cpp
+    # src/SimilarityScorer.cpp
+    # src/RelevanceRank.cpp
 )
 
 target_include_directories(wolterwhite PRIVATE src)
