@@ -22,3 +22,5 @@ add_executable(wolterwhite
 
 target_include_directories(wolterwhite PRIVATE src)
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/data DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+# notify CMakeLists.txt that the tests directory exists and should be included in the build
+add_subdirectory(tests)
