@@ -12,4 +12,5 @@ class ICommand{
         virtual void execute(std::istringstream& args) = 0;
 };
 
+
 #endif
