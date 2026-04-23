@@ -6,13 +6,13 @@ int main (){
     // map <string, ICommand*> commands;
 
     // ICommand AddProduct = new AddProductCommand();
-    // commands["1"] = AddProduct;
+    // commands["add"] = AddProduct;
 
-    // ICommand Recommend = new RecommendCommand();
-    // commands["2"] = help;
+    // ICommand recommend = new RecommendCommand();
+    // commands["recommend"] = recommend;
 
-    // ICommand Help = new HelpCommand();
-    // commands["3"] = help;
+    // ICommand help = new HelpCommand();
+    // commands["help"] = help;
     
     // App app(commands);
 
