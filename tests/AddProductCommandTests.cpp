@@ -15,5 +15,14 @@ TEST (AddProductTest, ValidSingleProduct){
     //Execute accordingly on user input.
     add.execute(argsStream); 
     //Make sure the command was succesful.
-    EXPECT_TRUE(add.getLoader().find(1,101));
+    auto data = loader.loadall();
+    // Check if User 1 exists in the database
+    // .count() returns 1 if found, 0 if not
+    ASSERT_TRUE(data.count(1) > 0) << "Failure: User 1 was not found in storage.";
+
+    // Check if Product 101 is in User 1's set of products
+    EXPECT_TRUE(data[1].count(101) > 0) << "Failure: Product 101 not found for User 1.";
+
+    // 5. Cleanup: Delete the test file so the next test starts with a clean slate
+    std::remove(TEST_FILE.c_str());
 }
