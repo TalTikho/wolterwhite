@@ -37,7 +37,7 @@ TEST (AddProductTest, ValidSingleProduct){
     ASSERT_TRUE(data2.count(1) > 0) << "Failure: User 1 was not found in storage.";
 
     // Check if Product 102 is in User 1's set of products
-    EXPECT_TRUE(data2[1].count(102) > 0) << "Failure: Product 101 not found for User 1.";
+    EXPECT_TRUE(data2[1].count(102) > 0) << "Failure: Product 102 not found for User 1.";
 
 
     // 5. Cleanup: Delete the test file so the next test starts with a clean slate
@@ -63,8 +63,8 @@ TEST (AddProductTest, ValidMultipleProducts){
 
     // Check if Products 101, 102 and 103 are is in User 1's set of products
     EXPECT_TRUE(data[1].count(101) > 0) << "Failure: Product 101 not found for User 1.";
-    EXPECT_TRUE(data[1].count(102) > 0) << "Failure: Product 101 not found for User 1.";
-    EXPECT_TRUE(data[1].count(103) > 0) << "Failure: Product 101 not found for User 1.";
+    EXPECT_TRUE(data[1].count(102) > 0) << "Failure: Product 102 not found for User 1.";
+    EXPECT_TRUE(data[1].count(103) > 0) << "Failure: Product 103 not found for User 1.";
 
     // 5. Cleanup: Delete the test file so the next test starts with a clean slate
     std::remove(TEST_FILE.c_str());
@@ -89,8 +89,8 @@ TEST (AddProductTest, MultipleSpacesBetweenArgs){
 
     // Check if Products 101, 102 and 103 are is in User 1's set of products
     EXPECT_TRUE(data[1].count(101) > 0) << "Failure: Product 101 not found for User 1.";
-    EXPECT_TRUE(data[1].count(102) > 0) << "Failure: Product 101 not found for User 1.";
-    EXPECT_TRUE(data[1].count(103) > 0) << "Failure: Product 101 not found for User 1.";
+    EXPECT_TRUE(data[1].count(102) > 0) << "Failure: Product 102 not found for User 1.";
+    EXPECT_TRUE(data[1].count(103) > 0) << "Failure: Product 103 not found for User 1.";
 
     // 5. Cleanup: Delete the test file so the next test starts with a clean slate
     std::remove(TEST_FILE.c_str());
@@ -113,7 +113,7 @@ TEST (AddProductTest, NoProductID){
     // Check if User 1 exists in the database
     // .count() returns 1 if found, 0 if not
     // If False is returns all is good. It means addProduct did not crash while not doing anything with the missing input.
-    ASSERT_False(data.count(1) > 0) << "Failure: User 1 was not found in storage.";
+    ASSERT_False(data.count(1) > 0) << "Failure: User 1 was found in storage.";
 
     // 5. Cleanup: Delete the test file so the next test starts with a clean slate
     std::remove(TEST_FILE.c_str());
@@ -131,14 +131,15 @@ TEST (AddProductTest, AddEmptyCommand){
     FileDataStorage loader(TEST_FILE);
     AddProductCommand add(loader);
     //Execute accordingly on user input.
-    add.execute(argsStream); 
+    add.execute(argsStream);
     //Make sure the command was succesful.
     auto data = loader.loadall();
     // Check if User 1 exists in the database
     // .count() returns 1 if found, 0 if not
     // If False is returns all is good. It means addProduct did not crash while not doing anything with the missing input.
-    ASSERT_False(data.count(1) > 0) << "Failure: User 1 was not found in storage.";
+    ASSERT_False(data.count(1) > 0) << "Failure: User 1 was found in storage.";
 
+    
     // 5. Cleanup: Delete the test file so the next test starts with a clean slate
     std::remove(TEST_FILE.c_str());
 }
