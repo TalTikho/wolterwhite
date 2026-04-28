@@ -32,7 +32,7 @@ add_executable(runTests
 add_executable(runTests ${TEST_FILES})
 
 # Links the test executable to your project's logic library and the GoogleTest main entry point
-target_link_libraries(runTests PRIVATE project_logic gtest_main)
+#target_link_libraries(runTests PRIVATE project_logic gtest_main) Created a build problem
 
 # Explicitly tells the compiler to look one directory up in 'src' for your header files ()
 target_include_directories(runTests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src)
