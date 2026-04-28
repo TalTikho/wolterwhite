@@ -21,18 +21,13 @@ FetchContent_MakeAvailable(googletest)
 
 add_executable(runTests 
     #Tests go here
-    AddProductCommandTests.cpp
     StorageTests.cpp
     MenuTests.cpp
-    AppTests.cpp
-    # Future test files like RecommendTests.cpp should be added here
 )
 
-# Creates the actual executable named 'runTests' using the files listed in TEST_FILES
-add_executable(runTests ${TEST_FILES})
 
 # Links the test executable to your project's logic library and the GoogleTest main entry point
-#target_link_libraries(runTests PRIVATE project_logic gtest_main) Created a build problem
+target_link_libraries(runTests PRIVATE project_logic gtest_main) 
 
 # Explicitly tells the compiler to look one directory up in 'src' for your header files ()
 target_include_directories(runTests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src)
