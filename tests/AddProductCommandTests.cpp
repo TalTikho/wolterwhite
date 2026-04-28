@@ -18,7 +18,7 @@ TEST (AddProductTest, ValidSingleProduct){
     add.execute(argsStream); 
     //Make sure the command was succesful.
 
-    auto data = loader.loadall();
+    auto data = loader.loadAll();
     // Check if User 1 exists in the database
     // .count() returns 1 if found, 0 if not
     ASSERT_TRUE(data.count(1) > 0) << "Failure: User 1 was not found in storage.";
@@ -30,7 +30,7 @@ TEST (AddProductTest, ValidSingleProduct){
     std:: istringstream argsStream2(args);
     add.execute(argsStream2); 
     //Make sure the command was succesful.
-    auto data2 = loader.loadall();
+    auto data2 = loader.loadAll();
     
     // Check if User 1 still exists in the database
     // .count() returns 1 if found, 0 if not
@@ -56,7 +56,7 @@ TEST (AddProductTest, ValidMultipleProducts){
     //Execute accordingly on user input.
     add.execute(argsStream); 
     //Make sure the command was succesful.
-    auto data = loader.loadall();
+    auto data = loader.loadAll();
     // Check if User 1 exists in the database
     // .count() returns 1 if found, 0 if not
     ASSERT_TRUE(data.count(1) > 0) << "Failure: User 1 was not found in storage.";
@@ -82,7 +82,7 @@ TEST (AddProductTest, MultipleSpacesBetweenArgs){
     //Execute accordingly on user input.
     add.execute(argsStream); 
     //Make sure the command was succesful.
-    auto data = loader.loadall();
+    auto data = loader.loadAll();
     // Check if User 1 exists in the database
     // .count() returns 1 if found, 0 if not
     ASSERT_TRUE(data.count(1) > 0) << "Failure: User 1 was not found in storage.";
@@ -109,7 +109,7 @@ TEST (AddProductTest, NoProductID){
     //Execute accordingly on user input.
     add.execute(argsStream); 
     //Make sure the command was succesful.
-    auto data = loader.loadall();
+    auto data = loader.loadAll();
     // Check if User 1 exists in the database
     // .count() returns 1 if found, 0 if not
     // If False is returns all is good. It means addProduct did not crash while not doing anything with the missing input.
@@ -133,7 +133,7 @@ TEST (AddProductTest, AddEmptyCommand){
     //Execute accordingly on user input.
     add.execute(argsStream);
     //Make sure the command was succesful.
-    auto data = loader.loadall();
+    auto data = loader.loadAll();
     // Check if User 1 exists in the database
     // .count() returns 1 if found, 0 if not
     // If False is returns all is good. It means addProduct did not crash while not doing anything with the missing input.
@@ -157,7 +157,7 @@ TEST (AddProductTest, ValidSingleProduct){
     add.execute(argsStream); 
     //Make sure the command was succesful.
 
-    auto data = loader.loadall();
+    auto data = loader.loadAll();
     // Check that the false input was not treated and the program continues working.
     ASSERT_TRUE(data.empty()) << "Failure: data is not empty";
 
@@ -165,7 +165,7 @@ TEST (AddProductTest, ValidSingleProduct){
     std:: istringstream argsStream2(args);
     add.execute(argsStream2); 
     //Make sure the command was succesful.
-    auto data2 = loader.loadall();
+    auto data2 = loader.loadAll();
     
     // Check that the false input was not treated and the program continues working.
     ASSERT_TRUE(data.empty()) << "Failure: data is not empty";
