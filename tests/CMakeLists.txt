@@ -19,8 +19,9 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 # Downloads and makes GoogleTest available to the rest of the project
 FetchContent_MakeAvailable(googletest)
 
-# Creates a variable 'TEST_FILES' to easily manage and list all your test .cpp files
-set(TEST_FILES
+add_executable(runTests 
+    #Tests go here
+    AddProductCommandTests.cpp
     StorageTests.cpp
     MenuTests.cpp
     AppTests.cpp
