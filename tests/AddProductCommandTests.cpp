@@ -5,7 +5,7 @@
 
 static const std::string TEST_FILE = "data/test_storage.txt";
 
-//Test 1 + 6: ValidSingleProduct
+//Test 1 + 6 from Jira: ValidSingleProduct
 
 TEST (AddProductTest, ValidSingleProduct){
     //Set user input for parsing into command and args.
@@ -27,8 +27,8 @@ TEST (AddProductTest, ValidSingleProduct){
     EXPECT_TRUE(data[1].count(101) > 0) << "Failure: Product 101 not found for User 1.";
 
     args = "1 102";
-    argsStream(args);
-    add.execute(argsStream); 
+    std:: istringstream argsStream2(args);
+    add.execute(argsStream2); 
     //Make sure the command was succesful.
     auto data2 = loader.loadall();
     
@@ -113,7 +113,7 @@ TEST (AddProductTest, NoProductID){
     // Check if User 1 exists in the database
     // .count() returns 1 if found, 0 if not
     // If False is returns all is good. It means addProduct did not crash while not doing anything with the missing input.
-    ASSERT_False(data.count(1) > 0) << "Failure: User 1 was found in storage.";
+    ASSERT_FALSE(data.count(1) > 0) << "Failure: User 1 was found in storage.";
 
     // 5. Cleanup: Delete the test file so the next test starts with a clean slate
     std::remove(TEST_FILE.c_str());
@@ -137,9 +137,40 @@ TEST (AddProductTest, AddEmptyCommand){
     // Check if User 1 exists in the database
     // .count() returns 1 if found, 0 if not
     // If False is returns all is good. It means addProduct did not crash while not doing anything with the missing input.
-    ASSERT_False(data.count(1) > 0) << "Failure: User 1 was found in storage.";
+    ASSERT_FALSE(data.count(1) > 0) << "Failure: User 1 was found in storage.";
 
     
+    // 5. Cleanup: Delete the test file so the next test starts with a clean slate
+    std::remove(TEST_FILE.c_str());
+}
+
+//Test 6: wrong input
+
+TEST (AddProductTest, ValidSingleProduct){
+    //Set user input for parsing into command and args.
+    std:: string  args = "1 101 giberish";
+    std:: istringstream argsStream(args);
+    //Load the file into the command object.
+    FileDataStorage loader(TEST_FILE);
+    AddProductCommand add(loader);
+    //Execute accordingly on user input.
+    add.execute(argsStream); 
+    //Make sure the command was succesful.
+
+    auto data = loader.loadall();
+    // Check that the false input was not treated and the program continues working.
+    ASSERT_TRUE(data.empty()) << "Failure: data is not empty";
+
+    args = "wrong input" ;
+    std:: istringstream argsStream2(args);
+    add.execute(argsStream2); 
+    //Make sure the command was succesful.
+    auto data2 = loader.loadall();
+    
+    // Check that the false input was not treated and the program continues working.
+    ASSERT_TRUE(data.empty()) << "Failure: data is not empty";
+
+
     // 5. Cleanup: Delete the test file so the next test starts with a clean slate
     std::remove(TEST_FILE.c_str());
 }

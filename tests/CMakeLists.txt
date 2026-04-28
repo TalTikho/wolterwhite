@@ -16,6 +16,7 @@ FetchContent_MakeAvailable(googletest)
 
 add_executable(runTests 
     #Tests go here
+    AddProductCommandTests.cpp
     StorageTests.cpp
 
     #Tested files go here
