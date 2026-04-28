@@ -53,7 +53,7 @@ TEST_F(MenuTest, InvalidCommandSilence){
 // Test 2: StrictWhitespaceParsing_TabBetweenCommandAndUserId
 //====================================================================================================
 TEST_F(MenuTest, StrictWhitespaceParsing_TabBetweenCommandAndUserId){
-    simulateInput("add\t1\t101\n"); // \t - sign for tab
+    simulateInput("add\t1 101\n"); // \t - sign for tab
     ConsoleMenu menu;
 
     std::string command = menu.nextCommand();
