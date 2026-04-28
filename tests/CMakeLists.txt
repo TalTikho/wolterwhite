@@ -22,6 +22,8 @@ FetchContent_MakeAvailable(googletest)
 # Creates a variable 'TEST_FILES' to easily manage and list all your test .cpp files
 set(TEST_FILES
     StorageTests.cpp
+    MenuTests.cpp
+    AppTests.cpp
     # Future test files like RecommendTests.cpp should be added here
 )
 
