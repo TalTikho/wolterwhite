@@ -10,6 +10,8 @@ ConsoleMenu::ConsoleMenu(): allowed{"add", "command", "help" }, next ("")
 }
 
 void ConsoleMenu::nextSetter(){
+    //Make sure next is an empty string even if we had a good previous command.
+    this->next = "";
     //Read a line from the console using getline().
     std::string line;
     std::getline(std::cin,line);
