@@ -20,7 +20,7 @@ add_library(project_logic STATIC
     # TODO: Remove the comment when the file is created (notice that even interfaces should be here)
     
     # ---- App ----
-    #src/App.cpp
+    src/App.cpp
 
     # ---- Help ----
     #src/HelpCommand.cpp
