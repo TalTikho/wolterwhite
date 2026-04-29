@@ -24,7 +24,7 @@ bool App::is_number(std::string s)
     return true;
 }
 
-//App's constructor, the map is not initiallized here but in an app (this might change afterwards)
+//App's constructor, the map is not initiallized here but in register_command (this might change afterwards)
 
 App::App(IMenu *m)
 {
@@ -50,6 +50,13 @@ void App::run()
         ss >> cmd;
         //Command was not in menu's or otherwise inserted App's map hence we look for another input.
         if (!(cmds.count(cmd)>0)){
+            continue;
+        }
+        /*If the input is a command without arguments ss has reached eof and we can command.execute().
+         As we do not need arguments what is in ss does not matter anymore, just what is in cmd.
+        */
+        if (ss.eof()){
+            this->cmds[cmd]->execute(ss);
             continue;
         }
         //We do not want the leftover whitespace after the valid command accepted into the command's method.
