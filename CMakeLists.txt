@@ -26,7 +26,7 @@ add_library(project_logic STATIC
     #src/HelpCommand.cpp
 
     # ---- AddProduct ----
-    #src/AddProductCommand.cpp
+    src/AddProductCommand.cpp
 
     # ---- ConsoleMenu ----
     #src/ConsoleMenu.cpp
