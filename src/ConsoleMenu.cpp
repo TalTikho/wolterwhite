@@ -9,6 +9,7 @@ ConsoleMenu::ConsoleMenu():  next ("")
 
 }
 
+//nextSetter is here to keep encapsulation.
 void ConsoleMenu::nextSetter(){
     //Make sure next is an empty string even if we had a good previous command.
     this->next = "";
