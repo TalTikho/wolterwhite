@@ -11,7 +11,6 @@
 
 class App{
     private:
-        bool is_number (std::string s);
         IMenu* menu;
         std:: map <std:: string, ICommand*> cmds;
 
