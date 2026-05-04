@@ -15,7 +15,7 @@ App::App(IMenu *m)
     this->menu = m;
 }
 
-void App::run()
+void App::run() noexcept
 {
     while (true){
         std:: string command = menu->nextCommand();

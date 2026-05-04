@@ -21,7 +21,7 @@ class App{
         2. run is the app loop.
         3. register command enters a command into the app. Will possible be entered into the constructor later.
         */
-        void run();
+        void run() noexcept;
         void registerCommand (std::string name, ICommand& com);
 };
 
