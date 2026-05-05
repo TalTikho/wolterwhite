@@ -29,7 +29,7 @@ add_library(project_logic STATIC
     src/AddProductCommand.cpp
 
     # ---- ConsoleMenu ----
-    #src/ConsoleMenu.cpp
+    src/ConsoleMenu.cpp
 
     # ---- UserProductMap ----
     #src/UserProductMap.cpp
