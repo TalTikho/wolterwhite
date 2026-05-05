@@ -7,7 +7,7 @@
 #include <map>
 #include <string>
 
-//App is the interface defining App's behavior.
+//App is the class defining the app's main loop behavior.
 
 class App{
     private:

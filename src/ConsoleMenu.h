@@ -3,8 +3,8 @@
 
 #include "IMenu.h"
 #include <string>
-#include <set>
 
+//ConsoleMenu is a command line menu version for the project.
 class ConsoleMenu: public IMenu{
     private:
         //Set next command using a private setter in order to keep encapsulation.
