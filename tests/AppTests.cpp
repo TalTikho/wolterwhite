@@ -2,6 +2,7 @@
 // Include all needed headers
 //====================================================================================================
 // ---- Files ----
+#include "IMenu.h"
 #include "App.h"
 #include "ICommand.h"
 #include "IDataStorage.h"
@@ -23,11 +24,11 @@
 class MockMenu : public IMenu {
 public:
     std::vector<std::string> commands;
-    int index = 0;
+    size_t index = 0;
 
     MockMenu(std::vector<std::string> cmds) : commands(std::move(cmds)) {}
 
-    std::string nextCommand() override {
+    std:: string nextCommand() noexcept override {
         if (index < commands.size()) {
             return commands[index++];
         }
@@ -44,9 +45,14 @@ public:
     bool wasCalled = false;
     std::string lastArgs;
 
-    void execute(const std::string& args) override {
+    void execute(std::istringstream& args) override {
         wasCalled = true;
-        lastArgs = args;
+        std:: ostringstream ss;
+        if (ss){
+            ss<<args.rdbuf();
+        }
+        lastArgs = ss.str();
+        //Changed it to read the stream from the position it was given. In the former test its position was reset.
     }
 };
 
@@ -60,7 +66,8 @@ TEST(AppTest, ProgramNeverExits) {
 
     // Initialize app and ket it know that "help" is valid (belongs to Mockcommand)
     App app(&menu);
-    app.registerCommand("help", &helpCmd);
+    app.registerCommand("help", helpCmd);
+    //Changed the method call to not call by reference.
     app.run(); // Starts the loop, should not crash or hang
 
     // "help" was reached even after an invalid command — loop kept going
@@ -98,7 +105,7 @@ TEST(AppTest, KnownCommandIsDispatched) {
 
     // Initialize app and ket it know that "help" is valid (belongs to Mockcommand)
     App app(&menu);
-    app.registerCommand("help", &helpCmd);
+    app.registerCommand("help", helpCmd);
     app.run(); // Starts the loop, should not crash or hang
 
     // "help" was reached in its internal map and was called
@@ -115,7 +122,7 @@ TEST(AppTest, CorrectArgsPassedToCommand) {
 
     // Initialize app and ket it know that "add" is valid (belongs to Mockcommand)
     App app(&menu);
-    app.registerCommand("add", &addCmd);
+    app.registerCommand("add", addCmd);
     app.run(); // Starts the loop, should not crash or hang
 
     // "add" was reached adn passed ONLY its data (loop kept going)

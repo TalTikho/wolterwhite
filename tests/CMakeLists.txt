@@ -21,6 +21,7 @@ FetchContent_MakeAvailable(googletest)
 
 add_executable(runTests 
     #Tests go here
+    AppTests.cpp
     StorageTests.cpp
     MenuTests.cpp
 )
