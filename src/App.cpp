@@ -46,7 +46,6 @@ void App::run() noexcept
             continue;
         }
         //App never stops (except when tested).
-        continue;
 
 
 
