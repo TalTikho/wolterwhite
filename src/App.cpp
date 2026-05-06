@@ -1,61 +1,64 @@
+//====================================================================================================
+// Include all needed headers
+//====================================================================================================
+// ---- Files ----
 #include "App.h"
-#include <map>
-#include <sstream>
+
+// ---- System ----
 #include <iostream>
 #include <string>
-#include <vector>
+#include <sstream>
 
+/**
+ * Constructor: Initializes the app with a menu implementation.
+ */
+App::App(IMenu *m) : m_menu(m) {}
 
-/*App's constructor, the map is not initiallized here but in register_command (this might change afterwards)
- We have a general menu accepted here as any class implementing IMenu can be this private variable.
-*/
-
-App::App(IMenu *m)
-{
-    this->menu = m;
-}
-
-void App::run() noexcept
-{
-    while (true){
-        std:: string command = menu->nextCommand();
-        //A line only for the tests to break the loop and continue to the next test.
-        if (command == "quit"){
-            break;
-        }
-        //Do not accept tabs.
-        if (command.find('\t') != std::string:: npos ){
-            continue;
-        }
-        //Start a stream to validate the input sent to the command.
-        std:: istringstream ss(command);
-        std :: string cmd;
-        std:: string cache;
-        ss >> cmd;
-        //We do not want the leftover whitespace after the valid command accepted into the command's method.
-        ss >> std:: ws;
-        /*Try the command and if it exists and the args are valid it works. Else: back to the loop
-         Even if there is an error we just continue the loop with the next query for the next command.
-         .at(cmd) will make sure that if cmd is not in our cmds map a null pointer will not be created, 
-         there is no segfault and the loop goes on with catch's continue.
-         */
-        try {
-            this->cmds.at(cmd)->execute(ss);
-        }
-        catch (...){
-            continue;
-        }
-        //App never stops (except when tested).
-
-
-
+/**
+ * registerCommand: Maps a string name to a specific command object.
+ */
+void App::registerCommand(const std::string& name, ICommand* com) {
+    if (com) {
+        this->m_commands[name] = com;
     }
 }
 
-/*Add a new command to the app. If it exists run will tell the command to execute.
- Otherwise: the execution fails and we continue run's loop. */
-void App::registerCommand(std::string name, ICommand& com)
-{
-    this->cmds[name] = &com;
+/**
+ * run: The main application loop.
+ */
+void App::run() noexcept {
+    std::string cmdName;
+    std::istringstream cmdArgs;
 
+    // The loop continues as long as getNextCommand returns true (no EOF)
+    while (m_menu->getNextCommand(cmdName, cmdArgs)) {
+        
+        // 1. Handling the "quit" command for tests/graceful exit
+        if (cmdName == "quit") {
+            break;
+        }
+
+        // 2. Skip empty inputs (like just pressing Enter)
+        if (cmdName.empty()) {
+            continue;
+        }
+
+        /* 3. Execute logic:
+           We use 'find' instead of 'at' or '[]' to safely check if the command exists.
+           - 'at' throws an exception (which is fine since we have catch, but 'find' is cleaner).
+           - '[]' might create a null entry if the key doesn't exist.
+        */
+        auto it = m_commands.find(cmdName);
+        if (it != m_commands.end()) {
+            try {
+                // Execute the command with the stream already prepared by the menu
+                it->second->execute(cmdArgs);
+            }
+            catch (...) {
+                // If anything goes wrong inside the command, we ignore and continue
+                continue;
+            }
+        }
+        // If command is not found, we simply ignore it
+    }
 }

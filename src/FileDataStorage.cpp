@@ -19,7 +19,7 @@ FileDataStorage::FileDataStorage(std::string path) : m_filePath(std::move(path))
 /**
  * Save: Adds a new record of a user and their products to the end of the file.
  */
-void FileDataStorage::save(int userId, const std::vector<std::string> &products)
+void FileDataStorage::save(const std::string &userId, const std::vector<std::string> &products)
 {
     // Open the file in "append" mode so we add to the end instead of erasing existing data
     std::ofstream outFile(m_filePath, std::ios::app);
@@ -47,10 +47,10 @@ void FileDataStorage::save(int userId, const std::vector<std::string> &products)
 /**
  * LoadAll: Reads the entire file from the disk and builds a map of data in memory.
  */
-std::map<int, std::set<std::string>> FileDataStorage::loadAll()
+std::map<std::string, std::set<std::string>> FileDataStorage::loadAll()
 {
     // Create an empty map to hold our users and their sets of unique products
-    std::map<int, std::set<std::string>> fullData;
+    std::map<std::string, std::set<std::string>> fullData;
 
     // Open the file for reading
     std::ifstream inFile(m_filePath);
@@ -73,11 +73,11 @@ std::map<int, std::set<std::string>> FileDataStorage::loadAll()
 
         // Put the current line into a stringstream so we can extract pieces of data from it
         std::stringstream ss(line);
-        int userId;
-        char colon;
+
+        std::string userId;
 
         // Try to extract the User ID and the colon character from the start of the line
-        if (ss >> userId >> colon)
+        if (std::getline(ss, userId, ':'))
         {
             std::string productId;
             // Keep reading every word (product ID) that follows on the same line

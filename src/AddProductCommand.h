@@ -36,7 +36,7 @@ public:
      * and sends them to the storage system.
      * 
      * Following the project requirements:
-     * - It extracts one User ID (integer).
+     * - It extracts one User ID (string).
      * - It extracts a list of Product IDs (strings).
      * - If the input is invalid or missing data, it stops silently without printing errors.
      * 

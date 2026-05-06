@@ -19,7 +19,7 @@ AddProductCommand::AddProductCommand(IDataStorage& storage)
 void AddProductCommand::execute(std::istringstream& args) {
 
     // First, try to extract the User ID from the start of the command
-    int userId;
+    std::string userId;
     
     // If the first thing after 'add' isn't a valid number, stop immediately without a word
     if (!(args >> userId)) {

@@ -25,13 +25,13 @@ public:
      * Saves products for a specific user.
      * products are now stored as strings.
      */
-    virtual void save(int userId, const std::vector<std::string> &products) = 0;
+    virtual void save(const std::string &userId, const std::vector<std::string> &products) = 0;
 
     /**
      * Loads the entire database into memory.
      * Key: UserId (int)
      * Value: Set of ProductIds (string)
      */
-    virtual std::map<int, std::set<std::string>> loadAll() = 0;
+    virtual std::map<std::string, std::set<std::string>> loadAll() = 0;
 };
 #endif

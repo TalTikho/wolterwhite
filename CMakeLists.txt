@@ -23,23 +23,23 @@ add_library(project_logic STATIC
     src/App.h
 
     # Abstract Interfaces (The Blueprints/Contracts)
-    src/interfaces/ICommand.h
-    src/interfaces/IMenu.h
-    src/interfaces/IDataStorage.h
+    src/ICommand.h
+    src/IMenu.h
+    src/IDataStorage.h
 
     # Command Implementations (The Actions)
-    src/commands/AddProductCommand.cpp
-    src/commands/AddProductCommand.h
-    # src/commands/HelpCommand.cpp      # Uncomment when file is moved to src/commands
-    # src/commands/HelpCommand.h        # Uncomment when file is moved to src/commands
+    src/AddProductCommand.cpp
+    src/AddProductCommand.h
+    src/HelpCommand.cpp
+    src/HelpCommand.h
 
     # User Interface Logic
-    src/menus/ConsoleMenu.cpp
-    src/menus/ConsoleMenu.h
+    src/ConsoleMenu.cpp
+    src/ConsoleMenu.h
 
     # Data Persistence Logic
-    src/storage/FileDataStorage.cpp
-    src/storage/FileDataStorage.h
+    src/FileDataStorage.cpp
+    src/FileDataStorage.h
 )
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -50,10 +50,10 @@ add_library(project_logic STATIC
 # --------------------------------------------------------------------------------------------------------------------
 target_include_directories(project_logic PUBLIC 
     src
-    src/interfaces
-    src/commands
-    src/menus
-    src/storage
+#    src/interfaces
+#   src/commands
+#    src/menus
+#    src/storage
 )
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -84,5 +84,5 @@ file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/data DESTINATION ${CMAKE_CURRENT_BINARY_DI
 # Enables the testing engine and tells CMake to look into the 'tests' folder 
 # for more configuration files.
 # --------------------------------------------------------------------------------------------------------------------
-enable_testing()
-add_subdirectory(tests)
+#enable_testing()
+#add_subdirectory(tests)

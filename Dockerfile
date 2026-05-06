@@ -1,0 +1,23 @@
+# Step 1: Use a standard GCC image
+FROM gcc:latest
+
+# Step 2: Install CMake
+RUN apt-get update && apt-get install -y cmake
+
+# Step 3: Set the working directory
+WORKDIR /usr/src/wolterwhite
+
+# Step 4: Copy all project files into the container
+COPY . .
+
+# Step 5: Create build folder and compile
+RUN mkdir -p build && cd build && \
+    cmake .. && \
+    make 
+    #&& \ ctest --output-on-failure (for tests)
+
+# Step 6: Set the working directory to where the binary is
+WORKDIR /usr/src/wolterwhite/build
+
+# Step 7: Run the application
+CMD ["./wolterwhite"]
