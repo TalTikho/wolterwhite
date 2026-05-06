@@ -24,7 +24,7 @@ public:
      * Saves products for a specific user.
      * Using 'const std::vector<int>&' to pass by reference (faster than copying in Java).
      */
-    virtual void save(int userId, const std::vector<int> &products) = 0; // = 0 is the equivalent of abstract in java
+    virtual void save(const std::string &userId, const std::vector<std::string> &products) = 0; // = 0 is the equivalent of abstract in java
 
     /**
      * Loads the entire database into memory.

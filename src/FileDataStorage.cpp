@@ -22,7 +22,7 @@ FileDataStorage::FileDataStorage(std::string path) : m_filePath(std::move(path))
 /**
  * Save: Appends a line to the file
  */
-void FileDataStorage::save(int userId, const std::vector<int> &products)
+void FileDataStorage::save(const std:: string &userId, const std::vector<std::string> &products)
 {
     // std::ios::app opens the file in APPEND mode so we don't overwrite old data
     std::ofstream outFile(m_filePath, std::ios::app);
@@ -35,7 +35,7 @@ void FileDataStorage::save(int userId, const std::vector<int> &products)
 
     // Our format: "userId: prodId1 prodId2 ..."
     outFile << userId << ":";
-    for (int id : products)
+    for (std::string id : products)
     {
         outFile << " " << id;
     }
