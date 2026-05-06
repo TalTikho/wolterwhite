@@ -11,8 +11,10 @@
 
 class RecommendCommand: public ICommand{
     private:
-        std:: vector <int> CommandInfo (std::istringstream& args);
+        std:: vector <std::string> CommandInfo (std::istringstream& args);
         IDataStorage& loader;
+        bool is_num(std::string s);
+        int to_int (std::string s);
 
     public:
         explicit RecommendCommand(IDataStorage& l);

@@ -47,9 +47,9 @@ void FileDataStorage::save(int userId, const std::vector<int> &products)
 /**
  * LoadAll: Parses the file into the map
  */
-std::map<int, std::set<int>> FileDataStorage::loadAll()
+std::map<std::string, std::set<std::string>> FileDataStorage::loadAll()
 {
-    std::map<int, std::set<int>> fullData;
+    std::map<std::string, std::set<std::string>> fullData;
     std::ifstream inFile(m_filePath);
 
     if (!inFile)
@@ -72,7 +72,7 @@ std::map<int, std::set<int>> FileDataStorage::loadAll()
 
         // Creates an integer 'bucket' to store the User ID.
         // The stream will automatically convert the text digits into a real number.
-        int userId;
+        std::string userId;
 
         // Creates a character 'bucket' to catch and "consume" the colon symbol.
         // We need this so the cursor moves past the ':' and is ready for the products.
@@ -81,7 +81,7 @@ std::map<int, std::set<int>> FileDataStorage::loadAll()
         // Extract the userId and skip the colon (Only runs if a number AND a character were successfully found)
         if (ss >> userId >> colon)
         {
-            int productId;
+            std::string productId;
             // Extract all remaining integers on that line (This loop keeps going until it runs out of numbers)
             while (ss >> productId)
             {

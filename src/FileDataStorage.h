@@ -41,6 +41,6 @@ public:
     /**
      * Reads the entire file and builds the map in memory.
      */
-    std::map<int, std::set<int>> loadAll() override;
+    std::map<std::string, std::set<std::string>> loadAll() override;
 };
 #endif

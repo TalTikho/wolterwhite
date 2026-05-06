@@ -8,21 +8,14 @@
 #include <set>
 #include <algorithm>
 
-std::vector<int> RecommendCommand::CommandInfo(std::istringstream &args)
+
+std::vector<std::string> RecommendCommand::CommandInfo(std::istringstream &args)
 {
-    std::vector<int> argsV;
+    std::vector<std::string> argsV;
     std:: string arg;
     while (args >> arg){
         try {
-            size_t test;
-            int ID = std::stoi(arg, &test);
-            if (test != arg.size()){
-                return;
-            }
-            if(ID < 0){
-                return;
-            }
-            argsV.push_back(ID);
+            argsV.push_back(arg);
 
     }
         catch(...){
@@ -32,24 +25,53 @@ std::vector<int> RecommendCommand::CommandInfo(std::istringstream &args)
 }
 }
 
+bool RecommendCommand::is_num(std::string s)
+{
+        try {
+            size_t test;
+            int ID = std::stoi(s, &test);
+            if (test != s.size()){
+                return false;
+            }
+            if(ID < 0){
+                return false;
+            }
+            return true;
+
+    }
+        catch(...){
+            return;
+        }
+}
+
+int RecommendCommand::to_int(std::string s)
+{
+    int sum = 0;
+    for (char c: s){
+        int ascii = static_cast<int>(c);
+        sum += ascii;
+    }
+    return sum;
+}
+
 RecommendCommand::RecommendCommand(IDataStorage & l) :loader(l)
 {
 }
 
 void RecommendCommand::execute(std::istringstream & args)
 {
-    std::vector<int> exec = CommandInfo(args);
+    std::vector<std::string> exec = CommandInfo(args);
     if (exec.size() != 2){
         return;
     }
-    int UserID = exec[0];
-    int UserProd = exec[1];
+    std::string UserID = exec[0];
+    std::string UserProd = exec[1];
 
-    std::map<int, std::set<int>> intel = this->loader.loadAll();
-    std:: set<int> UserProducts = intel.at(UserID);
-    std:: map<int, int> common;
-    std:: map<int, int> pCommon;
-    for (int product : UserProducts) 
+    std::map<std::string, std::set<std::string>> intel = this->loader.loadAll();
+    std:: set<std::string> UserProducts = intel.at(UserID);
+    std:: map<std::string, int> common;
+    std:: map<std::string, int> pCommon;
+    for (std::string product : UserProducts) 
     {
         for (const auto &[User,pset] : intel) 
         {
@@ -75,9 +97,16 @@ void RecommendCommand::execute(std::istringstream & args)
             }
             
         }
-    std::vector<std::pair<int, int>> sortedProducts(pCommon.begin(), pCommon.end());
+    std::vector<std::pair<std::string, std::string>> sortedProducts(pCommon.begin(), pCommon.end());
     std::sort(sortedProducts.begin(), sortedProducts.end(),
-        [](const std::pair<int, int>& a, const std::pair<int, int>& b) {
+        [this](const std::pair<std::string, std::string>& a, const std::pair<std::string, std::string>& b) {
+            if (!is_num(a.second) || !is_num(b.second)){
+                if (to_int(a.second) == to_int(b.second)){
+                    return a.first < b.first;
+                }
+                return to_int(a.second) < to_int(b.second);
+
+            }
             if (a.second == b.second){
                 return a.first < b.first;
             }

@@ -31,6 +31,6 @@ public:
      * Key: UserId (int)
      * Value: Set of ProductIds (set ensures no duplicates for the recommendation engine)
      */
-    virtual std::map<int, std::set<int>> loadAll() = 0;
+    virtual std::map<std::string, std::set<std::string>> loadAll() = 0;
 };
 #endif
