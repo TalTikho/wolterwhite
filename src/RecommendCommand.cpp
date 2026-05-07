@@ -117,15 +117,15 @@ void RecommendCommand::execute(std::istringstream & args)
         [this](const std::pair<std::string, std::string>& a, const std::pair<std::string, std::string>& b) {
             //If it is a num and two are equal we return based on the smaller productID. Otherwise we first convert by ascii value.
             if (!is_num(a.first) || !is_num(b.first)){
-                if (to_int(a.second) == to_int(b.second)){
-                    return to_int(a.first) < to_int(b.first);
+                if (a.second == b.second){
+                    return to_int(a.first) > to_int(b.first);
                 } 
 
             }
             if (a.second == b.second){
-                return a.first < b.first;
+                return a.first > b.first;
             }
-            return a.second < b.second; 
+            return a.second > b.second; 
         }
     );
     //Print up to 10 products. We have a condition that i < sortedProducts and print "" if the pair list is empty.
