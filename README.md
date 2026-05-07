@@ -12,7 +12,10 @@ This is the First README for the **WOLTerWhite** project
 ---
 
 ## 🔗 Links
-- 🗺️ [UML Diagram]()
+- 🗺️ [UML Diagram](https://tinyurl.com/nhhnn444)
+>click on it...
+
+![Architecture Diagram](https://mermaid.ink/svg/pako:eNq9Vd1u2jAUfhXLUhF0BCWF8hNVlSq6aVx0Qp12M3FjxYfEW2JHtjOVMh5kF7ve9kS8zhwnsBDSlt4sFyY5Od-Pfc4haxwICtjHQUyUumUklCRZcGQuG0EJYRyti0h-XV295Vqu0Fwwrq-vixebBa9ibtK0CnFmd8Czc5SYtRq9JZp81EKSEM6RKm4q7xOSokAkCeFU_Qu_kRlvdxplrcyhV-MR5JIEsHNqKULQH-BBTwvyttKS8bCFgoR2ESuezAokaSEiQ9U5b5SbCq5EDHXRV7M376WEn7IdeIAg09A-3fp7iNMGgWeZmitN6VwKmgW6ge6lCr9e7h7yhgBO_4talfCUOijyDXataQOxIPSJXn3HYniC3in8oaVJmRMdvVrh7Axtf23_bH9vf2x_ovY9xEQz06wRS3c7tVPtONd2VH00NUehQaEWmvEvEGiFbiE1xww8YKBqkLr1PbyWV52PWk6x5trCccq59dFNGEoIrVfU9jq1pF3Ja3mRiGn-L8VXnSp3wXn1vder-bgHErPHEjzjEUimCQ-gRO9lLLQ6JwfQpuTjWXgRctTPDYjyGI7I8yOeHdbhkzI11ALlbYKoeVVgj1SegZoqUQtFSyFRLEIWlMar-db8cR9UvOMuDiWj2F-SWEEXJyBNY5hnbDt9gXUECSywb24pkV8XeME3BpQS_lmIBPtaZgYmRRZGe5IsNc6g_EjtU_I-lVORcY19bzixHNhf4wfsj0e9i8vBeOJeDibu0B2Mu3iF_f5Fz_P6Q-9y0He9sXux6eJHq-n2Jp4JeOPRYNgfDd2-yQfKzP7uyo9k_rP5C1qWRME)
 
 ---
 
@@ -90,8 +93,3 @@ docker system prune -a
 - Storage: Data is persisted in the `/data` directory, which is maintained across container restarts.
 
 ---
-
-📎[Full view of the diagram](https://tinyurl.com/nhhnn444)
->click on it...
-
-![Architecture Diagram](https://mermaid.ink/svg/pako:eNq9Vd1u2jAUfhXLUhF0BCWF8hNVlSq6aVx0Qp12M3FjxYfEW2JHtjOVMh5kF7ve9kS8zhwnsBDSlt4sFyY5Od-Pfc4haxwICtjHQUyUumUklCRZcGQuG0EJYRyti0h-XV295Vqu0Fwwrq-vixebBa9ibtK0CnFmd8Czc5SYtRq9JZp81EKSEM6RKm4q7xOSokAkCeFU_Qu_kRlvdxplrcyhV-MR5JIEsHNqKULQH-BBTwvyttKS8bCFgoR2ESuezAokaSEiQ9U5b5SbCq5EDHXRV7M376WEn7IdeIAg09A-3fp7iNMGgWeZmitN6VwKmgW6ge6lCr9e7h7yhgBO_4talfCUOijyDXataQOxIPSJXn3HYniC3in8oaVJmRMdvVrh7Axtf23_bH9vf2x_ovY9xEQz06wRS3c7tVPtONd2VH00NUehQaEWmvEvEGiFbiE1xww8YKBqkLr1PbyWV52PWk6x5trCccq59dFNGEoIrVfU9jq1pF3Ja3mRiGn-L8VXnSp3wXn1vder-bgHErPHEjzjEUimCQ-gRO9lLLQ6JwfQpuTjWXgRctTPDYjyGI7I8yOeHdbhkzI11ALlbYKoeVVgj1SegZoqUQtFSyFRLEIWlMar-db8cR9UvOMuDiWj2F-SWEEXJyBNY5hnbDt9gXUECSywb24pkV8XeME3BpQS_lmIBPtaZgYmRRZGe5IsNc6g_EjtU_I-lVORcY19bzixHNhf4wfsj0e9i8vBeOJeDibu0B2Mu3iF_f5Fz_P6Q-9y0He9sXux6eJHq-n2Jp4JeOPRYNgfDd2-yQfKzP7uyo9k_rP5C1qWRME)
