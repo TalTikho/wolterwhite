@@ -24,6 +24,8 @@ add_executable(runTests
     AppTests.cpp
     StorageTests.cpp
     MenuTests.cpp
+    AddProductCommandTests.cpp
+    RecommendCommandTests.cpp
 )
 
 
