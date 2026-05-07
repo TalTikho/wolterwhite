@@ -20,7 +20,7 @@ TEST (HelpTests, shouldWork){
     //return the buffer after execution.
     std::cout::rdbuf(originalBuf);
     //Make sure the command was succesful.
-    ASSERT_EQ(captureBuf.str(), " add [userid] [productid1] [productid2] …\nrecommend [userid] [productid]\nhelp\n");
+    ASSERT_EQ(captureBuf.str(), " add [userid] [productid1] [productid2]…\nrecommend [userid] [productid]\nhelp\n");
 }
 
 //Added a test to ignore wrong input.
