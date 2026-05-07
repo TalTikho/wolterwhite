@@ -16,19 +16,14 @@
 //====================================================================================================
 // FileDataStorage.h implements the interface
 //====================================================================================================
-/**
- * FileDataStorage Implementation
- * This class handles the actual reading/writing to a physical .txt file.
- */
 class FileDataStorage : public IDataStorage
 {
 private:
-    std::string m_filePath; // Member variable to store the path to avoid hardcodding
+    std::string m_filePath;
 
 public:
     /**
      * Constructor: Takes the path to the database file.
-     * Using 'explicit' to prevent accidental type conversions.
      */
     explicit FileDataStorage(std::string path);
 
@@ -36,11 +31,11 @@ public:
      * Appends a new line of data to the file.
      * format: userId: prodId1 prodId2 ...
      */
-    void save(int userId, const std::vector<int> &products) override;
+    void save(const std::string &userId, const std::vector<std::string> &products) override;
 
     /**
      * Reads the entire file and builds the map in memory.
      */
-    std::map<int, std::set<int>> loadAll() override;
+    std::map<std::string, std::set<std::string>> loadAll() override;
 };
 #endif

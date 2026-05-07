@@ -1,76 +1,88 @@
-#====================================================================================================================
-# Cmake for the whole work
-#====================================================================================================================
+# ====================================================================================================================
+# WOLTERWHITE PROJECT CONFIGURATION
+# ====================================================================================================================
 
-# Defines the minimum version of CMake required for the features used in this project
+# Minimum version of CMake required to run this script
 cmake_minimum_required(VERSION 3.17)
 
-# Sets the project name and specifies that we are using the C++ (CXX) language
+# Project name and language (CXX stands for C++)
 project(wolterwhite CXX)
 
-# Sets the C++ standard to 17 (needed for std::filesystem used in your storage logic)
+# Use C++17 standard (required for modern features like std::filesystem)
 set(CMAKE_CXX_STANDARD 17)
-
-# Ensures that the compiler MUST support C++17 or it will stop and throw an error
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Creates a static library called 'project_logic' containing all your functional classes.
-# This prevents duplicate compilation and allows the App and Tests to share the same code.
+# --------------------------------------------------------------------------------------------------------------------
+# 1. CORE LOGIC LIBRARY (The "Brain" of the project)
+# We group all our functional code into a static library. This makes it easy to 
+# share the exact same code between the main application and the test suite.
+# --------------------------------------------------------------------------------------------------------------------
 add_library(project_logic STATIC
-    # TODO: Remove the comment when the file is created (notice that even interfaces should be here)
-    
-    # ---- App ----
+    # Main Application Controller
     src/App.cpp
+    src/App.h
 
-    # ---- Help ----
-    #src/HelpCommand.cpp
+    # Abstract Interfaces (The Blueprints/Contracts)
+    src/ICommand.h
+    src/IMenu.h
+    src/IDataStorage.h
 
-    # ---- AddProduct ----
+    # Command Implementations (The Actions)
     src/AddProductCommand.cpp
+    src/AddProductCommand.h
+    src/HelpCommand.cpp
+    src/HelpCommand.h
 
-    # ---- ConsoleMenu ----
+    # User Interface Logic
     src/ConsoleMenu.cpp
+    src/ConsoleMenu.h
 
-    # ---- UserProductMap ----
-    #src/UserProductMap.cpp
-
-    # ---- FileDataStorage ----
+    # Data Persistence Logic
     src/FileDataStorage.cpp
-
-    # ---- RecommandEngine ----
-    #src/RecommendEngine.cpp
-
-    # ---- RelevanceRanker ----
-    #src/RelevanceRanker.cpp
-
-    # ---- SimilarityScorer ----
-    #src/SimilarityScorer.cpp
-
-    # ---- RecommendCommand ----
-    #src/RecommendCommand.cpp
-
+    src/FileDataStorage.h
 )
 
-# Tells CMake that the 'src' directory contains our header (.h) files.
-# 'PUBLIC' means that anything linking to this library (like your tests) automatically gets this include path.
-target_include_directories(project_logic PUBLIC src)
+# --------------------------------------------------------------------------------------------------------------------
+# 2. HEADER SEARCH PATHS
+# These paths tell the compiler where to look for .h files.
+# 'PUBLIC' ensures that any code linking to 'project_logic' (like our tests) 
+# also knows where to find these headers automatically.
+# --------------------------------------------------------------------------------------------------------------------
+target_include_directories(project_logic PUBLIC 
+    src
+#    src/interfaces
+#   src/commands
+#    src/menus
+#    src/storage
+)
 
-# Enables strict compiler warnings for the library to catch potential bugs (uninitialized variables, etc.)
+# --------------------------------------------------------------------------------------------------------------------
+# 3. COMPILER SETTINGS
+# PRIVATE flags here help catch bugs early by enabling strict warnings during compilation.
+# -Wall: Basic warnings, -Wextra: Extra warnings, -Wpedantic: Strictly follow C++ standard.
+# --------------------------------------------------------------------------------------------------------------------
 target_compile_options(project_logic PRIVATE -Wall -Wextra -Wpedantic)
 
-# Creates the final executable 'wolterwhite' from your main entry point file (MAIN APP)
+# --------------------------------------------------------------------------------------------------------------------
+# 4. MAIN EXECUTABLE (The actual program)
+# Creates the final 'wolterwhite' binary using main.cpp as the entry point.
+# --------------------------------------------------------------------------------------------------------------------
 add_executable(wolterwhite src/main.cpp)
 
-# Links the executable to our 'project_logic' library so it can access all our classes/commands
+# Link our core library ('project_logic') into the final executable.
 target_link_libraries(wolterwhite PRIVATE project_logic)
 
-# Copies the 'data' folder from your source directory to the build directory.
-# This ensures that your storage class can find the database files during runtime.
+# --------------------------------------------------------------------------------------------------------------------
+# 5. ASSET MANAGEMENT
+# Copies the 'data' folder to the build directory so the program can access 
+# files (like products.txt) during runtime.
+# --------------------------------------------------------------------------------------------------------------------
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/data DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
-
-# Enables the CMake testing engine (CTest) for the entire project (TESTS)
-enable_testing()
-
-# Tells CMake to enter the 'tests' folder and process the CMakeLists.txt file found there
-add_subdirectory(tests)
+# --------------------------------------------------------------------------------------------------------------------
+# 6. TESTING SUITE (CTest)
+# Enables the testing engine and tells CMake to look into the 'tests' folder 
+# for more configuration files.
+# --------------------------------------------------------------------------------------------------------------------
+#enable_testing()
+#add_subdirectory(tests)

@@ -7,115 +7,88 @@
 // ---- System ----
 #include <string>
 #include <fstream>
-#include <sstream>  // To treat a string like a "mini-file" so you can extract data from it (To read ead from and write to a string)
-#include <iostream> // To talk to the user
+#include <sstream>
+#include <iostream>
+#include <utility>
 
-//====================================================================================================
-// FileDataStorage.cpp implements FileDataStorage.h
-//====================================================================================================
 /**
- * Constructor: Uses an "Initializer List" to set the path, 
- * std::move(path) is an optimization- Instead of copying the string, we move it directly into m_filePath
+ * Constructor: Initializes the storage with a specific file path.
  */
 FileDataStorage::FileDataStorage(std::string path) : m_filePath(std::move(path)) {}
 
 /**
- * Save: Appends a line to the file
+ * Save: Adds a new record of a user and their products to the end of the file.
  */
-void FileDataStorage::save(int userId, const std::vector<int> &products)
+void FileDataStorage::save(const std::string &userId, const std::vector<std::string> &products)
 {
-    // std::ios::app opens the file in APPEND mode so we don't overwrite old data
+    // Open the file in "append" mode so we add to the end instead of erasing existing data
     std::ofstream outFile(m_filePath, std::ios::app);
 
+    // If the file fails to open, tell the user there was an error and stop
     if (!outFile)
     {
         std::cerr << "Error: Could not open file for writing: " << m_filePath << std::endl;
         return;
     }
 
-    // Our format: "userId: prodId1 prodId2 ..."
+    // Write the User ID followed by a colon to start the line
     outFile << userId << ":";
-    for (int id : products)
+
+    // Loop through each product in the list and write it to the file with a space in front
+    for (const std::string& id : products)
     {
         outFile << " " << id;
     }
-    outFile << "\n";
 
-    // File closes automatically when outFile goes out of scope
+    // Add a new line at the end so the next save starts on a fresh line
+    outFile << "\n";
 }
 
 /**
- * LoadAll: Parses the file into the map
+ * LoadAll: Reads the entire file from the disk and builds a map of data in memory.
  */
-std::map<int, std::set<int>> FileDataStorage::loadAll()
+std::map<std::string, std::set<std::string>> FileDataStorage::loadAll()
 {
-    std::map<int, std::set<int>> fullData;
+    // Create an empty map to hold our users and their sets of unique products
+    std::map<std::string, std::set<std::string>> fullData;
+
+    // Open the file for reading
     std::ifstream inFile(m_filePath);
 
+    // If the file doesn't exist yet, simply return the empty map and finish
     if (!inFile)
     {
-        // If the file doesn't exist yet, just return an empty map
         return fullData;
     }
 
     std::string line;
+    // Read the file line by line until we reach the very end
     while (std::getline(inFile, line))
     {
+        // If we encounter an empty line, skip it and move to the next one
         if (line.empty())
         {
             continue;
         }
 
-        // Initialize the stringstream by "loading" the current line into it.
-        // This treats the string like a mini-file that we can read from sequentially.
+        // Put the current line into a stringstream so we can extract pieces of data from it
         std::stringstream ss(line);
 
-        // Creates an integer 'bucket' to store the User ID.
-        // The stream will automatically convert the text digits into a real number.
-        int userId;
+        std::string userId;
 
-        // Creates a character 'bucket' to catch and "consume" the colon symbol.
-        // We need this so the cursor moves past the ':' and is ready for the products.
-        char colon;
-
-        // Extract the userId and skip the colon (Only runs if a number AND a character were successfully found)
-        if (ss >> userId >> colon)
+        // Try to extract the User ID and the colon character from the start of the line
+        if (std::getline(ss, userId, ':'))
         {
-            int productId;
-            // Extract all remaining integers on that line (This loop keeps going until it runs out of numbers)
+            std::string productId;
+            // Keep reading every word (product ID) that follows on the same line
             while (ss >> productId)
             {
+                // Insert the product into the set for this specific user (duplicates are ignored)
                 fullData[userId].insert(productId);
             }
         }
     }
 
+    // Return the completed map containing all the data from the file
     return fullData;
 }
-
-/*
-Felt like an explanation is needed about both of the streams
-    - iostream (Input/Output Stream):
-        Target: The System Console (Terminal).
-
-        Purpose: To talk to the user.
-
-        Key Tools:
-
-            std::cout: "Character Out" (Prints to the screen).
-
-            std::cin: "Character In" (Reads from the keyboard).
-
-        Analogy: A microphone and a speaker. You speak into it (cin) and it broadcasts to the room (cout).
-
-    - sstream (String Stream):
-        Target: A std::string in memory.
-
-        Purpose: To treat a string like a "mini-file" so you can extract data from it.
-
-        Key Tools:
-
-        std::stringstream: Can read from and write to a string.
-
-        Analogy: A digital recorder. You save words into a file (the string), and then you can play them back later to analyze them.
-*/
