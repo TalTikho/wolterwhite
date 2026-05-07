@@ -93,3 +93,4 @@ docker system prune -a
 - Storage: Data is persisted in the `/data` directory, which is maintained across container restarts.
 
 ---
+![Running](media\Running_tests_01.png)
