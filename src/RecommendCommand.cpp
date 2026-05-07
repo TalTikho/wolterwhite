@@ -15,6 +15,8 @@ std::vector<std::string> RecommendCommand::CommandInfo(std::istringstream &args)
 {
     //Using the stringStream input to parse the user input into a string vector to make execute easier.
     std::vector<std::string> argsV;
+    //Dummy vector to return if something fails.
+    std::vector<std::string> argsDummy;
     std:: string arg;
     //Try getting each part of the input excluding ws into a string vector. StringStream does the heavy lifting here.
     while (args >> arg){
@@ -23,7 +25,7 @@ std::vector<std::string> RecommendCommand::CommandInfo(std::istringstream &args)
 
     }
         catch(...){
-            return;
+            return argsDummy;
         }
     return argsV;
 }
@@ -43,7 +45,7 @@ bool RecommendCommand::is_num(std::string s)
 
     }
         catch(...){
-            return;
+            return false;
         }
 }
 
