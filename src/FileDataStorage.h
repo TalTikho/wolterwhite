@@ -16,19 +16,14 @@
 //====================================================================================================
 // FileDataStorage.h implements the interface
 //====================================================================================================
-/**
- * FileDataStorage Implementation
- * This class handles the actual reading/writing to a physical .txt file.
- */
 class FileDataStorage : public IDataStorage
 {
 private:
-    std::string m_filePath; // Member variable to store the path to avoid hardcodding
+    std::string m_filePath;
 
 public:
     /**
      * Constructor: Takes the path to the database file.
-     * Using 'explicit' to prevent accidental type conversions.
      */
     explicit FileDataStorage(std::string path);
 

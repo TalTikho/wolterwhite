@@ -1,0 +1,10 @@
+services:
+  wolterwhite-app:
+    build: .
+    container_name: wolterwhite_container
+    # Keep the terminal interactive so you can type commands (add, recommend, help)
+    stdin_open: true
+    tty: true
+    # Sync the local data folder with the container's data folder
+    volumes:
+      - ./data:/usr/src/wolterwhite/build/data

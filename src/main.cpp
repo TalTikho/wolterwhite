@@ -1,39 +1,55 @@
-// ------- First Option ------
-#include <map>
-#include <string>
-using namespace std;
+//====================================================================================================
+// Include all needed headers
+//====================================================================================================
+// ---- Core App ----
+#include "App.h"
 
-// ------- Second Option ------
-//#include "App.h" WILL BE ADDED LATER
+// ---- Interfaces ----
+#include "IMenu.h"
+#include "ICommand.h"
+#include "IDataStorage.h"
 
+// ---- Implementations ----
+#include "ConsoleMenu.h"
+#include "HelpCommand.h"
+#include "AddProductCommand.h"
+#include "FileDataStorage.h"
 
-int main (){
+// ---- Optional Commands (Not in folder yet) ----
+// #include "commands/RecommendCommand.h" 
 
-    // ------- First Option ------
+// ---- System ----
+#include <iostream>
 
-    // map <string, ICommand*> commands;
+/**
+ * Main entry point for the Recommender System.
+ */
+int main() {
+    // 1. Initialize the Data Storage with the path to the data file
+    // Adjust "data/users_products.txt" to the actual path you use
+    FileDataStorage storage("data/data.txt"); 
 
-    // ICommand AddProduct = new AddProductCommand();
-    // commands["add"] = AddProduct;
+    // 2. Initialize the Console Menu
+    ConsoleMenu menu;
 
-    // ICommand recommend = new RecommendCommand();
-    // commands["recommend"] = recommend;
-
-    // ICommand help = new HelpCommand();
-    // commands["help"] = help;
+    // 3. Instantiate the Commands
+    HelpCommand helpCmd;
+    AddProductCommand addCmd(storage); 
     
-    // App app(commands);
+    // RecommendCommand is still under development by Yotam
+    // RecommendCommand recCmd(storage);
 
-    // delete AddProduct;
-    // delete Recommend;
-    // delete Help;
+    // 4. Setup the Application and Register Commands
+    App app(&menu);
+    
+    app.registerCommand("help", &helpCmd);
+    app.registerCommand("add", &addCmd);
+    
+    // Uncomment this when RecommendCommand.h/cpp are added to the commands folder
+    // app.registerCommand("recommend", &recCmd);
 
-    // ------- Second Option ------
-
-    //App app; WILL BE ADDED LATER
-    //app.run(); WILL BE ADDED LATER
-
+    // 5. Run the Application loop
+    app.run();
 
     return 0;
-
 }

@@ -1,30 +1,45 @@
+//====================================================================================================
+// Include all needed headers
+//====================================================================================================
+// ---- Files ----
 #include "ConsoleMenu.h"
+
+// ---- System ----
 #include <iostream>
-#include <sstream>
-#include<set>
+#include <string>
 
-//The default constructor is empty so we initiallize it using a list.
-ConsoleMenu::ConsoleMenu():  next ("")
-{
-
-}
-
-//nextSetter is here to keep encapsulation.
-void ConsoleMenu::nextSetter(){
-    //Make sure next is an empty string even if we had a good previous command.
-    this->next = "";
-    //Read a line from the console using getline().
+/**
+ * getNextCommand: Implementation for the standard console input.
+ */
+bool ConsoleMenu::getNextCommand(std::string &commandName, std::istringstream &args) {
     std::string line;
-    std::getline(std::cin,line);
-    this->next = line;
-    return;
 
+    // 1. Read the entire line from the user (std::cin)
+    if (!std::getline(std::cin, line) || line.find('\t') != std::string::npos) {
+        // Return false if EOF reached (like Ctrl+D) or stream error
+        return false;
     }
 
-std::string ConsoleMenu::nextCommand () noexcept
-{
-    //Set next privately.
-    this->nextSetter();
-    //Return the input for App to parse.
-    return this->next;
+    // Handle empty lines by skipping them or returning a success with empty commandName
+    if (line.empty()) {
+        commandName = "";
+        return true;
+    }
+
+    // 2. Use a temporary stream to extract the first word (commandName)
+    std::istringstream lineStream(line);
+    if (!(lineStream >> commandName)) {
+        return true; // Line was just spaces
+    }
+
+    // 3. Take the rest of the line and put it into the 'args' stream
+    // We get the remaining part of the string starting from the current position of lineStream
+    std::string remainingArgs;
+    std::getline(lineStream >> std::ws, remainingArgs); // std::ws skips leading whitespace
+    
+    // Clear the provided 'args' stream and set its content
+    args.clear();
+    args.str(remainingArgs);
+
+    return true;
 }

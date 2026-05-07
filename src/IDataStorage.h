@@ -7,6 +7,7 @@
 // ---- System ----
 #include <map>
 #include <set>
+#include <string>
 #include <vector>
 #include <string>
 
@@ -19,18 +20,18 @@ public:
     /**
      * Virtual destructor: Essential in C++ to ensure child classes are cleaned up properly
      */
-    virtual ~IDataStorage() = default; // Like an empty body
+    virtual ~IDataStorage() = default;
 
     /**
      * Saves products for a specific user.
-     * Using 'const std::vector<int>&' to pass by reference (faster than copying in Java).
+     * products are now stored as strings.
      */
     virtual void save(const std::string &userId, const std::vector<std::string> &products) = 0; // = 0 is the equivalent of abstract in java
 
     /**
      * Loads the entire database into memory.
      * Key: UserId (int)
-     * Value: Set of ProductIds (set ensures no duplicates for the recommendation engine)
+     * Value: Set of ProductIds (string)
      */
     virtual std::map<std::string, std::set<std::string>> loadAll() = 0;
 };
