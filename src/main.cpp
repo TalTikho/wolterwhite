@@ -42,8 +42,8 @@ int main() {
     // 4. Setup the Application and Register Commands
     App app(&menu);
     
-    app.registerCommand("help", &helpCmd);
-    app.registerCommand("add", &addCmd);
+    app.registerCommand("help", helpCmd);
+    app.registerCommand("add", addCmd);
     
     // Uncomment this when RecommendCommand.h/cpp are added to the commands folder
     // app.registerCommand("recommend", &recCmd);
