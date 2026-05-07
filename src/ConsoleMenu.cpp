@@ -15,7 +15,7 @@ bool ConsoleMenu::getNextCommand(std::string &commandName, std::istringstream &a
     std::string line;
 
     // 1. Read the entire line from the user (std::cin)
-    if (!std::getline(std::cin, line)) {
+    if (!std::getline(std::cin, line) || line.find('\t') != std::string::npos) {
         // Return false if EOF reached (like Ctrl+D) or stream error
         return false;
     }

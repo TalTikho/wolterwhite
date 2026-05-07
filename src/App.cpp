@@ -29,9 +29,9 @@ void App::registerCommand(const std::string& name, ICommand* com) {
 void App::run() noexcept {
     std::string cmdName;
     std::istringstream cmdArgs;
-
-    // The loop continues as long as getNextCommand returns true (no EOF)
-    while (m_menu->getNextCommand(cmdName, cmdArgs)) {
+    bool maniac = true;
+    // The loop continues forever. The App never stops. Disco Maniac never stops.
+    while (m_menu->getNextCommand(cmdName, cmdArgs) || maniac == true){
         
         // 1. Handling the "quit" command for tests/graceful exit
         if (cmdName == "quit") {
