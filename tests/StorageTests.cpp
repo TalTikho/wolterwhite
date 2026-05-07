@@ -30,7 +30,7 @@ TEST_F(StorageTest, PersistenceRoundTrip) {
     // Inner block simulates a creation
     {
         FileDataStorage storage(TEST_FILE); // Creates a storage object pointing at the test file
-        storage.save(5, {201}); // Saves user 5  with product 201
+        storage.save("5", {"201"}); // Saves user 5  with product 201
     }
     // Storage object is now destroyed (out of scope) — simulates cold restart
 
@@ -39,8 +39,8 @@ TEST_F(StorageTest, PersistenceRoundTrip) {
     auto data = freshStorage.loadAll();
 
     // Asserts: user 5 still has product 201
-    ASSERT_TRUE(data.count(5) > 0) << "User 5 should exist after reload";
-    EXPECT_TRUE(data.at(5).count(201) > 0) << "Product 201 should exist for user 5";
+    ASSERT_TRUE(data.count("5") > 0) << "User 5 should exist after reload";
+    EXPECT_TRUE(data.at("5").count("201") > 0) << "Product 201 should exist for user 5";
 }
 
 //====================================================================================================
@@ -52,15 +52,15 @@ TEST_F(StorageTest, MultipleAddAccumulation) {
     FileDataStorage storage(TEST_FILE);
 
     // Two separate save calls for the same user
-    storage.save(1, {101});
-    storage.save(1, {102});
+    storage.save("1", {"101"});
+    storage.save("1", {"102"});
 
     auto data = storage.loadAll();
 
     // Asserts: user 1 has both products, not just the last one
-    ASSERT_TRUE(data.count(1) > 0) << "User 1 should exist";
-    EXPECT_TRUE(data.at(1).count(101) > 0) << "Product 101 should exist";
-    EXPECT_TRUE(data.at(1).count(102) > 0) << "Product 102 should exist";
+    ASSERT_TRUE(data.count("1") > 0) << "User 1 should exist";
+    EXPECT_TRUE(data.at("1").count("101") > 0) << "Product 101 should exist";
+    EXPECT_TRUE(data.at("1").count("102") > 0) << "Product 102 should exist";
 }
 
 //====================================================================================================
@@ -70,7 +70,7 @@ TEST_F(StorageTest, MultipleAddAccumulation) {
 TEST_F(StorageTest, FileCreatedInDataDir) {
     // Creates a storage object and saves the data
     FileDataStorage storage(TEST_FILE);
-    storage.save(1, {100});
+    storage.save("1", {"100"});
 
     // Asserts: the file physically exists on disk in data/
     EXPECT_TRUE(std::filesystem::exists(TEST_FILE))
@@ -100,17 +100,17 @@ TEST_F(StorageTest, DuplicateProductNotStoredTwice) {
     FileDataStorage storage(TEST_FILE);
 
     // Saving as a same user, same product, added twice
-    storage.save(1, {101});
-    storage.save(1, {101});
+    storage.save("1", {"101"});
+    storage.save("1", {"101"});
 
     auto data = storage.loadAll();
 
     // Asserts: user 1 exists
-    ASSERT_TRUE(data.count(1) > 0) << "User 1 should exist";
+    ASSERT_TRUE(data.count("1") > 0) << "User 1 should exist";
 
     // Asserts: product 101 appears exactly once, not twice
-    EXPECT_EQ(data.at(1).count(101), 1) << "Product 101 should appear exactly once";
-    EXPECT_EQ(data.at(1).size(), 1) << "User 1 should have exactly 1 product total";
+    EXPECT_EQ(data.at("1").count("101"), 1) << "Product 101 should appear exactly once";
+    EXPECT_EQ(data.at("1").size(), 1) << "User 1 should have exactly 1 product total";
 }
 
 //====================================================================================================
@@ -120,8 +120,8 @@ TEST_F(StorageTest, DuplicateProductNotStoredTwiceAfterRestart) {
     // save duplicate, then destroy
     {
         FileDataStorage storage(TEST_FILE);
-        storage.save(1, {101});
-        storage.save(1, {101});
+        storage.save("1", {"101"});
+        storage.save("1", {"101"});
     }
     // storage destroyed — cold restart simulation
 
@@ -130,7 +130,7 @@ TEST_F(StorageTest, DuplicateProductNotStoredTwiceAfterRestart) {
     auto data = freshStorage.loadAll();
 
     // Asserts: same as test 5 - product 101 appears exactly once, not twice
-    ASSERT_TRUE(data.count(1) > 0) << "User 1 should exist after reload";
-    EXPECT_EQ(data.at(1).count(101), 1) << "Product 101 should appear exactly once after reload";
-    EXPECT_EQ(data.at(1).size(), 1) << "User 1 should have exactly 1 product total after reload";
+    ASSERT_TRUE(data.count("1") > 0) << "User 1 should exist after reload";
+    EXPECT_EQ(data.at("1").count("101"), 1) << "Product 101 should appear exactly once after reload";
+    EXPECT_EQ(data.at("1").size(), 1) << "User 1 should have exactly 1 product total after reload";
 }
