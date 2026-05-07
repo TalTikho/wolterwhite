@@ -14,6 +14,7 @@
 #include "HelpCommand.h"
 #include "AddProductCommand.h"
 #include "FileDataStorage.h"
+#include "RecommendCommand.h"
 
 // ---- Optional Commands (Not in folder yet) ----
 // #include "commands/RecommendCommand.h" 
@@ -35,6 +36,7 @@ int main() {
     // 3. Instantiate the Commands
     HelpCommand helpCmd;
     AddProductCommand addCmd(storage); 
+    RecommendCommand rec(storage);
     
     // RecommendCommand is still under development by Yotam
     // RecommendCommand recCmd(storage);
@@ -44,6 +46,7 @@ int main() {
     
     app.registerCommand("help", helpCmd);
     app.registerCommand("add", addCmd);
+    app.registerCommand("recommend", rec);
     
     // Uncomment this when RecommendCommand.h/cpp are added to the commands folder
     // app.registerCommand("recommend", &recCmd);
