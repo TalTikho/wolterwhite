@@ -91,7 +91,7 @@ void RecommendCommand::execute(std::istringstream & args)
             //rank is first 0.
                 common[User] = 0;
             for (const auto prod : pset){
-                //If we find the product in the user's set in UserId's set it is a common product so according to #1:
+                //according to #1: If we find the product in the user's set in UserId's set it is a common product 
                 if (UserProducts.count(prod)){
                     common[User] += 1;
                 }
