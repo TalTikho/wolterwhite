@@ -9,6 +9,7 @@
 #include <set>
 #include <string>
 #include <vector>
+#include <string>
 
 //====================================================================================================
 // IDataStorage.h is the interface that defines what storage will do
@@ -25,7 +26,7 @@ public:
      * Saves products for a specific user.
      * products are now stored as strings.
      */
-    virtual void save(const std::string &userId, const std::vector<std::string> &products) = 0;
+    virtual void save(const std::string &userId, const std::vector<std::string> &products) = 0; // = 0 is the equivalent of abstract in java
 
     /**
      * Loads the entire database into memory.

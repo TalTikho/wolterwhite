@@ -20,8 +20,11 @@ public:
         return fakeData;
     }
 
-    void saveAll(const std::map<std::string, std::set<std::string>>& data) override {
+    void saveAll(const std::map<std::string, std::set<std::string>>& data) {
         // Not needed for recommendation logic tests
+    }
+    void save(const std::string &userId, const std::vector<std::string> &products) override{
+        return;
     }
 };
 
