@@ -94,3 +94,4 @@ docker system prune -a
 
 ---
 ![Running](media\Running_tests_01.png)
+![Running](media\Running_recommand_01.png)
