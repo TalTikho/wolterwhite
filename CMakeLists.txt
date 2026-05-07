@@ -32,6 +32,8 @@ add_library(project_logic STATIC
     src/AddProductCommand.h
     src/HelpCommand.cpp
     src/HelpCommand.h
+    src/RecommendCommand.cpp
+    src/RecommendCommand.h
 
     # User Interface Logic
     src/ConsoleMenu.cpp
@@ -85,4 +87,4 @@ file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/data DESTINATION ${CMAKE_CURRENT_BINARY_DI
 # for more configuration files.
 # --------------------------------------------------------------------------------------------------------------------
 #enable_testing()
-#add_subdirectory(tests)
+add_subdirectory(tests)
