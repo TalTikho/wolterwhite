@@ -27,8 +27,11 @@ std::vector<std::string> RecommendCommand::CommandInfo(std::istringstream &args)
         catch(...){
             return argsDummy;
         }
-    return argsV;
+    
+    
+    
 }
+    return argsV;
 }
 
 bool RecommendCommand::is_num(std::string s)
@@ -49,22 +52,12 @@ bool RecommendCommand::is_num(std::string s)
         }
 }
 
-int RecommendCommand::to_int(std::string s)
-{
-    //If we do not have an entire int we do a static_cast into an int to get the ascii val for each char and sum them up. 
-    int sum = 0;
-    for (char c: s){
-        int ascii = static_cast<int>(c);
-        sum += ascii;
-    }
-    return sum;
-}
 
 RecommendCommand::RecommendCommand(IDataStorage & l) :loader(l)
 {
 }
 
-void RecommendCommand::execute(std::istringstream & args)
+void RecommendCommand::execute(std::istringstream & args) 
 {
     //Use CommandInfo to get our UserID and products vector.
     std::vector<std::string> exec = CommandInfo(args);
@@ -75,9 +68,19 @@ void RecommendCommand::execute(std::istringstream & args)
     //First is UserID, second is the product he viewed.
     std::string UserID = exec[0];
     std::string UserProd = exec[1];
+    bool found = false;
 
     //We need the entire map of users and products from the filesystem to rank each product.
     std::map<std::string, std::set<std::string>> intel = this->loader.loadAll();
+    //Check if user exists so we do not throw an exception by default through map.
+    for (const auto &[User,pset]: intel){
+        if (User == UserID){
+            found = true;
+        }
+    }
+    if (found == false){
+        return;
+    }
     //User's products vector, essential to ranking.
     std:: set<std::string> UserProducts = intel.at(UserID);
     //#1 Commonality of a user = common[User] =  |same products as exec[0]|
@@ -92,7 +95,7 @@ void RecommendCommand::execute(std::istringstream & args)
         if (User != UserID){
             //rank is first 0.
                 common[User] = 0;
-            for (const auto prod : pset){
+            for (const auto& prod : pset){
                 //according to #1: If we find the product in the user's set in UserId's set it is a common product 
                 if (UserProducts.count(prod)){
                     common[User] += 1;
@@ -100,8 +103,8 @@ void RecommendCommand::execute(std::istringstream & args)
 
             }
             //Now we rank products according to #2.
-            for (const auto prod : pset){
-                if (pset.count(UserProd)){
+            for (const auto& prod : pset){
+                if (pset.count(UserProd) && UserProducts.count(prod)==0){
                     pCommon[prod] += common[User];
                 }
             }
@@ -109,31 +112,42 @@ void RecommendCommand::execute(std::istringstream & args)
 
 
         }
+            
+        // }
 
         //We need a vector of a pair in order for us to sort our ranked products.
         //We are using the sorting template for vector pairs from algorithm.
             
-    std::vector<std::pair<std::string, std::string>> sortedProducts(pCommon.begin(), pCommon.end());
+    std::vector<std::pair<std::string, int>> sortedProducts(pCommon.begin(), pCommon.end());
     std::sort(sortedProducts.begin(), sortedProducts.end(),
     //We must have access to this for us to access private methods is_num and to_int.
-        [this](const std::pair<std::string, std::string>& a, const std::pair<std::string, std::string>& b) {
+        [this](const std::pair<std::string, int>& a, const std::pair<std::string, int>& b) {
             //If it is a num and two are equal we return based on the smaller productID. Otherwise we first convert by ascii value.
             if (!is_num(a.first) || !is_num(b.first)){
                 if (a.second == b.second){
-                    return to_int(a.first) > to_int(b.first);
+                    return a.first < b.first;
                 } 
 
             }
-            if (a.second == b.second){
-                return a.first > b.first;
+            if (is_num(a.first) && is_num(b.first)){
+                if (a.second == b.second){
+                    return std::stoi (a.first) < std::stoi (b.first);
+                }
+                return a.second > b.second; 
             }
             return a.second > b.second; 
+            
         }
     );
     //Print up to 10 products. We have a condition that i < sortedProducts and print "" if the pair list is empty.
+    //The printed var decouples products size and the 10 items limit.
+    int printed = 0;
     if (sortedProducts.size() == 0) {std:: cout << "";};
-    for (int i = 0; i<10 && i < sortedProducts.size(); i++){
-        std::cout<<sortedProducts[i].first<<" ";
+    for (size_t i = 0; printed<10 && i < sortedProducts.size(); i++){
+        if (sortedProducts[i].first != UserProd && sortedProducts[i].second != 0){
+            std::cout<<sortedProducts[i].first<<" ";
+            printed++;
+        }
     }
     std:: cout<<std::endl;
         

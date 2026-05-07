@@ -23,8 +23,6 @@ class RecommendCommand: public ICommand{
         IDataStorage& loader;
         //check if a string is fully converitble to a number.
         bool is_num(std::string s);
-        //convert a string to numeric value using ascii values.
-        int to_int (std::string s);
 
 
     public:
