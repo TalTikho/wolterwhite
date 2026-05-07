@@ -8,6 +8,7 @@
 #include <map>
 #include <set>
 #include <vector>
+#include <string>
 
 //====================================================================================================
 // IDataStorage.h is the interface that defines what storage will do
