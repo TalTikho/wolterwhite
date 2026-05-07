@@ -30,8 +30,8 @@ void App::run() noexcept {
     std::string cmdName;
     std::istringstream cmdArgs;
 
-    // The loop continues as long as getNextCommand returns true (no EOF)
-    while (m_menu->getNextCommand(cmdName, cmdArgs)) {
+    // The loop continues forever. The App never stops.
+    while (true) {
         
         // 1. Handling the "quit" command for tests/graceful exit
         if (cmdName == "quit") {
