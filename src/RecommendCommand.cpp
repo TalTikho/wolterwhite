@@ -112,6 +112,17 @@ void RecommendCommand::execute(std::istringstream & args)
 
 
         }
+        /*Delete all of the products our user has already viewed from the recommendation map.
+         Although they are zeroed out due to a previous condition becuase zero is not a recommendation*/
+        for (auto it = pCommon.begin(); it != pCommon.end();){
+            if (UserProducts.count(it->first)){
+                it = pCommon.erase(it);
+            }
+            else{
+                it++;
+            }
+        }
+
             
         // }
 
