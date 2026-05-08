@@ -17,6 +17,9 @@ App::App(IMenu *m)
 
 void App::run() noexcept
 {
+    //The program starts with a help menu to avoid confusion.
+    std:: istringstream help;
+    this->cmds.at("help")->execute(help);
     while (true){
         std:: string command = menu->nextCommand();
         //A line only for the tests to break the loop and continue to the next test.
