@@ -26,6 +26,7 @@ add_executable(runTests
     MenuTests.cpp
     AddProductCommandTests.cpp
     RecommendCommandTests.cpp
+    HelpCommandTests.cpp
 )
 
 
