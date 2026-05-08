@@ -73,16 +73,12 @@ void RecommendCommand::execute(std::istringstream & args)
     //We need the entire map of users and products from the filesystem to rank each product.
     std::map<std::string, std::set<std::string>> intel = this->loader.loadAll();
     //Check if user exists so we do not throw an exception by default through map.
-    for (const auto &[User,pset]: intel){
-        if (User == UserID){
-            found = true;
-        }
-    }
-    if (found == false){
+    auto it = intel.find(UserID);
+    if (it == intel.end()) {
         return;
     }
     //User's products vector, essential to ranking.
-    std:: set<std::string> UserProducts = intel.at(UserID);
+    std::set<std::string> UserProducts = it->second;
     //#1 Commonality of a user = common[User] =  |same products as exec[0]|
     std:: map<std::string, int> common;
     //#2 Commonality of a product = pCommon[Product] = sum of common[User]
