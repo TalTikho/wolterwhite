@@ -116,40 +116,40 @@ docker system prune -a
 ## Running the Docker commands
 
 - **Starting the environment:**
-![Running](media\Starting_The_Environment.png)
+![Running](./media/Starting_The_Environment.png)
 
 - **Running the Application:**
-![Running](media\Running_The_Application.png)
+![Running](./media/Running_The_Application.png)
 
 - **Running An Exaple:**
-![Running](media\Running_The_Application_Using_An_Example.png)
+![Running](./media/Running_The_Application_Using_An_Example.png)
 
 - **Running Recommend Example:**
-![Running](media\Running_Recommend_Example.png)
+![Running](./media/Running_Recommend_Example.png)
 
 - **Empty Output When Unique:**
-![Running](media\Should_Not_Recommend_Is_Unique.png)
+![Running](./media/Should_Not_Recommend_Is_Unique.png)
 
 - **Not Unique Anymore:**
-![Running](media\Adding_So_Not_Unique.png)
+![Running](./media/Adding_So_Not_Unique.png)
 
 - **Now It Is Valid For Recommendation:**
-![Running](media\Able_To_Recommend_After_Added.png)
+![Running](./media/Able_To_Recommend_After_Added.png)
 
 - **Invalid Add Input:**
-![Running](media\Invalid_Add_Input.png)
+![Running](./media/Invalid_Add_Input.png)
 
 - **Invalid Recommend Input:**
-![Running](media\Invalid_Recommend_Input.png)
+![Running](./media/Invalid_Recommend_Input.png)
 
 - **Using 'quit' To Stop The Run:**
-![Running](media\Stopping_Using_Quit.png)
+![Running](./media/Stopping_Using_Quit.png)
 
 - **Passed All The Tests:**
-![Running](media\Running_All_Tests_01.png)
-![Running](media\Running_All_Tests_02.png)
+![Running](./media/Running_All_Tests_01.png)
+![Running](./media/Running_All_Tests_02.png)
 
 - **Stopping the project:**
-![Running](media\Stopping_The_Docker.png)
+![Running](./media/Stopping_The_Docker.png)
 
 ---
