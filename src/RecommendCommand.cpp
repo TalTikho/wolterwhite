@@ -118,18 +118,16 @@ void RecommendCommand::execute(std::istringstream & args)
                 it++;
             }
         }
-
-            
-        // }
-
-        //We need a vector of a pair in order for us to sort our ranked products.
-        //We are using the sorting template for vector pairs from algorithm.
+  
+   /*Print up to 10 products. We have a condition that i < sortedProducts and print "" if the pair list is empty.
+     The printed var decouples products size and the 10 items limit.*/
             
     std::vector<std::pair<std::string, int>> sortedProducts(pCommon.begin(), pCommon.end());
     std::sort(sortedProducts.begin(), sortedProducts.end(),
     //We must have access to this for us to access private methods is_num and to_int.
         [this](const std::pair<std::string, int>& a, const std::pair<std::string, int>& b) {
-            //If it is a num and two are equal we return based on the smaller productID. Otherwise we first convert by ascii value.
+            /*If it is a num (string) and ranks are equal we convert to int and return lower < higher. 
+            Otherwise, by string comparision.*/
             if (!is_num(a.first) || !is_num(b.first)){
                 if (a.second == b.second){
                     return a.first < b.first;
