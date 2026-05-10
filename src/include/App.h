@@ -1,8 +1,8 @@
 #ifndef APP_H
 #define APP_H
 
-#include "IMenu.h"
-#include "ICommand.h"
+#include "ui/IMenu.h"
+#include "commands/ICommand.h"
 #include <sstream>
 #include <map>
 #include <string>

@@ -19,29 +19,29 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # --------------------------------------------------------------------------------------------------------------------
 add_library(project_logic STATIC
     # Main Application Controller
-    src/App.cpp
-    src/App.h
+    src/source/App.cpp
+    src/include/App.h
 
     # Abstract Interfaces (The Blueprints/Contracts)
-    src/ICommand.h
-    src/IMenu.h
-    src/IDataStorage.h
+    src/include/commands/ICommand.h
+    src/include/ui/IMenu.h
+    src/include/storage/IDataStorage.h
 
-    # Command Implementations (The Actions)
-    src/AddProductCommand.cpp
-    src/AddProductCommand.h
-    src/HelpCommand.cpp
-    src/HelpCommand.h
-    src/RecommendCommand.cpp
-    src/RecommendCommand.h
+    # Command Implemedntations (The Actions)
+    src/source/commands/AddProductCommand.cpp
+    src/include/commands/AddProductCommand.h
+    src/source/commands/HelpCommand.cpp
+    src/include/commands/HelpCommand.h
+    src/source/commands/RecommendCommand.cpp
+    src/include/commands/RecommendCommand.h
 
     # User Interface Logic
-    src/ConsoleMenu.cpp
-    src/ConsoleMenu.h
+    src/source/ui/ConsoleMenu.cpp
+    src/include/ui/ConsoleMenu.h
 
     # Data Persistence Logic
-    src/FileDataStorage.cpp
-    src/FileDataStorage.h
+    src/source/storage/FileDataStorage.cpp
+    src/include/storage/FileDataStorage.h
 )
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -51,11 +51,7 @@ add_library(project_logic STATIC
 # also knows where to find these headers automatically.
 # --------------------------------------------------------------------------------------------------------------------
 target_include_directories(project_logic PUBLIC 
-    src
-#    src/interfaces
-#   src/commands
-#    src/menus
-#    src/storage
+    src/include
 )
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -69,7 +65,7 @@ target_compile_options(project_logic PRIVATE -Wall -Wextra -Wpedantic)
 # 4. MAIN EXECUTABLE (The actual program)
 # Creates the final 'wolterwhite' binary using main.cpp as the entry point.
 # --------------------------------------------------------------------------------------------------------------------
-add_executable(wolterwhite src/main.cpp)
+add_executable(wolterwhite src/source/main.cpp)
 
 # Link our core library ('project_logic') into the final executable.
 target_link_libraries(wolterwhite PRIVATE project_logic)

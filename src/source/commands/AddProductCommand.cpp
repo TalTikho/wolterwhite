@@ -2,7 +2,7 @@
 // Include all needed headers
 //====================================================================================================
 // ---- Files ----
-#include "AddProductCommand.h"
+#include "../include/commands/AddProductCommand.h"
 #include <string>
 #include <vector>
 

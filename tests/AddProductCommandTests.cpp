@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 #include <sstream>
 #include <filesystem>
-#include "FileDataStorage.h"
-#include "AddProductCommand.h"
+#include "storage/FileDataStorage.h"
+#include "commands/AddProductCommand.h"
 
 static const std::string TEST_FILE = "data/test_storage.txt";
 

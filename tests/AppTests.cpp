@@ -2,10 +2,10 @@
 // Include all needed headers
 //====================================================================================================
 // ---- Files ----
-#include "IMenu.h"
+#include "ui/IMenu.h"
 #include "App.h"
-#include "ICommand.h"
-#include "IDataStorage.h"
+#include "commands/ICommand.h"
+#include "storage/IDataStorage.h"
 
 // ---- System ----
 #include <gtest/gtest.h>
