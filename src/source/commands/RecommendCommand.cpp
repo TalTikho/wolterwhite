@@ -1,4 +1,4 @@
-#include "RecommendCommand.h"
+#include "../include/commands/RecommendCommand.h"
 //System includes
 #include <iostream>
 #include <string>

@@ -2,7 +2,7 @@
 // Include all needed headers
 //====================================================================================================
 // ---- Files ----
-#include "HelpCommand.h"
+#include "../include/commands/HelpCommand.h"
 
 // ---- System ----
 #include <iostream>

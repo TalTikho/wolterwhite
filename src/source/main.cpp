@@ -2,22 +2,7 @@
 // Include all needed headers
 //====================================================================================================
 // ---- Core App ----
-#include "App.h"
-
-// ---- Interfaces ----
-#include "IMenu.h"
-#include "ICommand.h"
-#include "IDataStorage.h"
-
-// ---- Implementations ----
-#include "ConsoleMenu.h"
-#include "HelpCommand.h"
-#include "AddProductCommand.h"
-#include "FileDataStorage.h"
-#include "RecommendCommand.h"
-
-// ---- Optional Commands (Not in folder yet) ----
-// #include "commands/RecommendCommand.h" 
+#include "../include/AllIncludes.h"
 
 // ---- System ----
 #include <iostream>

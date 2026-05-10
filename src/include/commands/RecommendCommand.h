@@ -6,7 +6,7 @@
 
 //Aggregation and Inheritence includes
 #include "ICommand.h"
-#include "IDataStorage.h"
+#include "../storage/IDataStorage.h"
 
 #ifndef RecommendCommand_H
 #define RecommendCommand_H

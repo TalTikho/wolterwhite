@@ -34,7 +34,7 @@ add_executable(runTests
 target_link_libraries(runTests PRIVATE project_logic gtest_main) 
 
 # Explicitly tells the compiler to look one directory up in 'src' for your header files ()
-target_include_directories(runTests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src)
+target_include_directories(runTests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src/include)
 
 # Turns on strict compiler warnings to ensure high code quality (Wall = All warnings)
 target_compile_options(runTests PRIVATE -Wall -Wextra -Wpedantic)

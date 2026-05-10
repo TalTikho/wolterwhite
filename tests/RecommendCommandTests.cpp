@@ -4,8 +4,8 @@
 #include <vector>
 #include <map>
 #include <set>
-#include "RecommendCommand.h"
-#include "IDataStorage.h"
+#include "commands/RecommendCommand.h"
+#include "storage/IDataStorage.h"
 
 /**
  * 1. FAKE DATA STORAGE (Mock)
