@@ -42,6 +42,15 @@ add_library(project_logic STATIC
     # Data Persistence Logic
     src/source/storage/FileDataStorage.cpp
     src/include/storage/FileDataStorage.h
+
+    # OUTPUT
+    src/include/output/IOutputWriter.h
+    src/include/output/ConsoleWriter.h
+    src/include/output/SocketWriter.h
+
+    # POST
+    src/source/commands/PostCommand.cpp
+    src/include/commands/PostCommand.h
 )
 
 # --------------------------------------------------------------------------------------------------------------------
