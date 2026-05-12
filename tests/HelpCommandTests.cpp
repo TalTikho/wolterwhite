@@ -38,9 +38,11 @@ TEST_F(HelpCommandTest, HelpExactOutput) {
 
     // Build the exact expected string
     std::string expected =
-        "add [userid] [productid1] [productid2]...\n"
-        "recommend [userid] [productid]\n"
-        "help\n";
+        "DELETE, arguments: [userid] [productid1] [productid2] ...\n"
+        "GET, arguments: [userid] [productid]\n"
+        "PATCH, arguments: [userid] [productid1] [productid2] ...\n";
+        "POST, arguments: [userid] [productid1] [productid2] ...\n";
+        "help\n"
 
     EXPECT_EQ(captured.str(), expected)
         << "Help output must match the assignment spec exactly";
@@ -58,17 +60,23 @@ TEST_F(HelpCommandTest, HelpExactSpacing) {
     std::string output = captured.str();
 
     // Each line must appear exactly once with correct spacing
-    EXPECT_TRUE(output.find("add [userid] [productid1] [productid2]...") 
+    EXPECT_TRUE(output.find("DELETE, arguments: [userid] [productid1] [productid2] ...") 
         != std::string::npos)
         << "First line must have exact spacing";
 
-    EXPECT_TRUE(output.find("recommend [userid] [productid]") 
+    EXPECT_TRUE(output.find("GET, arguments: [userid] [productid]") 
         != std::string::npos)
         << "Second line must have exact spacing";
 
+    EXPECT_TRUE(output.find("PATCH, arguments: [userid] [productid1] [productid2] ...") 
+        != std::string::npos)
+        << "Third line must be as expected";
+    EXPECT_TRUE(output.find("POST, arguments: [userid] [productid1] [productid2] ...") 
+        != std::string::npos)
+        << "Fourth line must be as expected";
     EXPECT_TRUE(output.find("help") 
         != std::string::npos)
-        << "Third line must be exactly 'help'";
+        << "Fifth line must be as expected";
 
     // Verify no double spaces anywhere in the output
     EXPECT_TRUE(output.find("  ") == std::string::npos)
@@ -126,8 +134,8 @@ TEST_F(HelpCommandTest, HelpOutputEndsWithNewline) {
     for (char c : output) {
         if (c == '\n') newlineCount++;
     }
-    EXPECT_EQ(newlineCount, 3)
-        << "Output must contain exactly 3 newlines — one per line";
+    EXPECT_EQ(newlineCount, 5)
+        << "Output must contain exactly 5 newlines — one per line";
 }
 
 //====================================================================================================
