@@ -28,8 +28,8 @@ add_library(project_logic STATIC
     src/include/storage/IDataStorage.h
 
     # Command Implemedntations (The Actions)
-    src/source/commands/AddProductCommand.cpp
-    src/include/commands/AddProductCommand.h
+    #src/source/commands/AddProductCommand.cpp
+    #src/include/commands/AddProductCommand.h
     src/source/commands/HelpCommand.cpp
     src/include/commands/HelpCommand.h
     src/source/commands/RecommendCommand.cpp
