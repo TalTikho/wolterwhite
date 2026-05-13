@@ -10,6 +10,7 @@
 #include <sstream>
 #include <iostream>
 #include <utility>
+#include <map>
 
 /**
  * Constructor: Initializes the storage with a specific file path.
@@ -21,6 +22,15 @@ FileDataStorage::FileDataStorage(std::string path) : m_filePath(std::move(path))
  */
 void FileDataStorage::save(const std::string &userId, const std::vector<std::string> &products)
 {
+    /*Load all user->products data from to the file into a map using FileDataStorage loadAll.
+     If the file is empty then an empty map is loaded so loadAll usage is not faulty.
+     Important to do this before deleting the entire file's contents. 
+    */
+    std::map<std::string, std::set<std::string>> All = this->loadAll();
+    /*delete the file's content so we can update it in a way each user has its own line
+     as one cannot simply find a string in the file and append to it from there.
+    */
+    std::ofstream of(m_filePath, std::ofstream::out | std::ofstream::trunc);
     // Open the file in "append" mode so we add to the end instead of erasing existing data
     std::ofstream outFile(m_filePath, std::ios::app);
 
@@ -30,18 +40,28 @@ void FileDataStorage::save(const std::string &userId, const std::vector<std::str
         std::cerr << "Error: Could not open file for writing: " << m_filePath << std::endl;
         return;
     }
-
-    // Write the User ID followed by a colon to start the line
-    outFile << userId << ":";
-
-    // Loop through each product in the list and write it to the file with a space in front
-    for (const std::string& id : products)
+    //try_emplace enters a user into a map if it is not in the map, otherwise it does nothing.
+    All.try_emplace(userId); 
+    //Insert all user's products
+    for (const std::string &p : products)
     {
-        outFile << " " << id;
+        All[userId].insert(p);
+    }
+    //Write the entire map into the file. This takes longer than adding one user
+    //to the end of the file each time. However it makes sure every user has one line only.
+    for (auto [user, products] : All)
+    {
+        // Write the User ID followed by a colon to start the line
+        outFile << user << ":";
+        for (const std::string &p : products)
+        {
+            outFile << " " << p;
+        }  
+        // Add a new line at the end so the next save starts on a fresh line
+        outFile << "\n";  
     }
 
-    // Add a new line at the end so the next save starts on a fresh line
-    outFile << "\n";
+
 }
 
 /**
