@@ -256,3 +256,28 @@ TEST_F(PatchCommandTest, PatchAfterRestartStillRejectsNonExistentUser)
 
     EXPECT_EQ(freshWriter.lastMessage, "404 Not Found") << "PATCH for non-existing user should return '404 Not Found' after restart";
 }
+
+//====================================================================================================
+// Test 9: PatchRejectInputWithTabs
+// Purpose: Tabs between variables are handled correctly
+//====================================================================================================
+TEST_f(PatchCommandTest, PatchRejectInputWithTabs)
+{
+    FileDataStorage storage(TEST_FILE); // The path to the file we test
+    MockWriter writer;
+    PatchCommand patch(storage, writer); // An instance of PatchCommand class (which replaced AddProductCommand)
+
+    // Seed an existing user first (simulates prior POST)
+    seedUser(storage, "1", {"101"});
+
+    std::istringstream args("1\t102\t103");
+    patch.execute(args);
+
+    EXPECT_EQ(writer.lastMessage, "400 Bad Request") // tabs are invalid
+
+    // Data should remain as before
+    auto data = storage.loadAll();
+    EXPECT_EQ(data["1"].size(), 1)           // only original 101 remains
+    EXPECT_FALSE(data["1"].count("102") > 0) // 102 NOT saved
+    EXPECT_FALSE(data["1"].count("103") > 0) // 103 NOT saved
+}
