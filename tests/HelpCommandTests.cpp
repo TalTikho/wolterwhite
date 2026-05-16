@@ -121,3 +121,18 @@ TEST_F(HelpCommandTest, HelpWithOnlySpacesInArgs)
     EXPECT_EQ(writer.messages.size(), 5);
 }
 
+//====================================================================================================
+// Test 4: NoTabs
+//====================================================================================================
+TEST_F(HelpCommandTest, HelpNoTabs)
+{
+    std::istringstream args("   \t");
+    MockWriter writer;
+    HelpCommand help(writer);
+
+    help.execute(args);
+
+    //Tabsare not allowed
+    EXPECT_EQ(writer.messages.size(), 0);
+}
+
