@@ -261,7 +261,7 @@ TEST_F(PatchCommandTest, PatchAfterRestartStillRejectsNonExistentUser)
 // Test 9: PatchRejectInputWithTabs
 // Purpose: Tabs between variables are handled correctly
 //====================================================================================================
-TEST_f(PatchCommandTest, PatchRejectInputWithTabs)
+TEST_F(PatchCommandTest, PatchRejectInputWithTabs)
 {
     FileDataStorage storage(TEST_FILE); // The path to the file we test
     MockWriter writer;
@@ -273,11 +273,11 @@ TEST_f(PatchCommandTest, PatchRejectInputWithTabs)
     std::istringstream args("1\t102\t103");
     patch.execute(args);
 
-    EXPECT_EQ(writer.lastMessage, "400 Bad Request") // tabs are invalid
+    EXPECT_EQ(writer.lastMessage, "400 Bad Request"); // tabs are invalid
 
     // Data should remain as before
     auto data = storage.loadAll();
-    EXPECT_EQ(data["1"].size(), 1)           // only original 101 remains
-    EXPECT_FALSE(data["1"].count("102") > 0) // 102 NOT saved
-    EXPECT_FALSE(data["1"].count("103") > 0) // 103 NOT saved
+    EXPECT_EQ(data["1"].size(), 1);           // only original 101 remains
+    EXPECT_FALSE(data["1"].count("102") > 0); // 102 NOT saved
+    EXPECT_FALSE(data["1"].count("103") > 0); // 103 NOT saved
 }
