@@ -2,6 +2,8 @@ services:
   wolterwhite-app:
     build: .
     container_name: wolterwhite_container
+    ports:
+      - "5555:5555" # Example: Map host port 5555 to container port 5555
     # Keep the terminal interactive so you can type commands (add, recommend, help)
     stdin_open: true
     tty: true
