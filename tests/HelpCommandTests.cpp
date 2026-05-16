@@ -55,13 +55,6 @@ TEST_F(HelpCommandTest, HelpExactOutput) {
 
     help.execute(args);
 
-    // Build the exact expected string
-    std::string expected =
-        "DELETE, arguments: [userid] [productid1] [productid2] ...\n"
-        "GET, arguments: [userid] [productid]\n"
-        "PATCH, arguments: [userid] [productid1] [productid2] ...\n";
-        "POST, arguments: [userid] [productid1] [productid2] ...\n";
-        "help\n"
     // The assignment requires these 3 lines
     ASSERT_EQ(writer.messages.size(), 5);
     EXPECT_EQ(writer.messages[0], "DELETE, arguments: [userid] [productid1] [productid2] ...");
