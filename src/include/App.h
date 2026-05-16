@@ -13,6 +13,7 @@
 #include <map>
 #include <string>
 #include <sstream>
+#include <vector>
 
 //====================================================================================================
 // App is the class defining the app's main loop behavior.
@@ -32,9 +33,12 @@ public:
     1. constructor.
     2. run is the app loop.
     3. register command enters a command into the app. Will possible be entered into the constructor later.
+    4. get_commands: returns App's commands map as a const preserving encapsulation. HelpCommand can then 
+       use it to get the commands' print statements.
     */
     void run() noexcept;
     void registerCommand(const std::string &name, ICommand &cmd);
+    const std::map<std::string, ICommand*>& get_commands() const;
 };
 
 #endif

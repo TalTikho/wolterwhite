@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include "PostCommand.h"
 
 //====================================================================================================
 // PostCommand.cpp implements PostCommand.h
@@ -68,4 +69,9 @@ void PostCommand::execute(std::istringstream &args)
     // Save and return success
     m_storage.save(userId, products);
     m_writer.write("201 Created");
+}
+//Post printing format for usage in HelpCommand.
+std::string PostCommand::getPrintoutFormat()
+{
+    return "POST, arguments: [userid] [productid1] [productid2] ...\n";
 }
