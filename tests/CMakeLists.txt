@@ -26,6 +26,7 @@ add_executable(runTests
     StorageTests.cpp
     HelpCommandTests.cpp
     PostCommandTests.cpp
+    PatchCommandTests.cpp
     RecommendCommandTests.cpp
 
     #AddProductCommandTests.cpp
