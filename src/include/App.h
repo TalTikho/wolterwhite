@@ -8,7 +8,7 @@
 #include "ui/IMenu.h"
 #include "commands/ICommand.h"
 #include "output/IOutputWriter.h" // Added for protocol responses
-#include "ICommandProvider.h"
+#include "commands/ICommandProvider.h"
 
 // ---- System ----
 #include <map>

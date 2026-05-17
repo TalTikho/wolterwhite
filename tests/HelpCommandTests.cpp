@@ -4,8 +4,14 @@
 //====================================================================================================
 // ---- Files ----
 #include "commands/HelpCommand.h"
+#include "commands/RecommendCommand.h"
+#include "commands/PostCommand.h"
 #include "output/IOutputWriter.h"
 #include "output/IOutputWriter.h"
+#include "commands/HelpCommand.h"
+#include "storage/FileDataStorage.h"
+#include "ui/ConsoleMenu.h"
+
 
 // ---- System ----
 #include <gtest/gtest.h>
@@ -24,16 +30,7 @@ class MockWriter : public IOutputWriter
 public:
     std::vector<std::string> messages;
     std::string lastMessage;
-class MockWriter : public IOutputWriter
-{
-public:
-    std::vector<std::string> messages;
-    std::string lastMessage;
 
-    void write(const std::string &message) override
-    {
-        messages.push_back(message);
-        lastMessage = message;
     void write(const std::string &message) override
     {
         messages.push_back(message);
@@ -64,7 +61,18 @@ TEST_F(HelpCommandTest, HelpExactOutput)
 {
     std::istringstream args("");
     MockWriter writer;
-    HelpCommand help(writer); // Constructor injection
+    ConsoleMenu menu;
+    FileDataStorage storage("test_data.txt");
+    RecommendCommand rec(storage, writer);
+    PostCommand post(storage, writer);
+
+    // Inject the writer into the App so it can report "400 Bad Request"
+    App app(&menu, &writer);
+    HelpCommand helpCmd(writer, app);
+    app.registerCommand("help", helpCmd);
+    app.registerCommand("recommend", rec);
+    app.registerCommand("POST", post);
+    HelpCommand help(writer, app); // Constructor injection
 
     help.execute(args);
 
@@ -75,9 +83,6 @@ TEST_F(HelpCommandTest, HelpExactOutput)
     EXPECT_EQ(writer.messages[2], "PATCH, arguments: [userid] [productid1] [productid2] ...");
     EXPECT_EQ(writer.messages[3], "POST, arguments: [userid] [productid1] [productid2] ...");
     EXPECT_EQ(writer.messages[4], "help");
-
-    EXPECT_EQ(captured.str(), expected)
-        << "Help output must match the assignment spec exactly";
 }
 
 
@@ -89,7 +94,17 @@ TEST_F(HelpCommandTest, HelpWithExtraArgsPrintsNothing)
 {
     std::istringstream args("extra_junk");
     MockWriter writer;
-    HelpCommand help(writer);
+    FileDataStorage storage("test_data.txt");
+    ConsoleMenu menu;
+    RecommendCommand rec(storage, writer);
+    PostCommand post(storage, writer);
+    // Inject the writer into the App so it can report "400 Bad Request"
+    App app(&menu, &writer);
+    HelpCommand helpCmd(writer, app);
+    app.registerCommand("help", helpCmd);
+    app.registerCommand("recommend", rec);
+    app.registerCommand("POST", post);
+    HelpCommand help(writer, app); // Constructor injection
 
     help.execute(args);
 
@@ -104,12 +119,21 @@ TEST_F(HelpCommandTest, HelpWithExtraArgsPrintsNothing)
 TEST_F(HelpCommandTest, HelpWithMultipleExtraArgs) {
     std::istringstream args("foo bar baz");
     MockWriter writer;
-    HelpCommand help(writer);
+    FileDataStorage storage("test_data.txt");
+    ConsoleMenu menu;
+    RecommendCommand rec(storage, writer);
+    PostCommand post(storage, writer);
+
+    // Inject the writer into the App so it can report "400 Bad Request"
+    App app(&menu, &writer);
+    HelpCommand helpCmd(writer, app);
+    app.registerCommand("help", helpCmd);
+    app.registerCommand("recommend", rec);
+    app.registerCommand("POST", post);
+    HelpCommand help(writer, app); // Constructor injection
 
     help.execute(args);
 
-    // If extra args are present, it should print nothing (size 0)
-    EXPECT_TRUE(writer.messages.empty());
     // If extra args are present, it should print nothing (size 0)
     EXPECT_TRUE(writer.messages.empty());
 }
@@ -122,7 +146,18 @@ TEST_F(HelpCommandTest, HelpWithOnlySpacesInArgs)
 {
     std::istringstream args("   ");
     MockWriter writer;
-    HelpCommand help(writer);
+    FileDataStorage storage("test_data.txt");
+    RecommendCommand rec(storage, writer);
+    PostCommand post(storage, writer);
+    ConsoleMenu menu;
+
+    // Inject the writer into the App so it can report "400 Bad Request"
+    App app(&menu, &writer);
+    HelpCommand helpCmd(writer, app);
+    app.registerCommand("help", helpCmd);
+    app.registerCommand("recommend", rec);
+    app.registerCommand("POST", post);
+    HelpCommand help(writer, app); // Constructor injection
 
     help.execute(args);
 
@@ -137,7 +172,18 @@ TEST_F(HelpCommandTest, HelpNoTabs)
 {
     std::istringstream args("   \t");
     MockWriter writer;
-    HelpCommand help(writer);
+    FileDataStorage storage("test_data.txt");
+    RecommendCommand rec(storage, writer);
+    PostCommand post(storage, writer);
+    ConsoleMenu menu;
+
+    // Inject the writer into the App so it can report "400 Bad Request"
+    App app(&menu, &writer);
+    HelpCommand helpCmd(writer, app);
+    app.registerCommand("help", helpCmd);
+    app.registerCommand("recommend", rec);
+    app.registerCommand("POST", post);
+    HelpCommand help(writer, app); // Constructor injection
 
     help.execute(args);
 

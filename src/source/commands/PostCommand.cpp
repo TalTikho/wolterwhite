@@ -2,13 +2,12 @@
 // Include all needed headers
 //====================================================================================================
 // ---- Files ----
-#include "../include/commands/PostCommand.h"
+#include "../../include/commands/PostCommand.h"
 
 // ---- System ----
 #include <string>
 #include <vector>
 #include <sstream>
-#include "PostCommand.h"
 
 //====================================================================================================
 // PostCommand.cpp implements PostCommand.h

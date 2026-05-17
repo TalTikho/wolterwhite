@@ -3,11 +3,10 @@
 //====================================================================================================
 // ---- Files ----
 #include "../include/commands/HelpCommand.h"
+#include "../include/commands/ICommandProvider.h"
 
 // ---- System ----
 #include <string>
-#include "HelpCommand.h"
-#include "ICommandProvider.h"
 
 //====================================================================================================
 /**

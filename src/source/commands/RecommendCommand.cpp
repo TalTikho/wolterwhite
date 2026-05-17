@@ -2,7 +2,7 @@
 // Include all needed headers
 //====================================================================================================
 // ---- Files ----
-#include "../include/commands/RecommendCommand.h"
+#include "../../include/commands/RecommendCommand.h"
 
 // ---- System ----
 #include <map>
@@ -11,7 +11,6 @@
 #include <string>
 #include <sstream>
 #include <algorithm> //Sorting algo template is here.
-#include "RecommendCommand.h"
 
 //====================================================================================================
 // RecommendCommand
