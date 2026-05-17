@@ -118,7 +118,8 @@ TEST_F(HelpCommandTest, HelpWithExtraArgsPrintsNothing)
     help.execute(args);
 
     // If extra args are present, it should print nothing (size 0)
-    EXPECT_TRUE(writer.messages.empty());
+     EXPECT_EQ(writer.messages.size(), 1);
+     EXPECT_EQ(writer.messages[0], "400 Bad Request");
 }
 
 //====================================================================================================
@@ -144,7 +145,8 @@ TEST_F(HelpCommandTest, HelpWithMultipleExtraArgs) {
     help.execute(args);
 
     // If extra args are present, it should print nothing (size 0)
-    EXPECT_TRUE(writer.messages.empty());
+     EXPECT_EQ(writer.messages.size(), 1);
+     EXPECT_EQ(writer.messages[0], "400 Bad Request");
 }
 
 
@@ -197,6 +199,7 @@ TEST_F(HelpCommandTest, HelpNoTabs)
     help.execute(args);
 
     //Tabsare not allowed
-    EXPECT_EQ(writer.messages.size(), 0);
+    EXPECT_EQ(writer.messages.size(), 1);
+    EXPECT_EQ(writer.messages[0], "400 Bad Request");
 }
 
