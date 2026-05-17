@@ -9,6 +9,7 @@
 
 // ---- System ----
 #include <iostream>
+#include <string>
 
 //====================================================================================================
 // ConsoleWriter - to write to the console
