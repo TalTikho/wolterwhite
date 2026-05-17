@@ -11,6 +11,7 @@ class ICommand;
  */
 class ICommandProvider {
 public:
+    virtual ~ICommandProvider() = default;
     virtual const std::map<std::string, ICommand*>& get_commands() = 0;
 };
 
