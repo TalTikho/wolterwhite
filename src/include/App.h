@@ -40,7 +40,7 @@ public:
     */
     void run() noexcept;
     void registerCommand(const std::string &name, ICommand &cmd);
-    const std::map<std::string, ICommand*>& get_commands();
+    const std::map<std::string, ICommand*>& get_commands() override;
 };
 
 #endif
