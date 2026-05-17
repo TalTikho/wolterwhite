@@ -5,27 +5,33 @@
 #include "../include/commands/HelpCommand.h"
 
 // ---- System ----
-#include <iostream>
 #include <string>
+#include "HelpCommand.h"
+#include "ICommandProvider.h"
+
+//====================================================================================================
+/**
+ * Constructor: Stores the reference to the writer. And a command provider.
+ */
+
+HelpCommand::HelpCommand(IOutputWriter &writer, ICommandProvider &com): m_writer(writer), helpCom(com){}
 
 /**
- * Execute: Prints the manual only if no extra arguments were provided.
+ * Execute: Sends the manual via the writer instead of using cout.
  */
-void HelpCommand::execute(std::istringstream& args) {
-    
-    // Create a temporary string to check if there is any "leftover" text in the stream
+void HelpCommand::execute(std::istringstream &args)
+{
     std::string extra;
-    
-    // Try to read one more word from the stream. 
-    // If we succeed, it means the user typed something like "help dsh", which is invalid.
-    if (args >> extra) {
-        // We stop here and print nothing, effectively ignoring the invalid command
-        return;
-    }
+    if (args >> extra)
+        return; // Requirement: ignore if extra args exist
 
-    // If we reached this point, the stream was empty or contained only spaces.
-    // Now we print the exact help message required by the project
-    std::cout << "add [userid] [productid1] [productid2]..." << std::endl;
-    std::cout << "recommend [userid] [productid]" << std::endl;
-    std::cout << "help" << std::endl;
+    // Use the writer instead of std::cout
+    m_writer.write("POST [userid] [productid1] [productid2]...");
+    m_writer.write("recommend [userid] [productid]");
+    m_writer.write("help");
+}
+//Help printing format for usage in HelpCommand.
+const std::string HelpCommand::getPrintoutFormat()
+{
+    return "help\n";
 }

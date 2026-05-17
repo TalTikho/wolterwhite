@@ -5,14 +5,18 @@
 // ---- Files ----
 #include "commands/HelpCommand.h"
 #include "output/IOutputWriter.h"
+#include "output/IOutputWriter.h"
 
 // ---- System ----
 #include <gtest/gtest.h>
 #include <sstream>
 #include <vector>
 #include <string>
+#include <vector>
+#include <string>
 
 //====================================================================================================
+// MockWriter: Captures output for verification
 // MockWriter: Captures output for verification
 //====================================================================================================
 class MockWriter : public IOutputWriter
@@ -20,7 +24,16 @@ class MockWriter : public IOutputWriter
 public:
     std::vector<std::string> messages;
     std::string lastMessage;
+class MockWriter : public IOutputWriter
+{
+public:
+    std::vector<std::string> messages;
+    std::string lastMessage;
 
+    void write(const std::string &message) override
+    {
+        messages.push_back(message);
+        lastMessage = message;
     void write(const std::string &message) override
     {
         messages.push_back(message);
@@ -46,9 +59,9 @@ protected:
 
 //====================================================================================================
 // Test 1: HelpExactOutput
-// Purpose: Verify the three lines are printed exactly as the assignment specifies
 //====================================================================================================
-TEST_F(HelpCommandTest, HelpExactOutput) {
+TEST_F(HelpCommandTest, HelpExactOutput)
+{
     std::istringstream args("");
     MockWriter writer;
     HelpCommand help(writer); // Constructor injection
@@ -69,6 +82,7 @@ TEST_F(HelpCommandTest, HelpExactOutput) {
 
 
 //====================================================================================================
+// Test 2: HelpWithExtraArgsPrintsNothing
 // Test 2: HelpWithExtraArgsPrintsNothing
 //====================================================================================================
 TEST_F(HelpCommandTest, HelpWithExtraArgsPrintsNothing)
@@ -94,6 +108,8 @@ TEST_F(HelpCommandTest, HelpWithMultipleExtraArgs) {
 
     help.execute(args);
 
+    // If extra args are present, it should print nothing (size 0)
+    EXPECT_TRUE(writer.messages.empty());
     // If extra args are present, it should print nothing (size 0)
     EXPECT_TRUE(writer.messages.empty());
 }
