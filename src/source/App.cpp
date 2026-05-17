@@ -77,7 +77,7 @@ void App::registerCommand(const std::string &name, ICommand &cmd)
     this->cmds[name] = &cmd;
 }
 
-const std::map<std::string, ICommand *> &App::get_commands() const
+const std::map<std::string, ICommand *> &App::get_commands()
 {
     return this->cmds;
 }

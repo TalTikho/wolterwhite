@@ -10,7 +10,7 @@ class ICommandProvider {
 private:
     std::map<std::string, ICommand *> cmds;
 public:
-    const std::map<std::string, ICommand*>& get_commands() const;
+    virtual const std::map<std::string, ICommand*>& get_commands() = 0;
 };
 
 #endif
