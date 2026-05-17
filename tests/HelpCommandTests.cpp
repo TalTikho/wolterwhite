@@ -10,7 +10,7 @@
 #include "output/IOutputWriter.h"
 #include "commands/HelpCommand.h"
 #include "storage/FileDataStorage.h"
-#include "ui/ConsoleMenu.h"
+#include "ui/IMenu.h"
 
 
 // ---- System ----
@@ -50,6 +50,15 @@ protected:
     // No longer need to redirect std::cout buffers!
 };
 
+//This Menu exists only to construct the commandProvider for help. We don't really need a menu here.
+class MockMenu : public IMenu
+{
+public:
+    std:: string nextCommand() noexcept override{
+        return " ";
+    }
+};
+
 
 
 
@@ -61,7 +70,7 @@ TEST_F(HelpCommandTest, HelpExactOutput)
 {
     std::istringstream args("");
     MockWriter writer;
-    ConsoleMenu menu;
+    MockMenu menu;
     FileDataStorage storage("test_data.txt");
     RecommendCommand rec(storage, writer);
     PostCommand post(storage, writer);
@@ -95,7 +104,7 @@ TEST_F(HelpCommandTest, HelpWithExtraArgsPrintsNothing)
     std::istringstream args("extra_junk");
     MockWriter writer;
     FileDataStorage storage("test_data.txt");
-    ConsoleMenu menu;
+    MockMenu menu;
     RecommendCommand rec(storage, writer);
     PostCommand post(storage, writer);
     // Inject the writer into the App so it can report "400 Bad Request"
@@ -120,7 +129,7 @@ TEST_F(HelpCommandTest, HelpWithMultipleExtraArgs) {
     std::istringstream args("foo bar baz");
     MockWriter writer;
     FileDataStorage storage("test_data.txt");
-    ConsoleMenu menu;
+    MockMenu menu;
     RecommendCommand rec(storage, writer);
     PostCommand post(storage, writer);
 
@@ -149,7 +158,7 @@ TEST_F(HelpCommandTest, HelpWithOnlySpacesInArgs)
     FileDataStorage storage("test_data.txt");
     RecommendCommand rec(storage, writer);
     PostCommand post(storage, writer);
-    ConsoleMenu menu;
+    MockMenu menu;
 
     // Inject the writer into the App so it can report "400 Bad Request"
     App app(&menu, &writer);
@@ -175,7 +184,7 @@ TEST_F(HelpCommandTest, HelpNoTabs)
     FileDataStorage storage("test_data.txt");
     RecommendCommand rec(storage, writer);
     PostCommand post(storage, writer);
-    ConsoleMenu menu;
+    MockMenu menu;
 
     // Inject the writer into the App so it can report "400 Bad Request"
     App app(&menu, &writer);
