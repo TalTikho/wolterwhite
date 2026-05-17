@@ -33,15 +33,14 @@ int main(int argc, char *argv[])
     // SocketWriter for commands to send their responses
     SocketWriter writer(clientFd);
 
-    // Commands — identical structure to Exercise 1
-    // Just different writer (SocketWriter instead of ConsoleWriter)
-    HelpCommand helpCmd(writer);
-    PostCommand postCmd(storage, writer);
+    // All commands MUST take the writer now
+    // AddProductCommand addCmd(storage, cw);
     RecommendCommand recCmd(storage, writer);
+    PostCommand postCmd(storage, writer);
 
-    // App — IDENTICAL call
-    // handler satisfies both IMenu* and IOutputWriter*
+    // Inject the writer into the App so it can report "400 Bad Request"
     App app(&handler, &handler);
+    HelpCommand helpCmd(writer, app);
 
     app.registerCommand("help", helpCmd);
     app.registerCommand("POST", postCmd);

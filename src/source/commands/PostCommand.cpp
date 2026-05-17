@@ -2,7 +2,7 @@
 // Include all needed headers
 //====================================================================================================
 // ---- Files ----
-#include "../include/commands/PostCommand.h"
+#include "../../include/commands/PostCommand.h"
 
 // ---- System ----
 #include <string>
@@ -76,4 +76,9 @@ void PostCommand::execute(std::istringstream &args)
     // Save and return success
     m_storage.save(userId, products);
     m_writer.write("201 Created");
+}
+//Post printing format for usage in HelpCommand.
+const std::string PostCommand::getPrintoutFormat()
+{
+    return "POST, arguments: [userid] [productid1] [productid2] ...\n";
 }

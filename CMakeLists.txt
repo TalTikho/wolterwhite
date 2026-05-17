@@ -52,6 +52,9 @@ add_library(project_logic STATIC
     src/source/commands/PostCommand.cpp
     src/include/commands/PostCommand.h
 
+
+    #Helping HelpCommand Inject 
+    src/include/commands/ICommandProvider.h
     # Handlers
     src/source/ui/ConsoleClientHandler.cpp
     src/include/ui/ConsoleClientHandler.h

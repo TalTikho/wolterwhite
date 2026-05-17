@@ -66,6 +66,10 @@ public:
         wasCalled = true;
         std::getline(args, lastArgs);
     }
+    //This method is only used by help to print so in the TestsMock it can be empty.
+    virtual const std::string getPrintoutFormat (){
+        return " ";
+    }
 };
 
 //====================================================================================================

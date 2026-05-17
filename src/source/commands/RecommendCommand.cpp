@@ -2,7 +2,7 @@
 // Include all needed headers
 //====================================================================================================
 // ---- Files ----
-#include "../include/commands/RecommendCommand.h"
+#include "../../include/commands/RecommendCommand.h"
 
 // ---- System ----
 #include <map>
@@ -146,4 +146,9 @@ void RecommendCommand::execute(std::istringstream &args)
 
     // Send the final filtered list to the client
     m_writer.write(result);
+}
+//GET printing format for usage in HelpCommand.
+const std::string RecommendCommand::getPrintoutFormat()
+{
+    return "GET, arguments: [userid] [productid]\n";
 }

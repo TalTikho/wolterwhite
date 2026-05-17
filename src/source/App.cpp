@@ -10,6 +10,7 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#include "App.h"
 
 //====================================================================================================
 /*App's constructor, the map is not initiallized here but in register_command (this might change afterwards)
@@ -75,4 +76,9 @@ void App::run() noexcept
 void App::registerCommand(const std::string &name, ICommand &cmd)
 {
     this->cmds[name] = &cmd;
+}
+
+const std::map<std::string, ICommand *> &App::get_commands()
+{
+    return this->cmds;
 }

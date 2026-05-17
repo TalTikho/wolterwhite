@@ -7,6 +7,7 @@
 //#include "commands/PatchCommand.h"
 #include "commands/HelpCommand.h"
 #include "commands/RecommendCommand.h"
+#include "commands/ICommandProvider.h"
 // #include "commands/AddProductCommand.h"
 
 // Output
