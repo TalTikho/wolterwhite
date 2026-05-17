@@ -81,9 +81,9 @@ TEST_F(PatchCommandTest, ValidPatchExistingUser)
     // Both original and new prosucts should exist
     auto data = storage.loadAll();
     ASSERT_TRUE(data.count("1") > 0) << "User 1 should exist";
-    EXPECT_TRUE(data.at("1").count("101") > 0) << "Original product 101 should still exist";
-    EXPECT_TRUE(data.at("1").count("102") > 0) << "New product 102 should be added";
-    EXPECT_TRUE(data.at("1").count("103") > 0) << "New product 103 should be added";
+    EXPECT_TRUE(data["1"].count("101") > 0) << "Original product 101 should still exist";
+    EXPECT_TRUE(data["1"].count("102") > 0) << "New product 102 should be added";
+    EXPECT_TRUE(data["1"].count("103") > 0) << "New product 103 should be added";
 }
 
 //====================================================================================================
@@ -129,8 +129,7 @@ TEST_F(PatchCommandTest, NoProductID)
     // Original data must not change
     auto data = storage.loadAll();
     ASSERT_TRUE(data.count("1") > 0) << "User 1 should still exist";
-    EXPECT_EQ(data.at("1").size(), 1) << "User 1 should still have exactly 1 product";
-    EXPECT_TRUE(data.at("1").count("101") > 0);
+    EXPECT_EQ(data["1"].size(), 1) << "User 1 should still have exactly 1 product";
 }
 
 //====================================================================================================
@@ -167,21 +166,17 @@ TEST_F(PatchCommandTest, MultipleSpacesBetweenArgs)
     // Seed an existing user first (simulates prior POST)
     seedUser(storage, "1", {"101"});
 
-    // Patch with multiple spaces between arguments
+    // Patch with valid spaces
     std::istringstream args("1    102   103");
     patch.execute(args);
 
     EXPECT_EQ(writer.lastMessage, "204 No Content") << "PATCH with multiple spaces should still return '204 No Content'";
 
-    // Data must be saved correctly
+    // data must be saved
     auto data = storage.loadAll();
-    
     ASSERT_TRUE(data.count("1") > 0) << "User 1 should exist";
-    
-    // Safety check with .at() and ensuring original product still exists
-    EXPECT_TRUE(data.at("1").count("101") > 0) << "Original product 101 should still exist";
-    EXPECT_TRUE(data.at("1").count("102") > 0) << "Product 102 should be added";
-    EXPECT_TRUE(data.at("1").count("103") > 0) << "Product 103 should be added";
+    EXPECT_TRUE(data["1"].count("102") > 0) << "Product 102 should be added";
+    EXPECT_TRUE(data["1"].count("103") > 0) << "Product 103 should be added";
 }
 
 //====================================================================================================
@@ -203,15 +198,11 @@ TEST_F(PatchCommandTest, DuplicateProductNotAddedTwice)
 
     EXPECT_EQ(writer.lastMessage, "204 No Content") << "PATCH with duplicate product should still return '204 No Content'";
 
-    // Product 101 should appear exactly once and total size should not change
+    // Product 101 should appear exactly once
     auto data = storage.loadAll();
-    
     ASSERT_TRUE(data.count("1") > 0) << "User 1 should exist";
-    
-    // Safety check with .at() and ensuring data integrity
-    EXPECT_TRUE(data.at("1").count("101") > 0) << "Product 101 should still exist";
-    EXPECT_EQ(data.at("1").count("101"), 1) << "Product 101 should appear exactly once";
-    EXPECT_EQ(data.at("1").size(), 1) << "User 1 should have exactly 1 product total";
+    EXPECT_EQ(data["1"].count("101"), 1) << "Product 101 should appear exactly once";
+    EXPECT_EQ(data["1"].size(), 1) << "User 1 should have exactly 1 product total";
 }
 
 //====================================================================================================
@@ -238,11 +229,9 @@ TEST_F(PatchCommandTest, PatchPersistsAfterRestart)
     auto data = freshStorage.loadAll();
 
     ASSERT_TRUE(data.count("1") > 0) << "User 1 should exist after restart";
-    
-    // Safety check with .at() and ensuring data integrity
-    EXPECT_TRUE(data.at("1").count("101") > 0) << "Original product 101 should persist";
-    EXPECT_TRUE(data.at("1").count("102") > 0) << "Patched product 102 should persist";
-    EXPECT_TRUE(data.at("1").count("103") > 0) << "Patched product 103 should persist";
+    EXPECT_TRUE(data["1"].count("101") > 0) << "Original product 101 should persist";
+    EXPECT_TRUE(data["1"].count("102") > 0) << "Patched product 102 should persist";
+    EXPECT_TRUE(data["1"].count("103") > 0) << "Patched product 103 should persist";
 }
 
 //====================================================================================================
@@ -284,16 +273,11 @@ TEST_F(PatchCommandTest, PatchRejectInputWithTabs)
     std::istringstream args("1\t102\t103");
     patch.execute(args);
 
-    EXPECT_EQ(writer.lastMessage, "400 Bad Request") << "PATCH with tabs should return '400 Bad Request'"; // Added custom message
+    EXPECT_EQ(writer.lastMessage, "400 Bad Request"); // tabs are invalid
 
     // Data should remain as before
     auto data = storage.loadAll();
-    
-    ASSERT_TRUE(data.count("1") > 0) << "User 1 should still exist";
-    
-    // Safety check with .at() and ensuring original product still exists while new ones are ignored
-    EXPECT_EQ(data.at("1").size(), 1) << "User 1 should still have exactly 1 product total";           
-    EXPECT_TRUE(data.at("1").count("101") > 0) << "Original product 101 should still exist";
-    EXPECT_FALSE(data.at("1").count("102") > 0) << "Product 102 should NOT be saved"; 
-    EXPECT_FALSE(data.at("1").count("103") > 0) << "Product 103 should NOT be saved"; 
+    EXPECT_EQ(data["1"].size(), 1);           // only original 101 remains
+    EXPECT_FALSE(data["1"].count("102") > 0); // 102 NOT saved
+    EXPECT_FALSE(data["1"].count("103") > 0); // 103 NOT saved
 }
