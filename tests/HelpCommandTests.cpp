@@ -9,7 +9,7 @@
 #include "output/IOutputWriter.h"
 #include "output/IOutputWriter.h"
 #include "commands/HelpCommand.h"
-#include "storage/FileDataStorage.h"
+#include "storage/IDataStorage.h"
 #include "ui/IMenu.h"
 
 
@@ -51,11 +51,26 @@ protected:
 };
 
 //This Menu exists only to construct the commandProvider for help. We don't really need a menu here.
+//Same for the dummy as well MockStorage.
 class MockMenu : public IMenu
 {
 public:
     std:: string nextCommand() noexcept override{
         return " ";
+    }
+};
+
+class MockStorage : public IDataStorage
+{
+private:
+    std::string m_filePath;
+public:
+    MockStorage(std::string path) : m_filePath(std::move(path)) {}
+    void save(const std::string &userId, const std::vector<std::string> &products) override{
+        return;
+    }
+    std::map<std::string, std::set<std::string>> loadAll(){
+        return std::map<std::string, std::set<std::string>> ();
     }
 };
 
@@ -71,7 +86,7 @@ TEST_F(HelpCommandTest, HelpExactOutput)
     std::istringstream args("");
     MockWriter writer;
     MockMenu menu;
-    FileDataStorage storage("test_data.txt");
+    MockStorage storage("test_data.txt");
     RecommendCommand rec(storage, writer);
     PostCommand post(storage, writer);
 
@@ -103,7 +118,7 @@ TEST_F(HelpCommandTest, HelpWithExtraArgsPrintsNothing)
 {
     std::istringstream args("extra_junk");
     MockWriter writer;
-    FileDataStorage storage("test_data.txt");
+    MockStorage storage("test_data.txt");
     MockMenu menu;
     RecommendCommand rec(storage, writer);
     PostCommand post(storage, writer);
@@ -129,7 +144,7 @@ TEST_F(HelpCommandTest, HelpWithExtraArgsPrintsNothing)
 TEST_F(HelpCommandTest, HelpWithMultipleExtraArgs) {
     std::istringstream args("foo bar baz");
     MockWriter writer;
-    FileDataStorage storage("test_data.txt");
+    MockStorage storage("test_data.txt");
     MockMenu menu;
     RecommendCommand rec(storage, writer);
     PostCommand post(storage, writer);
@@ -157,7 +172,7 @@ TEST_F(HelpCommandTest, HelpWithOnlySpacesInArgs)
 {
     std::istringstream args("   ");
     MockWriter writer;
-    FileDataStorage storage("test_data.txt");
+    MockStorage storage("test_data.txt");
     RecommendCommand rec(storage, writer);
     PostCommand post(storage, writer);
     MockMenu menu;
@@ -183,7 +198,7 @@ TEST_F(HelpCommandTest, HelpNoTabs)
 {
     std::istringstream args("   \t");
     MockWriter writer;
-    FileDataStorage storage("test_data.txt");
+    MockStorage storage("test_data.txt");
     RecommendCommand rec(storage, writer);
     PostCommand post(storage, writer);
     MockMenu menu;
