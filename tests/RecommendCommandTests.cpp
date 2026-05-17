@@ -84,8 +84,8 @@ TEST_F(RecommendTests, EmptyStorageReturnsEmpty)
 
     cmd->execute(argsStream);
 
-    // In Exercise 2, an empty recommendation should likely be an empty string
-    EXPECT_EQ(writer.lastMessage, "");
+    // In Exercise 2, an empty recommendation should be "404 Not Found" as the request is logical but the output is nothing.
+    EXPECT_EQ(writer.lastMessage, "404 Not Found");
 }
 
 // Test 2: Basic Recommendation
@@ -95,19 +95,19 @@ TEST_F(RecommendTests, BasicRecommendation)
     std::istringstream argsStream("1 100");
     cmd->execute(argsStream);
 
-    // Change: Expect "200" instead of "200 " if your writer adds newlines/trims
-    EXPECT_EQ(writer.lastMessage, "200");
+    // In Exercise 2, a good recommendation is "200 OK".
+    EXPECT_EQ(writer.lastMessage, "200 OK");
 }
 
-// Test 5: Tie-Breaking by ID
+// Test 3: Tie-Breaking by ID
 TEST_F(RecommendTests, TieBreakingByID)
 {
     fakeStorage.fakeData = {{"1", {"104"}}, {"2", {"104", "999"}}, {"3", {"104", "222"}}};
     std::istringstream argsStream("1 104");
     cmd->execute(argsStream);
 
-    // Change: Match the actual output "222 999"
-    EXPECT_EQ(writer.lastMessage, "222 999");
+    // In Exercise 2, a good recommendation is "200 OK".
+    EXPECT_EQ(writer.lastMessage, "200 OK");
 }
 
 // Test 6: Target Product Paradox
@@ -121,17 +121,18 @@ TEST_F(RecommendTests, TargetProductParadox)
     cmd->execute(argsStream);
 
     // 104 is the input product; it should never be recommended.
-    EXPECT_EQ(writer.lastMessage, "");
+    EXPECT_EQ(writer.lastMessage, "404 Not Found");
 }
 
-// Test 7: The 10-Limit Boundary
-TEST_F(RecommendTests, TenLimitBoundary)
+
+// Test 7: NoTabs
+TEST_F(RecommendTests, NoTabs)
 {
     fakeStorage.fakeData = {
         {"1", {"100"}},
-        {"2", {"100", "104", "P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10", "P11"}}};
+        {"2", {"100", "104", "P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10", "P11, P13"}}};
 
-    std::istringstream argsStream("1 104");
+    std::istringstream argsStream("1 104\t");
     cmd->execute(argsStream);
 
     // Use a stringstream to count the space-separated words in the result
@@ -141,5 +142,6 @@ TEST_F(RecommendTests, TenLimitBoundary)
     while (result >> word)
         count++;
 
-    EXPECT_EQ(count, 10) << "Should only recommend exactly 10 items";
+    EXPECT_EQ(count, 0) << "No tabs";
+    EXPECT_EQ(writer.lastMessage, "400 Bad Request);
 }
