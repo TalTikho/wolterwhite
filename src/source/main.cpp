@@ -3,13 +3,35 @@
 //====================================================================================================
 // ---- Files ----
 #include "../include/AllIncludes.h"
+#include "server/TCPServer.h" //NEEDED wont work without it
+
+// ---- System ----
+#include <unistd.h>
 
 //====================================================================================================
-int main()
+int main(int argc, char argv[])
 {
+    if (argc < 2)
+    {
+        std::cerr << "Usage: " << argv[0] << " <port>\n";
+        return 1;
+    }
+
+    int port = std::stoi(argv[1]);
+
     FileDataStorage storage("data/data.txt");
-    ConsoleMenu menu;
-    ConsoleWriter cw; // One writer shared by everyone
+
+    // Set up TCP server
+    TCPServer server(port);
+    server.start();
+    int clientFd = server.acceptClient();
+
+    // SocketClientHandler implements BOTH IMenu + IOutputWriter
+    // via the same socket fd
+    SocketClientHandler handler(clientFd);
+
+    // SocketWriter for commands to send their responses
+    SocketWriter writer(clientFd);
 
     // All commands MUST take the writer now
     // AddProductCommand addCmd(storage, cw);
@@ -25,6 +47,8 @@ int main()
     app.registerCommand("recommend", rec);
     app.registerCommand("POST", post);
 
-    app.run();
+    app.run(); // stops when SocketClientHandler disconnects
+
+    close(clientFd);
     return 0;
 }
