@@ -149,7 +149,7 @@ void RecommendCommand::execute(std::istringstream &args)
     m_writer.write(result);
 }
 //GET printing format for usage in HelpCommand.
-std::string RecommendCommand::getPrintoutFormat()
+const std::string RecommendCommand::getPrintoutFormat()
 {
     return "GET, arguments: [userid] [productid]\n";
 }

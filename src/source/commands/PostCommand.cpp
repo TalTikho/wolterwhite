@@ -71,7 +71,7 @@ void PostCommand::execute(std::istringstream &args)
     m_writer.write("201 Created");
 }
 //Post printing format for usage in HelpCommand.
-std::string PostCommand::getPrintoutFormat()
+const std::string PostCommand::getPrintoutFormat()
 {
     return "POST, arguments: [userid] [productid1] [productid2] ...\n";
 }

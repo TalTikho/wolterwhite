@@ -24,7 +24,7 @@ public:
      */
     virtual void execute(std::istringstream& args) = 0;
     //Each command should tell help indirectly (through a reference to App and a getter) how it is to be printed.
-    virtual std::string getPrintoutFormat () = 0;
+    virtual const std::string getPrintoutFormat () = 0;
 };
 
 #endif

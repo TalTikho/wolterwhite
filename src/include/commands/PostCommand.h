@@ -40,7 +40,7 @@ public:
      * Silently ignores malformed input by writing "400 Bad Request"
      */
     void execute(std::istringstream &args) override;
-    std::string getPrintoutFormat () override;
+    const std::string getPrintoutFormat () override;
 };
 
 #endif

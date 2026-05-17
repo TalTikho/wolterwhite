@@ -45,7 +45,7 @@ public:
      * @return: Void as the recommendation is printed. (outputs via m_writer instead of std::cout.)
      */
     void execute(std::istringstream &args) override;
-    std::string getPrintoutFormat () override;
+    const std::string getPrintoutFormat () override;
 };
 
 #endif

@@ -7,13 +7,14 @@
 // ---- System ----
 #include <string>
 #include "HelpCommand.h"
+#include "ICommandProvider.h"
 
 //====================================================================================================
 /**
- * Constructor: Stores the reference to the writer.
+ * Constructor: Stores the reference to the writer. And a command provider.
  */
 
-HelpCommand::HelpCommand(IOutputWriter &writer, App &app): m_writer(writer), helpApp(app){}
+HelpCommand::HelpCommand(IOutputWriter &writer, ICommandProvider &com): m_writer(writer), helpCom(com){}
 
 /**
  * Execute: Sends the manual via the writer instead of using cout.
@@ -30,7 +31,7 @@ void HelpCommand::execute(std::istringstream &args)
     m_writer.write("help");
 }
 //Help printing format for usage in HelpCommand.
-std::string HelpCommand::getPrintoutFormat()
+const std::string HelpCommand::getPrintoutFormat()
 {
     return "help\n";
 }

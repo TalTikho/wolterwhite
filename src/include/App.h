@@ -8,6 +8,7 @@
 #include "ui/IMenu.h"
 #include "commands/ICommand.h"
 #include "output/IOutputWriter.h" // Added for protocol responses
+#include "ICommandProvider.h"
 
 // ---- System ----
 #include <map>
@@ -18,7 +19,7 @@
 //====================================================================================================
 // App is the class defining the app's main loop behavior.
 //====================================================================================================
-class App
+class App : public ICommandProvider
 {
 private:
     IMenu *menu;
@@ -34,7 +35,8 @@ public:
     2. run is the app loop.
     3. register command enters a command into the app. Will possible be entered into the constructor later.
     4. get_commands: returns App's commands map as a const preserving encapsulation. HelpCommand can then 
-       use it to get the commands' print statements.
+       use it to get the commands' print statements. It sees App only as a CommandProvider meaning it can't use App.run().
+       However it will be able to use print as it is const.
     */
     void run() noexcept;
     void registerCommand(const std::string &name, ICommand &cmd);
