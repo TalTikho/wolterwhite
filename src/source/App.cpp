@@ -3,6 +3,7 @@
 //====================================================================================================
 // ---- Files ----
 #include "../include/App.h"
+#include "../include/ui/IClientHandler.h"
 
 // ---- System ----
 #include <map>
@@ -18,34 +19,37 @@ App::App(IMenu *m, IOutputWriter *defaultWriter) : menu(m), m_defaultWriter(defa
 
 void App::run() noexcept
 {
-    // Professional touch: Trigger help automatically on start as per Ex1/Ex2 requirements
     if (this->cmds.count("help")) {
         std::istringstream empty;
         this->cmds.at("help")->execute(empty);
     }
 
+    // Check if menu is also an IClientHandler
+    // If yes -> use isConnected() to stop loop when client disconnects
+    // If no  -> nullptr → while(true) behavior unchanged
+    IClientHandler* clientHandler = dynamic_cast<IClientHandler*>(menu);
+
     while (true)
     {
+        // Stop loop when socket client disconnects
+        if (clientHandler && !clientHandler->isConnected()) {
+            break;
+        }
+
         std::string input = menu->nextCommand();
 
-        // 1. Check for empty first
         if (input.empty()) continue;
 
-        // 2. Use a stream to extract the first word. 
-        // This ignores leading/trailing whitespace or \r automatically.
         std::istringstream ss(input);
         std::string cmdName;
         if (!(ss >> cmdName)) continue;
 
-        // 3. NOW check for quit. This is much safer than input == "quit"
-        if (cmdName == "quit")
+        if (cmdName == "quit" || cmdName == "QUIT")
             break;
 
-        // 4. Requirement check: Tab restriction
         if (input.find('\t') != std::string::npos)
             continue;
 
-        // Clean up whitespace for the command arguments
         ss >> std::ws;
 
         if (this->cmds.count(cmdName))
@@ -62,15 +66,12 @@ void App::run() noexcept
         }
         else
         {
-            // If we are here, it's definitely not 'quit' and not a known command
             if (m_defaultWriter)
                 m_defaultWriter->write("400 Bad Request");
         }
     }
 }
 
-/*Add a new command to the app. If it exists run will tell the command to execute.
- Otherwise: the execution fails and we continue run's loop. */
 void App::registerCommand(const std::string &name, ICommand &cmd)
 {
     this->cmds[name] = &cmd;

@@ -4,6 +4,7 @@
 // Commands
 #include "commands/ICommand.h"
 #include "commands/PostCommand.h"
+//#include "commands/PatchCommand.h"
 #include "commands/HelpCommand.h"
 #include "commands/RecommendCommand.h"
 // #include "commands/AddProductCommand.h"
@@ -20,6 +21,9 @@
 // UI
 #include "ui/IMenu.h"
 #include "ui/ConsoleMenu.h"
+#include "ui/IClientHandler.h"
+#include "ui/SocketClientHandler.h"
+#include "ui/ConsoleClientHandler.h"
 
 // App
 #include "App.h"
