@@ -1,14 +1,15 @@
 #ifndef ICOMMANDPROVIDER_H
 #define ICOMMANDPROVIDER_H
 
+#include <map>
+#include <string>
 
+// Forward declaration so the compiler knows ICommand exists
+class ICommand;
 /**
- * ICommand: The blueprint for all possible user actions (add, recommend, help).
- * Every command class must implement this interface.
+ * ICommandProvider: so App can send help a map safely.
  */
 class ICommandProvider {
-private:
-    std::map<std::string, ICommand *> cmds;
 public:
     virtual const std::map<std::string, ICommand*>& get_commands() = 0;
 };
