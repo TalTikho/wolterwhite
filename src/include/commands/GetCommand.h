@@ -1,5 +1,5 @@
-#ifndef RecommendCommand_H
-#define RecommendCommand_H
+#ifndef GetCommand_H
+#define GetCommand_H
 
 //====================================================================================================
 // Include all needed headers
