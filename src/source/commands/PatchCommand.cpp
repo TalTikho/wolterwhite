@@ -87,3 +87,9 @@ void PatchCommand::execute(std::istringstream &args)
     m_storage.save(userId, updatedVector);
     m_writer.write("204 No Content");
 }
+
+//Patch printing format for usage in HelpCommand.
+const std::string PatchCommand::getPrintoutFormat()
+{
+    return "Patch, arguments: [userid] [productid1] [productid2] ...\n";
+}
