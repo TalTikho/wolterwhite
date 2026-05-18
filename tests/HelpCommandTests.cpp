@@ -4,7 +4,7 @@
 //====================================================================================================
 // ---- Files ----
 #include "commands/HelpCommand.h"
-#include "commands/RecommendCommand.h"
+#include "commands/GetCommand.h"
 #include "commands/PostCommand.h"
 #include "output/IOutputWriter.h"
 #include "output/IOutputWriter.h"
@@ -87,15 +87,15 @@ TEST_F(HelpCommandTest, HelpExactOutput)
     MockWriter writer;
     MockMenu menu;
     MockStorage storage("test_data.txt");
-    RecommendCommand rec(storage, writer);
+    GetCommand get(storage, writer);
     PostCommand post(storage, writer);
 
     // Inject the writer into the App so it can report "400 Bad Request"
     App app(&menu, &writer);
     HelpCommand helpCmd(writer, app);
     app.registerCommand("help", helpCmd);
-    app.registerCommand("recommend", rec);
-    app.registerCommand("POST", post);
+    app.registerCommand("recommend", get);
+    app.registerCommand("post", post);
     HelpCommand help(writer, app); // Constructor injection
 
     help.execute(args);
@@ -120,14 +120,14 @@ TEST_F(HelpCommandTest, HelpWithExtraArgsPrintsNothing)
     MockWriter writer;
     MockStorage storage("test_data.txt");
     MockMenu menu;
-    RecommendCommand rec(storage, writer);
+    GetCommand get(storage, writer);
     PostCommand post(storage, writer);
     // Inject the writer into the App so it can report "400 Bad Request"
     App app(&menu, &writer);
     HelpCommand helpCmd(writer, app);
     app.registerCommand("help", helpCmd);
-    app.registerCommand("recommend", rec);
-    app.registerCommand("POST", post);
+    app.registerCommand("recommend", get);
+    app.registerCommand("post", post);
     HelpCommand help(writer, app); // Constructor injection
 
     help.execute(args);
@@ -146,15 +146,15 @@ TEST_F(HelpCommandTest, HelpWithMultipleExtraArgs) {
     MockWriter writer;
     MockStorage storage("test_data.txt");
     MockMenu menu;
-    RecommendCommand rec(storage, writer);
+    GetCommand get(storage, writer);
     PostCommand post(storage, writer);
 
     // Inject the writer into the App so it can report "400 Bad Request"
     App app(&menu, &writer);
     HelpCommand helpCmd(writer, app);
     app.registerCommand("help", helpCmd);
-    app.registerCommand("recommend", rec);
-    app.registerCommand("POST", post);
+    app.registerCommand("recommend", get);
+    app.registerCommand("post", post);
     HelpCommand help(writer, app); // Constructor injection
 
     help.execute(args);
@@ -173,16 +173,15 @@ TEST_F(HelpCommandTest, HelpWithOnlySpacesInArgs)
     std::istringstream args("   ");
     MockWriter writer;
     MockStorage storage("test_data.txt");
-    RecommendCommand rec(storage, writer);
+    GetCommand get(storage, writer);
     PostCommand post(storage, writer);
-    MockMenu menu;
 
     // Inject the writer into the App so it can report "400 Bad Request"
     App app(&menu, &writer);
     HelpCommand helpCmd(writer, app);
     app.registerCommand("help", helpCmd);
-    app.registerCommand("recommend", rec);
-    app.registerCommand("POST", post);
+    app.registerCommand("recommend", get);
+    app.registerCommand("post", post);
     HelpCommand help(writer, app); // Constructor injection
 
     help.execute(args);
@@ -199,16 +198,15 @@ TEST_F(HelpCommandTest, HelpNoTabs)
     std::istringstream args("   \t");
     MockWriter writer;
     MockStorage storage("test_data.txt");
-    RecommendCommand rec(storage, writer);
+    GetCommand get(storage, writer);
     PostCommand post(storage, writer);
-    MockMenu menu;
 
     // Inject the writer into the App so it can report "400 Bad Request"
     App app(&menu, &writer);
     HelpCommand helpCmd(writer, app);
     app.registerCommand("help", helpCmd);
-    app.registerCommand("recommend", rec);
-    app.registerCommand("POST", post);
+    app.registerCommand("recommend", get);
+    app.registerCommand("post", post);
     HelpCommand help(writer, app); // Constructor injection
 
     help.execute(args);
