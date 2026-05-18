@@ -47,17 +47,25 @@ void DeleteCommand::execute(std::istringstream &args)
      while (args >> temp){
         products_to_delete.insert(temp);
      }
+     bool foundSome = false;
      for (auto const product : products_to_delete){
 
         if (std::find(all.begin(), all.end(), product) != all.end()){
             all[userId].erase(product);
+            foundSome = true;
         }
+     }
+     if (foundSome == false){
+        this->d_writer.write("404 Not Found");
+        return;
      }
      auto updated = all[userId];
      
     std::vector<std::string> newProdList(updated.begin(), updated.end());
 
      this->d_storage.save(userId, newProdList);
+     this->d_writer.write("200 OK");
+     return;
 
 
 }
