@@ -35,10 +35,18 @@ void DeleteCommand::execute(std::istringstream &args)
     std::string userId = items[0];
     //Load the map to be able to handle data.
     std::map<std::string, std::set<std::string>>  all = this->m_storage.loadAll();
-    //Delete should have at least two args: [userid] [productid1]. The user should exist hence in the loadAll map.
-    if (items.size() < 2 || !(std::find(all.begin(), all.end(), userId) != all.end())){
+    //Load it again for deletion.
+    std::map<std::string, std::set<std::string>>  allToD = this->m_storage.loadAll();
+    //Delete should have at least two args: [userid] [productid1]. 
+    if (items.size() < 2 ){
         this->m_writer.write("400 Bad Request");
         return;
+    }
+    //The user should exist hence in the loadAll map.
+    if(!(std::find(all.begin(), all.end(), userId) != all.end())){
+        this->m_writer.write("404 Not Found");
+        return;
+
     }
      //The first arg is items is the userId while the rest are the supposed products.
      std::set<std::string> products_to_delete;
@@ -49,18 +57,21 @@ void DeleteCommand::execute(std::istringstream &args)
      for (auto const product : products_to_delete){
 
         if (std::find(all[userId].begin(), all[userId].end(), product) != all[userId].end()){
-            all[userId].erase(product);
+            if (std::find(allToD[userId].begin(), allToD[userId].end(), product) != allToD[userId].end()){
+                allToD[userId].erase(product);
+            }
+            continue;
         }
         //Product not found so "404 Not Found"".
         else{
             this->m_writer.write("404 Not Found");
-        return;
+            return;
 
         }
      }
 
      //Get the curret set from our map's copy.
-     auto updated = all[userId];
+     auto updated = allToD[userId];
      
      //Iterate to get updated into a vector so we can save the new set.
     std::vector<std::string> newProdList(updated.begin(), updated.end());
@@ -68,7 +79,7 @@ void DeleteCommand::execute(std::istringstream &args)
     //Save the new set.
      this->m_storage.save(userId, newProdList);
      //All is good "200 OK"
-     this->m_writer.write("200 OK");
+     this->m_writer.write("204 No Content");
      return;
 
 

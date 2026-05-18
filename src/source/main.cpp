@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
     // AddProductCommand addCmd(storage, cw);
     RecommendCommand recCmd(storage, writer);
     PostCommand postCmd(storage, writer);
-
+    DeleteCommand deletetCmd(storage, writer);
     // Inject the writer into the App so it can report "400 Bad Request"
     App app(&handler, &handler);
     HelpCommand helpCmd(writer, app);
