@@ -28,8 +28,6 @@ add_executable(runTests
     PostCommandTests.cpp
     #PatchCommandTests.cpp
     RecommendCommandTests.cpp
-
-    #AddProductCommandTests.cpp
 )
 
 
