@@ -40,32 +40,20 @@ void DeleteCommand::execute(std::istringstream &args)
         this->m_writer.write("400 Bad Request");
         return;
     }
-    //If no product is found in the map this is a logicly valid command but a "no can do" one leading to "404 Not Found".
-    bool NoValidP = true;
-     for (const std::string product : items){
-        if (std::find(all[userId].begin(), all[userId].end(), product) != all[userId].end()){
-            NoValidP = false;
-            continue;
-        }
-     }
-     if (NoValidP){
-        this->m_writer.write("404 Not Found");
-        return;
-     }
      //The first arg is items is the userId while the rest are the supposed products.
      std::set<std::string> products_to_delete;
      for (int i = 1; i < items.size(); i++){
         products_to_delete.insert(items[i]);
      }
-     //Delete every product in the user's set in map from our map's copy.
+     //Delete every product in the user's set in map from our map's copy. Smart for loop and iterator are in usage here.
      for (auto const product : products_to_delete){
 
         if (std::find(all[userId].begin(), all[userId].end(), product) != all[userId].end()){
             all[userId].erase(product);
         }
-        //Product not found so "400 Bad Request".
+        //Product not found so "404 Not Found"".
         else{
-            this->m_writer.write("400 Bad Request");
+            this->m_writer.write("404 Not Found");
         return;
 
         }
