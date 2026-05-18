@@ -2,7 +2,7 @@
 // Include all needed headers
 //====================================================================================================
 // ---- Files ----
-#include "../include/commands/RecommendCommand.h"
+#include "../include/commands/GetCommand.h"
 
 // ---- System ----
 #include <map>
@@ -16,7 +16,7 @@
 // RecommendCommand
 //====================================================================================================
 // To match the constructor
-RecommendCommand::RecommendCommand(IDataStorage &l, IOutputWriter &w)
+GetCommand::GetCommand(IDataStorage &l, IOutputWriter &w)
     : m_loader(l), m_writer(w) {}
 
 std::vector<std::string> GetCommand::CommandInfo(std::istringstream &args)
