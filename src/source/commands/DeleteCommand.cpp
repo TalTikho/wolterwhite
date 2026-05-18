@@ -31,24 +31,23 @@ void DeleteCommand::execute(std::istringstream &args)
         return;
     }
     std::vector<std::string> items  = CommandInfo(args);
-    //The first string inputed should be the user.
-    std::string userId = items[0];
     //Load the map to be able to handle data.
     std::map<std::string, std::set<std::string>>  all = this->m_storage.loadAll();
-    //Load it again for deletion.
-    std::map<std::string, std::set<std::string>>  allToD = this->m_storage.loadAll();
     //Delete should have at least two args: [userid] [productid1]. 
     if (items.size() < 2 ){
         this->m_writer.write("400 Bad Request");
         return;
     }
+    //The first string inputed should be the user.
+    std::string userId = items[0];
     //The user should exist hence in the loadAll map.
-    if(!(std::find(all.begin(), all.end(), userId) != all.end())){
+    if(all.find(userId)== all.end()){
         this->m_writer.write("404 Not Found");
         return;
 
     }
-     //The first arg is items is the userId while the rest are the supposed products.
+     //The first arg is items is the userId while the rest are the supposed products. It is a set so we do not try to delete a
+     //product twice.
      std::set<std::string> products_to_delete;
      for (int i = 1; i < items.size(); i++){
         products_to_delete.insert(items[i]);
@@ -57,9 +56,7 @@ void DeleteCommand::execute(std::istringstream &args)
      for (auto const product : products_to_delete){
 
         if (std::find(all[userId].begin(), all[userId].end(), product) != all[userId].end()){
-            if (std::find(allToD[userId].begin(), allToD[userId].end(), product) != allToD[userId].end()){
-                allToD[userId].erase(product);
-            }
+            all[userId].erase(product);
             continue;
         }
         //Product not found so "404 Not Found"".
@@ -71,7 +68,7 @@ void DeleteCommand::execute(std::istringstream &args)
      }
 
      //Get the curret set from our map's copy.
-     auto updated = allToD[userId];
+     auto updated = all[userId];
      
      //Iterate to get updated into a vector so we can save the new set.
     std::vector<std::string> newProdList(updated.begin(), updated.end());
