@@ -23,6 +23,7 @@ public:
      * The writing gives indications on the delete-action status.
      */
     explicit DeleteCommand(IDataStorage &storage, IOutputWriter &writer);
+    std::vector<std::string>CommandInfo(std::istringstream &args);
 
     /**
      * execute: Parses args, validates, deletes if the user and the products both exist. The it writes a response
