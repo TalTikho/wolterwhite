@@ -1,12 +1,12 @@
 //====================================================================================================
 // Include all needed headers
 //====================================================================================================
+
 // ---- Files ----
 #include "App.h"
 #include "ui/IMenu.h"
 #include "commands/ICommand.h"
-#include "storage/IDataStorage.h"
-#include "output/IOutputWriter.h" // Added header
+#include "output/IOutputWriter.h"
 
 // ---- System ----
 #include <gtest/gtest.h>
@@ -14,12 +14,8 @@
 #include <vector>
 
 //====================================================================================================
-// Helpers - MockMenu, MockCommand, & MockWriter
+// MockWriter
 //====================================================================================================
-/**
- * MockWriter: Needed to satisfy the App constructor.
- * Records messages so we can verify "400 Bad Request" responses.
- */
 class MockWriter : public IOutputWriter
 {
 public:
@@ -31,55 +27,58 @@ public:
         messages.push_back(message);
         lastMessage = message;
     }
-
-    void clear()
-    {
-        messages.clear();
-        lastMessage = "";
-    }
 };
 
+//====================================================================================================
+// MockMenu
+//====================================================================================================
 class MockMenu : public IMenu
 {
 public:
     std::vector<std::string> commands;
     size_t index = 0;
+
     MockMenu(std::vector<std::string> cmds) : commands(std::move(cmds)) {}
 
     std::string nextCommand() noexcept override
     {
         if (index < commands.size())
-        {
             return commands[index++];
-        }
+
         return "quit";
     }
 };
 
+//====================================================================================================
+// MockCommand
+//====================================================================================================
 class MockCommand : public ICommand
 {
 public:
     bool wasCalled = false;
     std::string lastArgs;
+
     void execute(std::istringstream &args) override
     {
         wasCalled = true;
         std::getline(args, lastArgs);
     }
-    //This method is only used by help to print so in the TestsMock it can be empty.
-    virtual const std::string getPrintoutFormat (){
-        return " ";
+
+    const std::string getPrintoutFormat() override
+    {
+        return "mock";
     }
 };
 
 //====================================================================================================
-// Test 1: ProgramNeverExits (Until 'quit')
+// Test 1: ProgramNeverExits
 //====================================================================================================
 TEST(AppTest, ProgramNeverExits)
 {
-    MockMenu menu({"command1", "command2"});
+    MockMenu menu({"help", "quit"});
     MockWriter writer;
-    App app(&menu, &writer); // Pass writer as 2nd argument
+    App app(&menu, &writer);
+
     app.run();
 
     SUCCEED();
@@ -87,13 +86,13 @@ TEST(AppTest, ProgramNeverExits)
 
 //====================================================================================================
 // Test 2: UnknownCommandProducesBadRequest
-// Updated: Ex2 requirement says unknown commands return "400 Bad Request"
 //====================================================================================================
 TEST(AppTest, UnknownCommandProducesBadRequest)
 {
-    MockMenu menu({"unknown", "quit"});
+    MockMenu menu({"banana", "quit"});
     MockWriter writer;
     App app(&menu, &writer);
+
     app.run();
 
     EXPECT_EQ(writer.lastMessage, "400 Bad Request");
@@ -110,10 +109,10 @@ TEST(AppTest, KnownCommandIsDispatched)
 
     App app(&menu, &writer);
     app.registerCommand("help", helpCmd);
+
     app.run();
 
-    EXPECT_TRUE(helpCmd.wasCalled)
-        << "App should dispatch 'help' to the registered HelpCommand";
+    EXPECT_TRUE(helpCmd.wasCalled);
 }
 
 //====================================================================================================
@@ -121,15 +120,15 @@ TEST(AppTest, KnownCommandIsDispatched)
 //====================================================================================================
 TEST(AppTest, CorrectArgsPassedToCommand)
 {
-    MockMenu menu({"add 1 101 102", "quit"});
-    MockCommand addCmd;
+    MockMenu menu({"POST 1 101 102", "quit"});
+    MockCommand postCmd;
     MockWriter writer;
 
     App app(&menu, &writer);
-    app.registerCommand("add", addCmd);
+    app.registerCommand("POST", postCmd);
+
     app.run();
 
-    EXPECT_TRUE(addCmd.wasCalled);
-    // Trim potential leading/trailing space from stream logic
-    EXPECT_TRUE(addCmd.lastArgs.find("1 101 102") != std::string::npos);
+    EXPECT_TRUE(postCmd.wasCalled);
+    EXPECT_NE(postCmd.lastArgs.find("1 101 102"), std::string::npos);
 }

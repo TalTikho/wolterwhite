@@ -4,11 +4,9 @@
 //====================================================================================================
 // ---- Files ----
 #include "commands/HelpCommand.h"
-#include "commands/RecommendCommand.h"
+#include "commands/GetCommand.h"
 #include "commands/PostCommand.h"
 #include "output/IOutputWriter.h"
-#include "output/IOutputWriter.h"
-#include "commands/HelpCommand.h"
 #include "storage/IDataStorage.h"
 #include "ui/IMenu.h"
 
@@ -16,8 +14,6 @@
 // ---- System ----
 #include <gtest/gtest.h>
 #include <sstream>
-#include <vector>
-#include <string>
 #include <vector>
 #include <string>
 
@@ -87,18 +83,20 @@ TEST_F(HelpCommandTest, HelpExactOutput)
     MockWriter writer;
     MockMenu menu;
     MockStorage storage("test_data.txt");
-    RecommendCommand rec(storage, writer);
-    PostCommand post(storage, writer);
+
+// All commands MUST take the writer now
+    // AddProductCommand addCmd(storage, writer);
+    GetCommand getCmd(storage, writer);
+    PostCommand postCmd(storage, writer);
 
     // Inject the writer into the App so it can report "400 Bad Request"
-    App app(&menu, &writer);
+    App app(&menu, &writer); // Constructor injection
     HelpCommand helpCmd(writer, app);
     app.registerCommand("help", helpCmd);
-    app.registerCommand("recommend", rec);
-    app.registerCommand("POST", post);
-    HelpCommand help(writer, app); // Constructor injection
+    app.registerCommand("get", getCmd);
+    app.registerCommand("post", postCmd);
 
-    help.execute(args);
+    helpCmd.execute(args);
 
     // The assignment requires these 3 lines
     ASSERT_EQ(writer.messages.size(), 5);
@@ -120,17 +118,18 @@ TEST_F(HelpCommandTest, HelpWithExtraArgsPrintsNothing)
     MockWriter writer;
     MockStorage storage("test_data.txt");
     MockMenu menu;
-    RecommendCommand rec(storage, writer);
-    PostCommand post(storage, writer);
+    // All commands MUST take the writer now
+    // AddProductCommand addCmd(storage, writer);
+    GetCommand getCmd(storage, writer);
+    PostCommand postCmd(storage, writer);
+
     // Inject the writer into the App so it can report "400 Bad Request"
-    App app(&menu, &writer);
+    App app(&menu, &writer); // Constructor injection
     HelpCommand helpCmd(writer, app);
     app.registerCommand("help", helpCmd);
-    app.registerCommand("recommend", rec);
-    app.registerCommand("POST", post);
-    HelpCommand help(writer, app); // Constructor injection
-
-    help.execute(args);
+    app.registerCommand("get", getCmd);
+    app.registerCommand("post", postCmd);
+    helpCmd.execute(args);
 
     // If extra args are present, it should print nothing (size 0)
      EXPECT_EQ(writer.messages.size(), 1);
@@ -146,18 +145,19 @@ TEST_F(HelpCommandTest, HelpWithMultipleExtraArgs) {
     MockWriter writer;
     MockStorage storage("test_data.txt");
     MockMenu menu;
-    RecommendCommand rec(storage, writer);
-    PostCommand post(storage, writer);
+    // All commands MUST take the writer now
+    // AddProductCommand addCmd(storage, writer);
+    GetCommand getCmd(storage, writer);
+    PostCommand postCmd(storage, writer);
 
     // Inject the writer into the App so it can report "400 Bad Request"
-    App app(&menu, &writer);
+    App app(&menu, &writer); // Constructor injection
     HelpCommand helpCmd(writer, app);
     app.registerCommand("help", helpCmd);
-    app.registerCommand("recommend", rec);
-    app.registerCommand("POST", post);
-    HelpCommand help(writer, app); // Constructor injection
+    app.registerCommand("get", getCmd);
+    app.registerCommand("post", postCmd);
 
-    help.execute(args);
+    helpCmd.execute(args);
 
     // If extra args are present, it should print nothing (size 0)
      EXPECT_EQ(writer.messages.size(), 1);
@@ -173,19 +173,20 @@ TEST_F(HelpCommandTest, HelpWithOnlySpacesInArgs)
     std::istringstream args("   ");
     MockWriter writer;
     MockStorage storage("test_data.txt");
-    RecommendCommand rec(storage, writer);
-    PostCommand post(storage, writer);
     MockMenu menu;
+    // All commands MUST take the writer now
+    // AddProductCommand addCmd(storage, writer);
+    GetCommand getCmd(storage, writer);
+    PostCommand postCmd(storage, writer);
 
     // Inject the writer into the App so it can report "400 Bad Request"
-    App app(&menu, &writer);
+    App app(&menu, &writer); // Constructor injection
     HelpCommand helpCmd(writer, app);
     app.registerCommand("help", helpCmd);
-    app.registerCommand("recommend", rec);
-    app.registerCommand("POST", post);
-    HelpCommand help(writer, app); // Constructor injection
+    app.registerCommand("get", getCmd);
+    app.registerCommand("post", postCmd);
 
-    help.execute(args);
+    helpCmd.execute(args);
 
     // Spaces shouldn't count as "extra args", so it should print the menu
     EXPECT_EQ(writer.messages.size(), 5);
@@ -199,19 +200,20 @@ TEST_F(HelpCommandTest, HelpNoTabs)
     std::istringstream args("   \t");
     MockWriter writer;
     MockStorage storage("test_data.txt");
-    RecommendCommand rec(storage, writer);
-    PostCommand post(storage, writer);
     MockMenu menu;
+    // All commands MUST take the writer now
+    // AddProductCommand addCmd(storage, writer);
+    GetCommand getCmd(storage, writer);
+    PostCommand postCmd(storage, writer);
 
     // Inject the writer into the App so it can report "400 Bad Request"
-    App app(&menu, &writer);
+    App app(&menu, &writer); // Constructor injection
     HelpCommand helpCmd(writer, app);
     app.registerCommand("help", helpCmd);
-    app.registerCommand("recommend", rec);
-    app.registerCommand("POST", post);
-    HelpCommand help(writer, app); // Constructor injection
+    app.registerCommand("get", getCmd);
+    app.registerCommand("post", postCmd);
 
-    help.execute(args);
+    helpCmd.execute(args);
 
     //Tabsare not allowed
     EXPECT_EQ(writer.messages.size(), 1);

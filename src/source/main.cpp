@@ -34,18 +34,21 @@ int main(int argc, char *argv[])
     SocketWriter writer(clientFd);
 
     // All commands MUST take the writer now
-    // AddProductCommand addCmd(storage, cw);
-    RecommendCommand recCmd(storage, writer);
-    PostCommand postCmd(storage, writer);
+    // AddProductCommand addCmd(storage, writer);
     DeleteCommand deletetCmd(storage, writer);
+    GetCommand getCmd(storage, writer);
+    PatchCommand patchCmd(storage, writer);
+    PostCommand postCmd(storage, writer);
+
     // Inject the writer into the App so it can report "400 Bad Request"
-    App app(&handler, &handler);
+    App app(&menu, &writer); // Constructor injection
     HelpCommand helpCmd(writer, app);
 
-    app.registerCommand("help", helpCmd);
-    app.registerCommand("POST", postCmd);
-    app.registerCommand("recommend", recCmd);
+    app.registerCommand("get", getCmd);
     app.registerCommand("delete", recCmd);
+    app.registerCommand("patch", patchCmd);
+    app.registerCommand("post", postCmd);
+    app.registerCommand("help", helpCmd);
 
     app.run(); // stops when SocketClientHandler disconnects
 

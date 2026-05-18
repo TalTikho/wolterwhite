@@ -28,12 +28,10 @@ add_library(project_logic STATIC
     src/include/storage/IDataStorage.h
 
     # Command Implemedntations (The Actions)
-    #src/source/commands/AddProductCommand.cpp
-    #src/include/commands/AddProductCommand.h
     src/source/commands/HelpCommand.cpp
     src/include/commands/HelpCommand.h
-    src/source/commands/RecommendCommand.cpp
-    src/include/commands/RecommendCommand.h
+    src/source/commands/GetCommand.cpp
+    src/include/commands/GetCommand.h
 
     # User Interface Logic
     src/source/ui/ConsoleMenu.cpp
