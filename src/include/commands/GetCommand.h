@@ -17,7 +17,7 @@
 //====================================================================================================
 // Recommend
 //====================================================================================================
-class RecommendCommand : public ICommand
+class GetCommand : public ICommand
 {
     /**
      * CommandInfo: private function that returns a string vector to use in the command's execute.
@@ -36,7 +36,7 @@ private:
 
 public:
     // Updated constructor to accept the writer
-    explicit RecommendCommand(IDataStorage &l, IOutputWriter &w);
+    explicit GetCommand(IDataStorage &l, IOutputWriter &w);
 
     /**
      * execute: recommend a user up to 10 products based on a product he viewed.

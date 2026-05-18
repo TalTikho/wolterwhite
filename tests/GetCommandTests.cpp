@@ -4,7 +4,7 @@
 // ---- Files ----
 #include "storage/IDataStorage.h"
 #include "output/IOutputWriter.h"
-#include "commands/RecommendCommand.h"
+#include "commands/GetCommand.h"
 
 // ---- System ----
 #include <gtest/gtest.h>
@@ -53,17 +53,17 @@ public:
 //====================================================================================================
 // 2. TEST FIXTURE
 //====================================================================================================
-class RecommendTests : public ::testing::Test
+class GetCommandTests : public ::testing::Test
 {
 protected:
     FakeDataStorage fakeStorage;
     MockWriter writer;
-    RecommendCommand *cmd;
+    GetCommand *cmd;
 
     void SetUp() override
     {
         // Inject both the fake storage and the mock writer
-        cmd = new RecommendCommand(fakeStorage, writer);
+        cmd = new GetCommand(fakeStorage, writer);
     }
 
     void TearDown() override
@@ -77,7 +77,7 @@ protected:
 //====================================================================================================
 
 // Test 1: Empty Storage
-TEST_F(RecommendTests, EmptyStorageReturnsEmpty)
+TEST_F(GetCommandTests, EmptyStorageReturnsEmpty)
 {
     fakeStorage.fakeData = {};
     std::istringstream argsStream("1 100");
@@ -89,7 +89,7 @@ TEST_F(RecommendTests, EmptyStorageReturnsEmpty)
 }
 
 // Test 2: Basic Recommendation
-TEST_F(RecommendTests, BasicRecommendation)
+TEST_F(GetCommandTests, BasicRecommendation)
 {
     fakeStorage.fakeData = {{"1", {"100"}}, {"2", {"100", "200"}}};
     std::istringstream argsStream("1 100");
@@ -100,7 +100,7 @@ TEST_F(RecommendTests, BasicRecommendation)
 }
 
 // Test 3: Tie-Breaking by ID
-TEST_F(RecommendTests, TieBreakingByID)
+TEST_F(GetCommandTests, TieBreakingByID)
 {
     fakeStorage.fakeData = {{"1", {"104"}}, {"2", {"104", "999"}}, {"3", {"104", "222"}}};
     std::istringstream argsStream("1 104");
@@ -111,7 +111,7 @@ TEST_F(RecommendTests, TieBreakingByID)
 }
 
 // Test 6: Target Product Paradox
-TEST_F(RecommendTests, TargetProductParadox)
+TEST_F(GetCommandTests, TargetProductParadox)
 {
     fakeStorage.fakeData = {
         {"1", {"100"}},
@@ -126,7 +126,7 @@ TEST_F(RecommendTests, TargetProductParadox)
 
 
 // Test 7: NoTabs
-TEST_F(RecommendTests, NoTabs)
+TEST_F(GetCommandTests, NoTabs)
 {
     fakeStorage.fakeData = {
         {"1", {"100"}},
@@ -143,5 +143,5 @@ TEST_F(RecommendTests, NoTabs)
         count++;
 
     EXPECT_EQ(count, 0) << "No tabs";
-    EXPECT_EQ(writer.lastMessage, "400 Bad Request);
+    EXPECT_EQ(writer.lastMessage, "400 Bad Request");
 }

@@ -19,7 +19,7 @@
 RecommendCommand::RecommendCommand(IDataStorage &l, IOutputWriter &w)
     : m_loader(l), m_writer(w) {}
 
-std::vector<std::string> RecommendCommand::CommandInfo(std::istringstream &args)
+std::vector<std::string> GetCommand::CommandInfo(std::istringstream &args)
 {
     // Using the stringStream input to parse the user input into a string vector to make execute easier.
     std::vector<std::string> argsV;
@@ -33,7 +33,7 @@ std::vector<std::string> RecommendCommand::CommandInfo(std::istringstream &args)
     return argsV;
 }
 
-bool RecommendCommand::is_num(std::string s)
+bool GetCommand::is_num(std::string s)
 {
     // stoi returns an int and its length. If the string is an entire number the length (test) should equal the original string's length.
     // Otherwise, it is part number and part string and we return false. We are ok with negative numbers.
@@ -51,7 +51,7 @@ bool RecommendCommand::is_num(std::string s)
     }
 }
 
-void RecommendCommand::execute(std::istringstream &args)
+void GetCommand::execute(std::istringstream &args)
 {
     // Use CommandInfo to get our UserID and products vector.
     std::vector<std::string> argsV = CommandInfo(args);
