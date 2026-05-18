@@ -45,6 +45,7 @@ int main(int argc, char *argv[])
     app.registerCommand("help", helpCmd);
     app.registerCommand("POST", postCmd);
     app.registerCommand("recommend", recCmd);
+    app.registerCommand("delete", recCmd);
 
     app.run(); // stops when SocketClientHandler disconnects
 
