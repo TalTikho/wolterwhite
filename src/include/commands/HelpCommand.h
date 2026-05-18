@@ -6,23 +6,31 @@
 //====================================================================================================
 // ---- Files ----
 #include "ICommand.h"
+#include "../output/IOutputWriter.h" // Added for the writer
+#include "../App.h"
+#include "ICommandProvider.h"
 
-/**
- * HelpCommand: Responsible for displaying the manual of available commands to the user.
- * This class handles the 'help' command.
- */
-class HelpCommand : public ICommand {
+//====================================================================================================
+// HelpCommand: Responsible for displaying the manual of available commands.
+//====================================================================================================
+class HelpCommand : public ICommand
+{
+private:
+    IOutputWriter &m_writer; // Injected writer
+    ICommandProvider &helpCom;
+
 public:
     /**
-     * Execute: Prints the predefined help message to the console.
-     * 
-     * Following the project requirements:
-     * - It ignores any extra arguments provided after the 'help' keyword.
-     * - It prints a specific list of commands in a strict format.
-     * 
-     * @param args: The stream containing any text typed after 'help' (which will be ignored).
+     * Constructor: Links the command to an output writer.
      */
-    void execute(std::istringstream& args) override;
+    explicit HelpCommand(IOutputWriter &writer, ICommandProvider &com);
+
+    /**
+     * Execute: Sends the help message to the writer.
+     */
+    void execute(std::istringstream &args) override;
+    const std::string getPrintoutFormat () override;
+    
 };
 
 #endif

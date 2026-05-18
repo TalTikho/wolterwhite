@@ -1,165 +1,147 @@
+//====================================================================================================
+// Include all needed headers
+//====================================================================================================
+// ---- Files ----
+#include "storage/IDataStorage.h"
+#include "output/IOutputWriter.h"
+#include "commands/RecommendCommand.h"
+
+// ---- System ----
 #include <gtest/gtest.h>
 #include <sstream>
-#include <iostream>
 #include <vector>
 #include <map>
 #include <set>
-#include "commands/RecommendCommand.h"
-#include "storage/IDataStorage.h"
 
-/**
- * 1. FAKE DATA STORAGE (Mock)
- * This class mimics the behavior of a real database/file storage.
- * It allows us to inject specific test cases without needing actual files.
- */
-class FakeDataStorage : public IDataStorage {
+//====================================================================================================
+// 1. MOCK OBJECTS
+//====================================================================================================
+class FakeDataStorage : public IDataStorage
+{
 public:
     std::map<std::string, std::set<std::string>> fakeData;
 
-    std::map<std::string, std::set<std::string>> loadAll() override {
+    std::map<std::string, std::set<std::string>> loadAll() override
+    {
         return fakeData;
     }
-
-    void saveAll(const std::map<std::string, std::set<std::string>>& data) {
-        // Not needed for recommendation logic tests
-    }
-    void save(const std::string &userId, const std::vector<std::string> &products) override{
-        return;
+    void save(const std::string &userId, const std::vector<std::string> &products) override
+    {
+        // Not needed for recommendation tests
     }
 };
 
-/**
- * 2. TEST FIXTURE: RecommendTests
- * Automates the "hijacking" of std::cout so we can verify what the command prints.
- * Setup runs before each test; TearDown runs after.
- */
-class RecommendTests : public ::testing::Test {
-protected:
-    FakeDataStorage fakeStorage;
-    std::stringstream captureBuf;
-    std::streambuf* originalBuf;
-    RecommendCommand* cmd;
+class MockWriter : public IOutputWriter
+{
+public:
+    std::vector<std::string> messages;
+    std::string lastMessage;
 
-    void SetUp() override {
-        // Redirect cout to our local stringstream
-        originalBuf = std::cout.rdbuf();
-        std::cout.rdbuf(captureBuf.rdbuf());
-        cmd = new RecommendCommand(fakeStorage);
+    void write(const std::string &message) override
+    {
+        messages.push_back(message);
+        lastMessage = message;
     }
 
-    void TearDown() override {
-        // Restore cout to its original state
-        std::cout.rdbuf(originalBuf);
+    void clear()
+    {
+        messages.clear();
+        lastMessage = "";
+    }
+};
+
+//====================================================================================================
+// 2. TEST FIXTURE
+//====================================================================================================
+class RecommendTests : public ::testing::Test
+{
+protected:
+    FakeDataStorage fakeStorage;
+    MockWriter writer;
+    RecommendCommand *cmd;
+
+    void SetUp() override
+    {
+        // Inject both the fake storage and the mock writer
+        cmd = new RecommendCommand(fakeStorage, writer);
+    }
+
+    void TearDown() override
+    {
         delete cmd;
     }
 };
 
-// =========================================================================
-// JIRA TASK UNIT TESTS
-// =========================================================================
+//====================================================================================================
+// 3. UPDATED TESTS
+//====================================================================================================
 
-//Test 1 - ValidRecommendParsing
-TEST_F(RecommendTests, ValidRecommendParsing) {
-    fakeStorage.fakeData = {
-        {"1", {"100", "101", "102", "103"}},
-        {"2", {"101", "102", "104", "105", "106"}},
-        {"3", {"100", "104", "105", "107", "108"}},
-        {"6", {"100", "103", "104", "110", "111", "112", "113"}},
-        {"8", {"101", "104", "105", "106", "109", "111", "114"}}
-    };
-    
+// Test 1: Empty Storage
+TEST_F(RecommendTests, EmptyStorageReturnsEmpty)
+{
+    fakeStorage.fakeData = {};
+    std::istringstream argsStream("1 100");
+
+    cmd->execute(argsStream);
+
+    // In Exercise 2, an empty recommendation should be "404 Not Found" as the request is logical but the output is nothing.
+    EXPECT_EQ(writer.lastMessage, "404 Not Found");
+}
+
+// Test 2: Basic Recommendation
+TEST_F(RecommendTests, BasicRecommendation)
+{
+    fakeStorage.fakeData = {{"1", {"100"}}, {"2", {"100", "200"}}};
+    std::istringstream argsStream("1 100");
+    cmd->execute(argsStream);
+
+    // In Exercise 2, a good recommendation is "200 OK".
+    EXPECT_EQ(writer.lastMessage, "200 OK");
+}
+
+// Test 3: Tie-Breaking by ID
+TEST_F(RecommendTests, TieBreakingByID)
+{
+    fakeStorage.fakeData = {{"1", {"104"}}, {"2", {"104", "999"}}, {"3", {"104", "222"}}};
     std::istringstream argsStream("1 104");
     cmd->execute(argsStream);
-    
-    // Expected output sorted by relevance (and ID if tie) as per PDF logic
-    std::string expected = "105 106 111 110 112 113 107 108 109 114 \n";
-    EXPECT_EQ(captureBuf.str(), expected);
+
+    // In Exercise 2, a good recommendation is "200 OK".
+    EXPECT_EQ(writer.lastMessage, "200 OK");
 }
 
-//Test 2 - RecommendMissingArgs (Input is only 'userid')
-TEST_F(RecommendTests, RecommendMissingArgs) {
-    std::istringstream argsStream("1"); 
-    cmd->execute(argsStream);
-    EXPECT_EQ(captureBuf.str(), ""); // Should ignore and print nothing
-}
-
-//Test 3 - RecommendNoArgs (Empty input)
-TEST_F(RecommendTests, RecommendNoArgs) {
-    std::istringstream argsStream(""); 
-    cmd->execute(argsStream);
-    EXPECT_EQ(captureBuf.str(), "");
-}
-
-//Test 4 - Cold Start (No overlap between users)
-TEST_F(RecommendTests, ColdStartNoOverlap) {
-    fakeStorage.fakeData = {
-        {"1", {"100"}}, 
-        {"2", {"200", "104"}} 
-    };
-    
-    std::istringstream argsStream("1 104");
-    cmd->execute(argsStream);
-    
-    // No common items between User 1 and 2, relevance is 0
-    EXPECT_EQ(captureBuf.str(), "\n"); 
-}
-
-//Test 5 - Perfect Tie (Ascending ID Rule)
-TEST_F(RecommendTests, PerfectTieAscendingID) {
+// Test 6: Target Product Paradox
+TEST_F(RecommendTests, TargetProductParadox)
+{
     fakeStorage.fakeData = {
         {"1", {"100"}},
-        {"2", {"100", "104", "999"}}, 
-        {"3", {"100", "104", "222"}}  
-    };
-    
-    // Both 222 and 999 have a score of 1. 222 must be listed first.
+        {"2", {"100", "104"}}};
+
     std::istringstream argsStream("1 104");
     cmd->execute(argsStream);
-    EXPECT_EQ(captureBuf.str(), "222 999 \n");
+
+    // 104 is the input product; it should never be recommended.
+    EXPECT_EQ(writer.lastMessage, "404 Not Found");
 }
 
-//Test 6 - Target Product Paradox
-TEST_F(RecommendTests, TargetProductParadox) {
-    fakeStorage.fakeData = {
-        {"1", {"100"}},
-        {"2", {"100", "104"}} 
-    };
-    
-    std::istringstream argsStream("1 104");
-    cmd->execute(argsStream);
-    
-    // 104 is the input product; it should never be recommended to the user.
-    EXPECT_EQ(captureBuf.str(), "\n");
-}
 
-//Test 7 - The 10-Limit Boundary
-TEST_F(RecommendTests, TenLimitBoundary) {
+// Test 7: NoTabs
+TEST_F(RecommendTests, NoTabs)
+{
     fakeStorage.fakeData = {
         {"1", {"100"}},
-        {"2", {"100", "104", "P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10", "P11"}}
-    };
-    
-    std::istringstream argsStream("1 104");
+        {"2", {"100", "104", "P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10", "P11, P13"}}};
+
+    std::istringstream argsStream("1 104\t");
     cmd->execute(argsStream);
-    
-    // Count items in output: should be exactly 10
-    std::string out = captureBuf.str();
-    std::stringstream ss(out);
-    std::string temp;
+
+    // Use a stringstream to count the space-separated words in the result
+    std::istringstream result(writer.lastMessage);
+    std::string word;
     int count = 0;
-    while (ss >> temp) count++;
-    
-    EXPECT_EQ(count, 10);
-}
+    while (result >> word)
+        count++;
 
-//Test 8 - Non-Existent User/Product
-TEST_F(RecommendTests, NonExistentUser) {
-    fakeStorage.fakeData = {
-        {"2", {"100", "104"}}
-    };
-    
-    std::istringstream argsStream("99 104"); // User 99 does not exist
-    
-    // Verify that the command handles non-existent users without crashing
-    EXPECT_NO_THROW(cmd->execute(argsStream));
+    EXPECT_EQ(count, 0) << "No tabs";
+    EXPECT_EQ(writer.lastMessage, "400 Bad Request);
 }

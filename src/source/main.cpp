@@ -1,43 +1,53 @@
 //====================================================================================================
 // Include all needed headers
 //====================================================================================================
-// ---- Core App ----
+// ---- Files ----
 #include "../include/AllIncludes.h"
+#include "server/TCPServer.h" //NEEDED wont work without it
 
 // ---- System ----
-#include <iostream>
+#include <unistd.h>
 
-/**
- * Main entry point for the Recommender System.
- */
-int main() {
-    // 1. Initialize the Data Storage with the path to the data file
-    // Adjust "data/users_products.txt" to the actual path you use
-    FileDataStorage storage("data/data.txt"); 
+//====================================================================================================
+int main(int argc, char *argv[])
+{
+    if (argc < 2)
+    {
+        std::cerr << "Usage: " << argv[0] << " <port>\n";
+        return 1;
+    }
 
-    // 2. Initialize the Console Menu
-    ConsoleMenu menu;
+    int port = std::stoi(argv[1]);
 
-    // 3. Instantiate the Commands
-    HelpCommand helpCmd;
-    AddProductCommand addCmd(storage); 
-    RecommendCommand rec(storage);
-    
-    // RecommendCommand is still under development by Yotam
-    // RecommendCommand recCmd(storage);
+    FileDataStorage storage("data/data.txt");
 
-    // 4. Setup the Application and Register Commands
-    App app(&menu);
-    
+    // Set up TCP server
+    TCPServer server(port);
+    server.start();
+    int clientFd = server.acceptClient();
+
+    // SocketClientHandler implements BOTH IMenu + IOutputWriter
+    // via the same socket fd
+    SocketClientHandler handler(clientFd);
+
+    // SocketWriter for commands to send their responses
+    SocketWriter writer(clientFd);
+
+    // All commands MUST take the writer now
+    // AddProductCommand addCmd(storage, cw);
+    RecommendCommand recCmd(storage, writer);
+    PostCommand postCmd(storage, writer);
+
+    // Inject the writer into the App so it can report "400 Bad Request"
+    App app(&handler, &handler);
+    HelpCommand helpCmd(writer, app);
+
     app.registerCommand("help", helpCmd);
-    app.registerCommand("add", addCmd);
-    app.registerCommand("recommend", rec);
-    
-    // Uncomment this when RecommendCommand.h/cpp are added to the commands folder
-    // app.registerCommand("recommend", &recCmd);
+    app.registerCommand("POST", postCmd);
+    app.registerCommand("recommend", recCmd);
 
-    // 5. Run the Application loop
-    app.run();
+    app.run(); // stops when SocketClientHandler disconnects
 
+    close(clientFd);
     return 0;
 }

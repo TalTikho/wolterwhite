@@ -153,3 +153,21 @@ docker system prune -a
 ![Running](./media/Stopping_The_Docker.png)
 
 ---
+
+## Answered Questions
+
+1. Did changing the names of the commands require thouching "closed code"?
+
+    - ...
+
+2. Did adding new commands were added require thouching "closed code"?
+
+    - ...
+
+3. Did changing the output destination require touching "closed code"?
+
+    - In `ICommand.h` we needed `execute()` to return string and not void, so we created  IOutputWriter.
+
+4. Did changing the input/output to sockets require touching "closed code"?
+
+    - ...

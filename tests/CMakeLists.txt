@@ -22,11 +22,14 @@ FetchContent_MakeAvailable(googletest)
 add_executable(runTests 
     #Tests go here
     AppTests.cpp
-    StorageTests.cpp
     MenuTests.cpp
-    AddProductCommandTests.cpp
-    RecommendCommandTests.cpp
+    StorageTests.cpp
     HelpCommandTests.cpp
+    PostCommandTests.cpp
+    #PatchCommandTests.cpp
+    RecommendCommandTests.cpp
+
+    #AddProductCommandTests.cpp
 )
 
 

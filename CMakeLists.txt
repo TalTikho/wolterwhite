@@ -28,8 +28,8 @@ add_library(project_logic STATIC
     src/include/storage/IDataStorage.h
 
     # Command Implemedntations (The Actions)
-    src/source/commands/AddProductCommand.cpp
-    src/include/commands/AddProductCommand.h
+    #src/source/commands/AddProductCommand.cpp
+    #src/include/commands/AddProductCommand.h
     src/source/commands/HelpCommand.cpp
     src/include/commands/HelpCommand.h
     src/source/commands/RecommendCommand.cpp
@@ -42,6 +42,26 @@ add_library(project_logic STATIC
     # Data Persistence Logic
     src/source/storage/FileDataStorage.cpp
     src/include/storage/FileDataStorage.h
+
+    # OUTPUT
+    src/include/output/IOutputWriter.h
+    src/include/output/ConsoleWriter.h
+    src/include/output/SocketWriter.h
+
+    # POST
+    src/source/commands/PostCommand.cpp
+    src/include/commands/PostCommand.h
+
+
+    #Helping HelpCommand Inject 
+    src/include/commands/ICommandProvider.h
+    # Handlers
+    src/source/ui/ConsoleClientHandler.cpp
+    src/include/ui/ConsoleClientHandler.h
+    src/source/ui/SocketClientHandler.cpp
+    src/include/ui/SocketClientHandler.h
+    src/include/ui/IClientHandler.h
+
 )
 
 # --------------------------------------------------------------------------------------------------------------------

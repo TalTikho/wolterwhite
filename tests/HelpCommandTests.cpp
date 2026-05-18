@@ -1,146 +1,220 @@
+
 //====================================================================================================
 // Include all needed headers
 //====================================================================================================
 // ---- Files ----
 #include "commands/HelpCommand.h"
+#include "commands/RecommendCommand.h"
+#include "commands/PostCommand.h"
+#include "output/IOutputWriter.h"
+#include "output/IOutputWriter.h"
+#include "commands/HelpCommand.h"
+#include "storage/IDataStorage.h"
+#include "ui/IMenu.h"
+
 
 // ---- System ----
 #include <gtest/gtest.h>
 #include <sstream>
+#include <vector>
+#include <string>
+#include <vector>
+#include <string>
 
 //====================================================================================================
-// Fixture: captures std::cout so we can verify exact output
+// MockWriter: Captures output for verification
+// MockWriter: Captures output for verification
 //====================================================================================================
-class HelpCommandTest : public ::testing::Test {
-protected:
-    std::ostringstream captured;
-    std::streambuf* originalCout;
+class MockWriter : public IOutputWriter
+{
+public:
+    std::vector<std::string> messages;
+    std::string lastMessage;
 
-    void SetUp() override {
-        // Redirect cout to our captured buffer before each test
-        originalCout = std::cout.rdbuf(captured.rdbuf());
+    void write(const std::string &message) override
+    {
+        messages.push_back(message);
+        lastMessage = message;
     }
 
-    void TearDown() override {
-        // Always restore cout after each test so other tests aren't affected
-        std::cout.rdbuf(originalCout);
+    void clear()
+    {
+        messages.clear();
+        lastMessage = "";
     }
 };
 
+class HelpCommandTest : public ::testing::Test
+{
+protected:
+    // No longer need to redirect std::cout buffers!
+};
+
+//This Menu exists only to construct the commandProvider for help. We don't really need a menu here.
+//Same for the dummy as well MockStorage.
+class MockMenu : public IMenu
+{
+public:
+    std:: string nextCommand() noexcept override{
+        return " ";
+    }
+};
+
+class MockStorage : public IDataStorage
+{
+private:
+    std::string m_filePath;
+public:
+    MockStorage(std::string path) : m_filePath(std::move(path)) {}
+    void save(const std::string &userId, const std::vector<std::string> &products) override{
+        return;
+    }
+    std::map<std::string, std::set<std::string>> loadAll(){
+        return std::map<std::string, std::set<std::string>> ();
+    }
+};
+
+
+
+
+
 //====================================================================================================
 // Test 1: HelpExactOutput
-// Purpose: Verify the three lines are printed exactly as the assignment specifies
 //====================================================================================================
-TEST_F(HelpCommandTest, HelpExactOutput) {
+TEST_F(HelpCommandTest, HelpExactOutput)
+{
     std::istringstream args("");
-    HelpCommand help;
+    MockWriter writer;
+    MockMenu menu;
+    MockStorage storage("test_data.txt");
+    RecommendCommand rec(storage, writer);
+    PostCommand post(storage, writer);
+
+    // Inject the writer into the App so it can report "400 Bad Request"
+    App app(&menu, &writer);
+    HelpCommand helpCmd(writer, app);
+    app.registerCommand("help", helpCmd);
+    app.registerCommand("recommend", rec);
+    app.registerCommand("POST", post);
+    HelpCommand help(writer, app); // Constructor injection
+
     help.execute(args);
 
-    // Build the exact expected string
-    std::string expected =
-        "add [userid] [productid1] [productid2]...\n"
-        "recommend [userid] [productid]\n"
-        "help\n";
+    // The assignment requires these 3 lines
+    ASSERT_EQ(writer.messages.size(), 5);
+    EXPECT_EQ(writer.messages[0], "DELETE, arguments: [userid] [productid1] [productid2] ...");
+    EXPECT_EQ(writer.messages[1], "GET, arguments: [userid] [productid]");
+    EXPECT_EQ(writer.messages[2], "PATCH, arguments: [userid] [productid1] [productid2] ...");
+    EXPECT_EQ(writer.messages[3], "POST, arguments: [userid] [productid1] [productid2] ...");
+    EXPECT_EQ(writer.messages[4], "help");
+}
 
-    EXPECT_EQ(captured.str(), expected)
-        << "Help output must match the assignment spec exactly";
+
+//====================================================================================================
+// Test 2: HelpWithExtraArgsPrintsNothing
+// Test 2: HelpWithExtraArgsPrintsNothing
+//====================================================================================================
+TEST_F(HelpCommandTest, HelpWithExtraArgsPrintsNothing)
+{
+    std::istringstream args("extra_junk");
+    MockWriter writer;
+    MockStorage storage("test_data.txt");
+    MockMenu menu;
+    RecommendCommand rec(storage, writer);
+    PostCommand post(storage, writer);
+    // Inject the writer into the App so it can report "400 Bad Request"
+    App app(&menu, &writer);
+    HelpCommand helpCmd(writer, app);
+    app.registerCommand("help", helpCmd);
+    app.registerCommand("recommend", rec);
+    app.registerCommand("POST", post);
+    HelpCommand help(writer, app); // Constructor injection
+
+    help.execute(args);
+
+    // If extra args are present, it should print nothing (size 0)
+     EXPECT_EQ(writer.messages.size(), 1);
+     EXPECT_EQ(writer.messages[0], "400 Bad Request");
 }
 
 //====================================================================================================
-// Test 2: HelpExactSpacing
-// Purpose: Verify exactly one space between words, no extra spaces anywhere
-//====================================================================================================
-TEST_F(HelpCommandTest, HelpExactSpacing) {
-    std::istringstream args("");
-    HelpCommand help;
-    help.execute(args);
-
-    std::string output = captured.str();
-
-    // Each line must appear exactly once with correct spacing
-    EXPECT_TRUE(output.find("add [userid] [productid1] [productid2]...") 
-        != std::string::npos)
-        << "First line must have exact spacing";
-
-    EXPECT_TRUE(output.find("recommend [userid] [productid]") 
-        != std::string::npos)
-        << "Second line must have exact spacing";
-
-    EXPECT_TRUE(output.find("help") 
-        != std::string::npos)
-        << "Third line must be exactly 'help'";
-
-    // Verify no double spaces anywhere in the output
-    EXPECT_TRUE(output.find("  ") == std::string::npos)
-        << "Output should not contain any double spaces";
-}
-
-//====================================================================================================
-// Test 3: HelpWithExtraArgs
-// Purpose: "help dsh" or "help anything" should print nothing — invalid command
-// This tests the extra args check in HelpCommand::execute()
-//====================================================================================================
-TEST_F(HelpCommandTest, HelpWithExtraArgs) {
-    std::istringstream args("dsh");
-    HelpCommand help;
-    help.execute(args);
-
-    // Nothing should be printed
-    EXPECT_TRUE(captured.str().empty())
-        << "Help with extra arguments should produce no output";
-}
-
-//====================================================================================================
-// Test 4: HelpWithMultipleExtraArgs
+// Test 3: HelpWithMultipleExtraArgs
 // Purpose: "help foo bar baz" should also print nothing
 //====================================================================================================
 TEST_F(HelpCommandTest, HelpWithMultipleExtraArgs) {
     std::istringstream args("foo bar baz");
-    HelpCommand help;
+    MockWriter writer;
+    MockStorage storage("test_data.txt");
+    MockMenu menu;
+    RecommendCommand rec(storage, writer);
+    PostCommand post(storage, writer);
+
+    // Inject the writer into the App so it can report "400 Bad Request"
+    App app(&menu, &writer);
+    HelpCommand helpCmd(writer, app);
+    app.registerCommand("help", helpCmd);
+    app.registerCommand("recommend", rec);
+    app.registerCommand("POST", post);
+    HelpCommand help(writer, app); // Constructor injection
+
     help.execute(args);
 
-    EXPECT_TRUE(captured.str().empty())
-        << "Help with multiple extra arguments should produce no output";
+    // If extra args are present, it should print nothing (size 0)
+     EXPECT_EQ(writer.messages.size(), 1);
+     EXPECT_EQ(writer.messages[0], "400 Bad Request");
 }
 
-//====================================================================================================
-// Test 5: HelpOutputEndsWithNewline
-// Purpose: Each line must end with exactly one newline — no missing or extra newlines
-//====================================================================================================
-TEST_F(HelpCommandTest, HelpOutputEndsWithNewline) {
-    std::istringstream args("");
-    HelpCommand help;
-    help.execute(args);
-
-    std::string output = captured.str();
-
-    // Output must end with exactly one newline
-    EXPECT_FALSE(output.empty())
-        << "Output should not be empty";
-
-    EXPECT_EQ(output.back(), '\n')
-        << "Output must end with a newline";
-
-    // Count total newlines — must be exactly 3 (one per line)
-    int newlineCount = 0;
-    for (char c : output) {
-        if (c == '\n') newlineCount++;
-    }
-    EXPECT_EQ(newlineCount, 3)
-        << "Output must contain exactly 3 newlines — one per line";
-}
 
 //====================================================================================================
-// Test 6: HelpWithOnlySpacesInArgs
-// Purpose: "help   " (spaces only) should still print the help menu
-// Spaces are not extra arguments — the stream will be empty after >> skips them
+// Test 4: HelpWithOnlySpacesInArgs
 //====================================================================================================
-TEST_F(HelpCommandTest, HelpWithOnlySpacesInArgs) {
+TEST_F(HelpCommandTest, HelpWithOnlySpacesInArgs)
+{
     std::istringstream args("   ");
-    HelpCommand help;
+    MockWriter writer;
+    MockStorage storage("test_data.txt");
+    RecommendCommand rec(storage, writer);
+    PostCommand post(storage, writer);
+    MockMenu menu;
+
+    // Inject the writer into the App so it can report "400 Bad Request"
+    App app(&menu, &writer);
+    HelpCommand helpCmd(writer, app);
+    app.registerCommand("help", helpCmd);
+    app.registerCommand("recommend", rec);
+    app.registerCommand("POST", post);
+    HelpCommand help(writer, app); // Constructor injection
+
     help.execute(args);
 
-    // Spaces only → args >> extra fails → help menu should print
-    EXPECT_FALSE(captured.str().empty())
-        << "Help with only spaces in args should still print the help menu";
+    // Spaces shouldn't count as "extra args", so it should print the menu
+    EXPECT_EQ(writer.messages.size(), 5);
 }
+
+//====================================================================================================
+// Test 5: NoTabs
+//====================================================================================================
+TEST_F(HelpCommandTest, HelpNoTabs)
+{
+    std::istringstream args("   \t");
+    MockWriter writer;
+    MockStorage storage("test_data.txt");
+    RecommendCommand rec(storage, writer);
+    PostCommand post(storage, writer);
+    MockMenu menu;
+
+    // Inject the writer into the App so it can report "400 Bad Request"
+    App app(&menu, &writer);
+    HelpCommand helpCmd(writer, app);
+    app.registerCommand("help", helpCmd);
+    app.registerCommand("recommend", rec);
+    app.registerCommand("POST", post);
+    HelpCommand help(writer, app); // Constructor injection
+
+    help.execute(args);
+
+    //Tabsare not allowed
+    EXPECT_EQ(writer.messages.size(), 1);
+    EXPECT_EQ(writer.messages[0], "400 Bad Request");
+}
+

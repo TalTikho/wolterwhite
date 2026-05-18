@@ -1,70 +1,84 @@
+//====================================================================================================
+// Include all needed headers
+//====================================================================================================
+// ---- Files ----
 #include "../include/App.h"
+#include "../include/ui/IClientHandler.h"
+
+// ---- System ----
 #include <map>
+#include <string>
 #include <sstream>
 #include <iostream>
-#include <string>
-#include <vector>
+#include "App.h"
 
+//====================================================================================================
 /*App's constructor, the map is not initiallized here but in register_command (this might change afterwards)
  We have a general menu accepted here as any class implementing IMenu can be this private variable.
 */
-
-App::App(IMenu *m)
-{
-    this->menu = m;
-}
+App::App(IMenu *m, IOutputWriter *defaultWriter) : menu(m), m_defaultWriter(defaultWriter) {}
 
 void App::run() noexcept
 {
-    // The program starts with a help menu to avoid confusion.
-    if (this->cmds.count("help"))
-    {
-        std::istringstream help;
-        this->cmds.at("help")->execute(help);
+    if (this->cmds.count("help")) {
+        std::istringstream empty;
+        this->cmds.at("help")->execute(empty);
     }
+
+    // Check if menu is also an IClientHandler
+    // If yes -> use isConnected() to stop loop when client disconnects
+    // If no  -> nullptr → while(true) behavior unchanged
+    IClientHandler* clientHandler = dynamic_cast<IClientHandler*>(menu);
+
     while (true)
     {
-        std::string command = menu->nextCommand();
-        // A line only for the tests to break the loop and continue to the next test.
-        if (command == "quit")
-        {
+        // Stop loop when socket client disconnects
+        if (clientHandler && !clientHandler->isConnected()) {
             break;
         }
-        // Do not accept tabs.
-        if (command.find('\t') != std::string::npos)
-        {
+
+        std::string input = menu->nextCommand();
+
+        if (input.empty()) continue;
+
+        std::istringstream ss(input);
+        std::string cmdName;
+        if (!(ss >> cmdName)) continue;
+
+        if (cmdName == "quit" || cmdName == "QUIT")
+            break;
+
+        if (input.find('\t') != std::string::npos)
             continue;
-        }
-        // Start a stream to validate the input sent to the command.
-        std::istringstream ss(command);
-        std ::string cmd;
-        std::string cache;
-        ss >> cmd;
-        // We do not want the leftover whitespace after the valid command accepted into the command's method.
+
         ss >> std::ws;
-        /*Try the command and if it exists and the args are valid it works. Else: back to the loop
-         Even if there is an error we just continue the loop with the next query for the next command.
-         .at(cmd) will make sure that if cmd is not in our cmds map a null pointer will not be created,
-         there is no segfault and the loop goes on with catch's continue.
-         */
-        if (this->cmds.count(cmd))
+
+        if (this->cmds.count(cmdName))
         {
             try
             {
-                this->cmds.at(cmd)->execute(ss);
+                this->cmds.at(cmdName)->execute(ss);
             }
             catch (...)
             {
-                continue;
+                if (m_defaultWriter)
+                    m_defaultWriter->write("400 Bad Request");
             }
         }
-        // App never stops (except when tested).
+        else
+        {
+            if (m_defaultWriter)
+                m_defaultWriter->write("400 Bad Request");
+        }
     }
 }
 
-/*Add a new command to the app. If it exists run will tell the command to execute.
- Otherwise: the execution fails and we continue run's loop. */
-void App::registerCommand(std::string name, ICommand &com)
+void App::registerCommand(const std::string &name, ICommand &cmd)
 {
-    this->cmds[name] = &com;
+    this->cmds[name] = &cmd;
+}
+
+const std::map<std::string, ICommand *> &App::get_commands()
+{
+    return this->cmds;
 }

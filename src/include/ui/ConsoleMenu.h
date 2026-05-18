@@ -4,17 +4,12 @@
 #include "IMenu.h"
 #include <string>
 
-//ConsoleMenu is a command line menu version for the project.
-class ConsoleMenu: public IMenu{
-    private:
-        //Set next command using a private setter in order to keep encapsulation.
-        void nextSetter();
-        std:: string next;
-    public:
-        explicit ConsoleMenu();
-        std:: string nextCommand() noexcept override;
+// ConsoleMenu is a command-line implementation of IMenu.
+// It reads user input from stdin and returns it as a raw command string.
+class ConsoleMenu : public IMenu {
+public:
+    ConsoleMenu();
+    std::string nextCommand() noexcept override;
 };
-
-
 
 #endif
