@@ -37,6 +37,7 @@ void HelpCommand::execute(std::istringstream &args)
     // Ignore execution if extra arguments exist
     if (args >> extra)
     {
+        m_writer.write("400 Bad Request");
         return;
     }
 
