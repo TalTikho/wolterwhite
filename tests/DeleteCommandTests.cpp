@@ -291,3 +291,26 @@ TEST_F(DeleteCommandTest, DuplicateArgumentsIgnored)
 
     EXPECT_TRUE(data["1"].empty());
 }
+
+//====================================================================================================
+// 12. TrailingSpacesHandledCorrectly
+//====================================================================================================
+TEST_F(DeleteCommandTest, TrailingSpacesHandledCorrectly)
+{
+    FileDataStorage storage(TEST_FILE);
+    MockWriter writer;
+    DeleteCommand del(storage, writer);
+
+    seedUser(storage, "1", {"101", "102", "103"});
+
+    std::istringstream args("1 101 102   ");
+
+    del.execute(args);
+
+    EXPECT_EQ(writer.lastMessage, "204 No Content");
+
+    auto data = storage.loadAll();
+    EXPECT_FALSE(data["1"].count("101"));
+    EXPECT_FALSE(data["1"].count("102"));
+    EXPECT_TRUE(data["1"].count("103"));
+}
