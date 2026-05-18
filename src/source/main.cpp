@@ -37,6 +37,7 @@ int main(int argc, char *argv[])
     // AddProductCommand addCmd(storage, cw);
     RecommendCommand recCmd(storage, writer);
     PostCommand postCmd(storage, writer);
+    PatchCommand patchCmd(storage, writer);
 
     // Inject the writer into the App so it can report "400 Bad Request"
     App app(&handler, &handler);
@@ -45,6 +46,7 @@ int main(int argc, char *argv[])
     app.registerCommand("help", helpCmd);
     app.registerCommand("POST", postCmd);
     app.registerCommand("recommend", recCmd);
+    app.registerCommand("patch", patchCmd);
 
     app.run(); // stops when SocketClientHandler disconnects
 
