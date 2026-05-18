@@ -1,5 +1,5 @@
-#ifndef POSTCOMMAND_H
-#define POSTCOMMAND_H
+#ifndef PATCHCOMMAND_H
+#define PATCHCOMMAND_H
 
 //====================================================================================================
 // Include all needed headers
@@ -14,15 +14,15 @@
 #include <vector>
 
 //====================================================================================================
-// PostCommand: Handles the POST command
-// Saves a new user and their products ONLY if the user does not already exist
+// PatchCommand: Handles the PATCH command
+// Saves a new user and their products ONLY if the user already exist
 //
 // Responses:
-//   "201 Created"     — user did not exist, data saved successfully
-//   "404 Not Found"   — user already exists, nothing saved
-//   "400 Bad Request" — malformed input (no userId or no products)
+//   "204 No Content"   — user exists, products successfully added/updated
+//   "404 Not Found"    — user does NOT exist in storage (must have been created via POST)
+//   "400 Bad Request"  — malformed input (no userId, no productIds, invalid format like tabs, etc.)
 //====================================================================================================
-class PostCommand : public ICommand
+class PatchCommand : public ICommand
 {
 private:
     IDataStorage &m_storage; // Injected — handles persistence
@@ -31,16 +31,15 @@ private:
 public:
     /**
      * Constructor: Both storage and writer are injected
-     * PostCommand never knows if it is writing to a socket or stdout
+     * PatchCommand never knows if it is writing to a socket or stdout
      */
-    explicit PostCommand(IDataStorage &storage, IOutputWriter &writer);
+    explicit PatchCommand(IDataStorage &storage, IOutputWriter &writer);
 
     /**
-     * execute: Parses args, validates, saves if new user, writes response
+     * execute: Parses args, validates, saves if existing user, writes response
      * Silently ignores malformed input by writing "400 Bad Request"
      */
     void execute(std::istringstream &args) override;
-    const std::string getPrintoutFormat () override;
 };
 
 #endif

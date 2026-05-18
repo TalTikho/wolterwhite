@@ -2,7 +2,7 @@
 // Include all needed headers
 //====================================================================================================
 // ---- Files ----
-#include "../../include/commands/PostCommand.h"
+#include "../include/commands/PatchCommand.h"
 
 // ---- System ----
 #include <string>
@@ -10,25 +10,25 @@
 #include <sstream>
 
 //====================================================================================================
-// PostCommand.cpp implements PostCommand.h
+// PatchCommand.cpp implements PatchCommand.h
 //====================================================================================================
 /**
  * Constructor: Stores references to injected storage and writer
  */
-PostCommand::PostCommand(IDataStorage &storage, IOutputWriter &writer)
+PatchCommand::PatchCommand(IDataStorage &storage, IOutputWriter &writer)
     : m_storage(storage), m_writer(writer) {}
 
 /**
- * execute: Main POST logic
+ * execute: Main Patch logic
  *
  * Flow:
  * 1. Parse userId  — if missing → "400 Bad Request"
  * 2. Parse products — if none   → "400 Bad Request"
  * 3. Check if user already exists in storage
- *    — if yes → "404 Not Found"
- * 4. Save data → "201 Created"
+ *    — if no → "404 Not Found"
+ * 4. Save data → "204 No Content"
  */
-void PostCommand::execute(std::istringstream &args)
+void PatchCommand::execute(std::istringstream &args)
 {
     // Check for tabs
     std::string originalStr = args.str();
@@ -37,7 +37,7 @@ void PostCommand::execute(std::istringstream &args)
         m_writer.write("400 Bad Request");
         return;
     }
-    
+
     std::string userId;
 
     // Check if userId exists. If not, it's a 400 Bad Request.
@@ -48,16 +48,15 @@ void PostCommand::execute(std::istringstream &args)
     }
 
     // Capture products into a vector
-    std::vector<std::string> products;
+    std::vector<std::string> newProducts;
     std::string pid;
     while (args >> pid)
     {
-        products.push_back(pid);
+        newProducts.push_back(pid);
     }
 
-    // If a userId was provided but no product IDs followed,
-    // it's an invalid POST request — return 400 Bad Request.
-    if (products.empty())
+    // If a userId was provided but no product IDs followed, return 400 Bad Request.
+    if (newProducts.empty())
     {
         m_writer.write("400 Bad Request");
         return;
@@ -66,19 +65,25 @@ void PostCommand::execute(std::istringstream &args)
     // Load current data to check for duplicates
     auto allData = m_storage.loadAll();
 
-    // If user exists, return 404 Not Found
-    if (allData.find(userId) != allData.end())
+    // If user does not exist, return 404 Not Found
+    auto userIt = allData.find(userId);
+    if (userIt == allData.end())
     {
         m_writer.write("404 Not Found");
         return;
     }
 
+    // Append new products using insert (sets automatically handle duplicates)
+    auto existingProducts = userIt->second;
+    for (const auto &newPid : newProducts)
+    {
+        existingProducts.insert(newPid);
+    }
+    
+    // Convert std::set back to std::vector for storage compliance
+    std::vector<std::string> updatedVector(existingProducts.begin(), existingProducts.end());
+
     // Save and return success
-    m_storage.save(userId, products);
-    m_writer.write("201 Created");
-}
-//Post printing format for usage in HelpCommand.
-const std::string PostCommand::getPrintoutFormat()
-{
-    return "POST, arguments: [userid] [productid1] [productid2] ...\n";
+    m_storage.save(userId, updatedVector);
+    m_writer.write("204 No Content");
 }

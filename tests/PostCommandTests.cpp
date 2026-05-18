@@ -228,18 +228,40 @@ TEST_F(PostCommandTest, SecondPostAfterRestartStillRejected)
 //====================================================================================================
 TEST_F(PostCommandTest, PostRejectInputWithTabs)
 {
-    FileDataStorage storage(TEST_FILE); // The path to the file we test
+    FileDataStorage storage(TEST_FILE);
+
+    // ------------------------------------------------------------
+    // First create valid existing data
+    // ------------------------------------------------------------
+    {
+        MockWriter validWriter;
+        PostCommand validPost(storage, validWriter);
+
+        std::istringstream validArgs("1 101");
+        validPost.execute(validArgs);
+    }
+
+    // ------------------------------------------------------------
+    // Now try invalid POST with tabs
+    // ------------------------------------------------------------
     MockWriter writer;
-    PostCommand post(storage, writer); // An instance of PostCommand class (which replaced AddProductCommand)
+    PostCommand post(storage, writer);
 
     std::istringstream args("1\t102\t103");
     post.execute(args);
 
-    EXPECT_EQ(writer.lastMessage, "400 Bad Request"); // tabs are invalid
+    EXPECT_EQ(writer.lastMessage, "400 Bad Request");
 
-    // Data should remain as before
+    // ------------------------------------------------------------
+    // Verify original data was NOT modified
+    // ------------------------------------------------------------
     auto data = storage.loadAll();
-    EXPECT_EQ(data["1"].size(), 1);           // only original 101 remains
-    EXPECT_FALSE(data["1"].count("102") > 0); // 102 NOT saved
-    EXPECT_FALSE(data["1"].count("103") > 0); // 103 NOT saved
+
+    ASSERT_TRUE(data.count("1") > 0);
+
+    EXPECT_EQ(data["1"].size(), 1);
+    EXPECT_TRUE(data["1"].count("101") > 0);
+
+    EXPECT_FALSE(data["1"].count("102") > 0);
+    EXPECT_FALSE(data["1"].count("103") > 0);
 }

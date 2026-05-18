@@ -3,28 +3,51 @@
 //====================================================================================================
 // ---- Files ----
 #include "../include/AllIncludes.h"
+#include "server/TCPServer.h" //NEEDED wont work without it
+
+// ---- System ----
+#include <unistd.h>
 
 //====================================================================================================
-int main()
+int main(int argc, char *argv[])
 {
+    if (argc < 2)
+    {
+        std::cerr << "Usage: " << argv[0] << " <port>\n";
+        return 1;
+    }
+
+    int port = std::stoi(argv[1]);
+
     FileDataStorage storage("data/data.txt");
-    ConsoleMenu menu;
-    ConsoleWriter cw; // One writer shared by everyone
+
+    // Set up TCP server
+    TCPServer server(port);
+    server.start();
+    int clientFd = server.acceptClient();
+
+    // SocketClientHandler implements BOTH IMenu + IOutputWriter
+    // via the same socket fd
+    SocketClientHandler handler(clientFd);
+
+    // SocketWriter for commands to send their responses
+    SocketWriter writer(clientFd);
 
     // All commands MUST take the writer now
-    HelpCommand helpCmd(cw);
     // AddProductCommand addCmd(storage, cw);
-    RecommendCommand rec(storage, cw);
-    PostCommand post(storage, cw);
+    RecommendCommand recCmd(storage, writer);
+    PostCommand postCmd(storage, writer);
 
     // Inject the writer into the App so it can report "400 Bad Request"
-    App app(&menu, &cw);
+    App app(&handler, &handler);
+    HelpCommand helpCmd(writer, app);
 
     app.registerCommand("help", helpCmd);
-    // app.registerCommand("add", addCmd);
-    app.registerCommand("recommend", rec);
-    app.registerCommand("POST", post);
+    app.registerCommand("POST", postCmd);
+    app.registerCommand("recommend", recCmd);
 
-    app.run();
+    app.run(); // stops when SocketClientHandler disconnects
+
+    close(clientFd);
     return 0;
 }
