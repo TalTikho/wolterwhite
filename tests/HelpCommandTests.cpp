@@ -87,16 +87,18 @@ TEST_F(HelpCommandTest, HelpExactOutput)
     MockWriter writer;
     MockMenu menu;
     MockStorage storage("test_data.txt");
-    GetCommand get(storage, writer);
-    PostCommand post(storage, writer);
+
+// All commands MUST take the writer now
+    // AddProductCommand addCmd(storage, writer);
+    GetCommand getCmd(storage, writer);
+    PostCommand postCmd(storage, writer);
 
     // Inject the writer into the App so it can report "400 Bad Request"
-    App app(&menu, &writer);
+    App app(&menu, &writer); // Constructor injection
     HelpCommand helpCmd(writer, app);
     app.registerCommand("help", helpCmd);
-    app.registerCommand("recommend", get);
-    app.registerCommand("post", post);
-    HelpCommand help(writer, app); // Constructor injection
+    app.registerCommand("get", getCmd);
+    app.registerCommand("post", postCmd);
 
     help.execute(args);
 
@@ -120,16 +122,17 @@ TEST_F(HelpCommandTest, HelpWithExtraArgsPrintsNothing)
     MockWriter writer;
     MockStorage storage("test_data.txt");
     MockMenu menu;
-    GetCommand get(storage, writer);
-    PostCommand post(storage, writer);
+    // All commands MUST take the writer now
+    // AddProductCommand addCmd(storage, writer);
+    GetCommand getCmd(storage, writer);
+    PostCommand postCmd(storage, writer);
+
     // Inject the writer into the App so it can report "400 Bad Request"
-    App app(&menu, &writer);
+    App app(&menu, &writer); // Constructor injection
     HelpCommand helpCmd(writer, app);
     app.registerCommand("help", helpCmd);
-    app.registerCommand("recommend", get);
-    app.registerCommand("post", post);
-    HelpCommand help(writer, app); // Constructor injection
-
+    app.registerCommand("get", getCmd);
+    app.registerCommand("post", postCmd);
     help.execute(args);
 
     // If extra args are present, it should print nothing (size 0)
@@ -146,16 +149,17 @@ TEST_F(HelpCommandTest, HelpWithMultipleExtraArgs) {
     MockWriter writer;
     MockStorage storage("test_data.txt");
     MockMenu menu;
-    GetCommand get(storage, writer);
-    PostCommand post(storage, writer);
+    // All commands MUST take the writer now
+    // AddProductCommand addCmd(storage, writer);
+    GetCommand getCmd(storage, writer);
+    PostCommand postCmd(storage, writer);
 
     // Inject the writer into the App so it can report "400 Bad Request"
-    App app(&menu, &writer);
+    App app(&menu, &writer); // Constructor injection
     HelpCommand helpCmd(writer, app);
     app.registerCommand("help", helpCmd);
-    app.registerCommand("recommend", get);
-    app.registerCommand("post", post);
-    HelpCommand help(writer, app); // Constructor injection
+    app.registerCommand("get", getCmd);
+    app.registerCommand("post", postCmd);
 
     help.execute(args);
 
@@ -173,16 +177,17 @@ TEST_F(HelpCommandTest, HelpWithOnlySpacesInArgs)
     std::istringstream args("   ");
     MockWriter writer;
     MockStorage storage("test_data.txt");
-    GetCommand get(storage, writer);
-    PostCommand post(storage, writer);
+    // All commands MUST take the writer now
+    // AddProductCommand addCmd(storage, writer);
+    GetCommand getCmd(storage, writer);
+    PostCommand postCmd(storage, writer);
 
     // Inject the writer into the App so it can report "400 Bad Request"
-    App app(&menu, &writer);
+    App app(&menu, &writer); // Constructor injection
     HelpCommand helpCmd(writer, app);
     app.registerCommand("help", helpCmd);
-    app.registerCommand("recommend", get);
-    app.registerCommand("post", post);
-    HelpCommand help(writer, app); // Constructor injection
+    app.registerCommand("get", getCmd);
+    app.registerCommand("post", postCmd);
 
     help.execute(args);
 
@@ -198,16 +203,17 @@ TEST_F(HelpCommandTest, HelpNoTabs)
     std::istringstream args("   \t");
     MockWriter writer;
     MockStorage storage("test_data.txt");
-    GetCommand get(storage, writer);
-    PostCommand post(storage, writer);
+    // All commands MUST take the writer now
+    // AddProductCommand addCmd(storage, writer);
+    GetCommand getCmd(storage, writer);
+    PostCommand postCmd(storage, writer);
 
     // Inject the writer into the App so it can report "400 Bad Request"
-    App app(&menu, &writer);
+    App app(&menu, &writer); // Constructor injection
     HelpCommand helpCmd(writer, app);
     app.registerCommand("help", helpCmd);
-    app.registerCommand("recommend", get);
-    app.registerCommand("post", post);
-    HelpCommand help(writer, app); // Constructor injection
+    app.registerCommand("get", getCmd);
+    app.registerCommand("post", postCmd);
 
     help.execute(args);
 
