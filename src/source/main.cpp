@@ -34,7 +34,6 @@ int main(int argc, char *argv[])
     SocketWriter writer(clientFd);
 
     // All commands MUST take the writer now
-    // AddProductCommand addCmd(storage, cw);
     RecommendCommand recCmd(storage, writer);
     PostCommand postCmd(storage, writer);
     PatchCommand patchCmd(storage, writer);

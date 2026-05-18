@@ -8,7 +8,6 @@
 #include "commands/HelpCommand.h"
 #include "commands/GetCommand.h"
 #include "commands/ICommandProvider.h"
-// #include "commands/AddProductCommand.h"
 
 // Output
 #include "output/SocketWriter.h"
