@@ -13,8 +13,8 @@
 class DeleteCommand : public ICommand
 {
 private:
-    IDataStorage &d_storage; // Injected — handles persistence
-    IOutputWriter &d_writer; // Injected — handles output destination
+    IDataStorage &m_storage; // Injected — handles persistence
+    IOutputWriter &m_writer; // Injected — handles output destination
 
 public:
     /**
