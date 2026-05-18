@@ -28,6 +28,8 @@ add_executable(runTests
     PostCommandTests.cpp
     PatchCommandTests.cpp
     GetCommandTests.cpp
+    #PatchCommandTests.cpp
+    DeleteCommandTests.cpp
 
     #AddProductCommandTests.cpp
 )
