@@ -50,7 +50,7 @@ void DeleteCommand::execute(std::istringstream &args)
      bool foundSome = false;
      for (auto const product : products_to_delete){
 
-        if (std::find(all.begin(), all.end(), product) != all.end()){
+        if (std::find(all[userId].begin(), all[userId].end(), product) != all[userId].end()){
             all[userId].erase(product);
             foundSome = true;
         }
