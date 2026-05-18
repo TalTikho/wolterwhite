@@ -8,7 +8,6 @@
 #include "commands/PostCommand.h"
 #include "output/IOutputWriter.h"
 #include "output/IOutputWriter.h"
-#include "commands/HelpCommand.h"
 #include "storage/IDataStorage.h"
 #include "ui/IMenu.h"
 
@@ -16,8 +15,6 @@
 // ---- System ----
 #include <gtest/gtest.h>
 #include <sstream>
-#include <vector>
-#include <string>
 #include <vector>
 #include <string>
 
@@ -100,7 +97,7 @@ TEST_F(HelpCommandTest, HelpExactOutput)
     app.registerCommand("get", getCmd);
     app.registerCommand("post", postCmd);
 
-    help.execute(args);
+    helpCmd.execute(args);
 
     // The assignment requires these 3 lines
     ASSERT_EQ(writer.messages.size(), 5);
@@ -133,7 +130,7 @@ TEST_F(HelpCommandTest, HelpWithExtraArgsPrintsNothing)
     app.registerCommand("help", helpCmd);
     app.registerCommand("get", getCmd);
     app.registerCommand("post", postCmd);
-    help.execute(args);
+    helpCmd.execute(args);
 
     // If extra args are present, it should print nothing (size 0)
      EXPECT_EQ(writer.messages.size(), 1);
@@ -161,7 +158,7 @@ TEST_F(HelpCommandTest, HelpWithMultipleExtraArgs) {
     app.registerCommand("get", getCmd);
     app.registerCommand("post", postCmd);
 
-    help.execute(args);
+    helpCmd.execute(args);
 
     // If extra args are present, it should print nothing (size 0)
      EXPECT_EQ(writer.messages.size(), 1);
@@ -177,6 +174,7 @@ TEST_F(HelpCommandTest, HelpWithOnlySpacesInArgs)
     std::istringstream args("   ");
     MockWriter writer;
     MockStorage storage("test_data.txt");
+    MockMenu menu;
     // All commands MUST take the writer now
     // AddProductCommand addCmd(storage, writer);
     GetCommand getCmd(storage, writer);
@@ -189,7 +187,7 @@ TEST_F(HelpCommandTest, HelpWithOnlySpacesInArgs)
     app.registerCommand("get", getCmd);
     app.registerCommand("post", postCmd);
 
-    help.execute(args);
+    helpCmd.execute(args);
 
     // Spaces shouldn't count as "extra args", so it should print the menu
     EXPECT_EQ(writer.messages.size(), 5);
@@ -203,6 +201,7 @@ TEST_F(HelpCommandTest, HelpNoTabs)
     std::istringstream args("   \t");
     MockWriter writer;
     MockStorage storage("test_data.txt");
+    MockMenu menu;
     // All commands MUST take the writer now
     // AddProductCommand addCmd(storage, writer);
     GetCommand getCmd(storage, writer);
@@ -215,7 +214,7 @@ TEST_F(HelpCommandTest, HelpNoTabs)
     app.registerCommand("get", getCmd);
     app.registerCommand("post", postCmd);
 
-    help.execute(args);
+    helpCmd.execute(args);
 
     //Tabsare not allowed
     EXPECT_EQ(writer.messages.size(), 1);
