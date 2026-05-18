@@ -7,7 +7,6 @@
 #include "commands/GetCommand.h"
 #include "commands/PostCommand.h"
 #include "output/IOutputWriter.h"
-#include "output/IOutputWriter.h"
 #include "storage/IDataStorage.h"
 #include "ui/IMenu.h"
 
