@@ -16,8 +16,8 @@
 class HelpCommand : public ICommand
 {
 private:
-    IOutputWriter &m_writer; // Injected writer
-    ICommandProvider &helpCom;
+    IOutputWriter &m_writer; // Injected writer'
+    ICommandProvider &m_commandProvider;
 
 public:
     /**
