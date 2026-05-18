@@ -4,10 +4,11 @@
 // Commands
 #include "commands/ICommand.h"
 #include "commands/PostCommand.h"
-//#include "commands/PatchCommand.h"
+#include "commands/PatchCommand.h"
 #include "commands/HelpCommand.h"
 #include "commands/GetCommand.h"
 #include "commands/ICommandProvider.h"
+#include "commands/DeleteCommand.h"
 
 // Output
 #include "output/SocketWriter.h"

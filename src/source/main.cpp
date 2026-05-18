@@ -35,6 +35,7 @@ int main(int argc, char *argv[])
 
     // All commands MUST take the writer now
     // AddProductCommand addCmd(storage, writer);
+    DeleteCommand deletetCmd(storage, writer);
     GetCommand getCmd(storage, writer);
     PatchCommand patchCmd(storage, writer);
     PostCommand postCmd(storage, writer);
@@ -42,8 +43,9 @@ int main(int argc, char *argv[])
     // Inject the writer into the App so it can report "400 Bad Request"
     App app(&menu, &writer); // Constructor injection
     HelpCommand helpCmd(writer, app);
-    
+
     app.registerCommand("get", getCmd);
+    app.registerCommand("delete", recCmd);
     app.registerCommand("patch", patchCmd);
     app.registerCommand("post", postCmd);
     app.registerCommand("help", helpCmd);
