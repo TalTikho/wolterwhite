@@ -10,7 +10,6 @@
 #include <string>
 #include <sstream>
 #include <iostream>
-#include "App.h"
 
 //====================================================================================================
 /*App's constructor, the map is not initiallized here but in register_command (this might change afterwards)
