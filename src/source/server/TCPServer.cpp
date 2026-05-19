@@ -17,7 +17,6 @@ void TCPServer::start() {
         throw std::runtime_error("Failed to create server socket: " + std::string(strerror(errno)));
     }
 
-    // 🎯 FIX: Allow immediate reuse of local addresses/ports.
     // This prevents "Address already in use" crashes during rapid integration test reruns.
     int opt = 1;
     if (setsockopt(m_serverFd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
