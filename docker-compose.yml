@@ -18,10 +18,10 @@ services:
       dockerfile: Dockerfile.client
     container_name: wolterwhite_client_container
     environment:
-      - SERVER_HOST=wolterwhite-server # Matches the server service name above
+      - SERVER_HOST=wolterwhite-server
       - SERVER_PORT=5555
-    # Keep stdin and tty open so you can type interactively into Client.py
     stdin_open: true
     tty: true
     depends_on:
       - wolterwhite-server
+    command: tail -f /dev/null
