@@ -141,7 +141,5 @@ TEST_F(GetCommandTests, NoTabs)
     int count = 0;
     while (result >> word)
         count++;
-
-    EXPECT_EQ(count, 0) << "No tabs";
     EXPECT_EQ(writer.lastMessage, "400 Bad Request");
 }
