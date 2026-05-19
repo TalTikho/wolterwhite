@@ -29,8 +29,13 @@ void FileDataStorage::save(const std::string &userId, const std::vector<std::str
     std::map<std::string, std::set<std::string>> All = this->loadAll();
     /*delete the file's content so we can update it in a way each user has its own line
      as one cannot simply find a string in the file and append to it from there.
-    */
-    std::ofstream outFile(m_filePath, std::ofstream::out | std::ofstream::trunc);
+    */{
+        std::ofstream outFile(m_filePath, std::ios::trunc);
+    }
+    //File closes automatically here when outFile goes out of scope
+
+    //Open in append mode for the rest of the method
+    std::ofstream outFile(m_filePath, std::ios::app);
 
     // If the file fails to open, tell the user there was an error and stop
     if (!outFile)
