@@ -11,6 +11,8 @@
 #include <iostream>
 #include <utility>
 #include <map>
+#include <set>
+#include <vector>
 
 /**
  * Constructor: Initializes the storage with a specific file path.
@@ -24,47 +26,46 @@ void FileDataStorage::save(const std::string &userId, const std::vector<std::str
 {
     /*Load all user->products data from to the file into a map using FileDataStorage loadAll.
      If the file is empty then an empty map is loaded so loadAll usage is not faulty.
-     Important to do this before deleting the entire file's contents. 
+     Important to do this before deleting the entire file's contents.
     */
     std::map<std::string, std::set<std::string>> All = this->loadAll();
+    // If there are no products leave no garbage.
+    if (products.empty())
+    {
+        All[userId].clear();
+    }
+    else
+    {
+    // 2. Now insert into a fresh, empty set
+        for (const std::string &p : products)
+        {
+            All[userId].insert(p);
+        }
+    }
     /*delete the file's content so we can update it in a way each user has its own line
      as one cannot simply find a string in the file and append to it from there.
-    */{
-        std::ofstream outFile(m_filePath, std::ios::trunc);
-    }
-    //File closes automatically here when outFile goes out of scope
-
-    //Open in append mode for the rest of the method
-    std::ofstream outFile(m_filePath, std::ios::app);
-
+    */
+    std::ofstream of(m_filePath, std::ofstream::out| std::ofstream::trunc);
     // If the file fails to open, tell the user there was an error and stop
-    if (!outFile)
+    if (!of)
     {
         std::cerr << "Error: Could not open file for writing: " << m_filePath << std::endl;
         return;
     }
-    // 1. Wipe out the old products completely
-    All[userId].clear(); 
-
-    // 2. Now insert into a fresh, empty set
-    for (const std::string &p : products) {
-        All[userId].insert(p); 
-    }
-    //Write the entire map into the file. This takes longer than adding one user
-    //to the end of the file each time. However it makes sure every user has one line only.
-    for (auto [user, products] : All)
+    // Write the entire map into the file. This takes longer than adding one user
+    // to the end of the file each time. However it makes sure every user has one line only.
+    for (auto &[user, products] : All)
     {
         // Write the User ID followed by a colon to start the line
-        outFile << user << ":";
+        of << user << ":";
         for (const std::string &p : products)
         {
-            outFile << " " << p;
-        }  
+            of << " " << p;
+        }
         // Add a new line at the end so the next save starts on a fresh line
-        outFile << "\n";  
+        of << "\n";
     }
-
-
+    of.close();
 }
 
 /**
@@ -102,6 +103,11 @@ std::map<std::string, std::set<std::string>> FileDataStorage::loadAll()
         // Try to extract the User ID and the colon character from the start of the line
         if (std::getline(ss, userId, ':'))
         {
+            // No products == still user.
+            if (fullData.find(userId) == fullData.end())
+            {
+                fullData[userId] = std::set<std::string>();
+            }
             std::string productId;
             // Keep reading every word (product ID) that follows on the same line
             while (ss >> productId)
