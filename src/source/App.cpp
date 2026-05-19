@@ -64,18 +64,17 @@ void App::run() noexcept
         std::istringstream ss(input);
         std::string cmdName;
         if (!(ss >> cmdName)) continue;
-
-        if (cmdName == "quit" || cmdName == "QUIT")
+        //Using tolower we convert the UPPER chars into lower.
+        //tolower does not affect symbols which are not in the ascii range of UPPER chars.
+        //This lets us accept inputs in both lower and UPPERCASE as in App's map they are lowercases. 
+        cmdName = this->lowerCommand(cmdName);
+        if (cmdName == "quit")
             break;
 
         if (input.find('\t') != std::string::npos)
             continue;
 
         ss >> std::ws;
-        //Using tolower we convert the UPPER chars into lower.
-        //tolower does not affect symbols which are not in the ascii range of UPPER chars.
-        //This lets us accept inputs in both lower and UPPERCASE as in App's map they are lowercases. 
-        cmdName = this->lowerCommand(cmdName);
 
         if (this->cmds.count(cmdName))
         {
