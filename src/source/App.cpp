@@ -10,6 +10,7 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#include "App.h"
 
 //====================================================================================================
 /*App's constructor, the map is not initiallized here but in register_command (this might change afterwards)
@@ -71,6 +72,10 @@ void App::run() noexcept
             continue;
 
         ss >> std::ws;
+        //Using tolower we convert the UPPER chars into lower.
+        //tolower does not affect symbols which are not in the ascii range of UPPER chars.
+        //This lets us accept inputs in both lower and UPPERCASE as in App's map they are lowercases. 
+        cmdName = this->lowerCommand(cmdName);
 
         if (this->cmds.count(cmdName))
         {
@@ -100,4 +105,14 @@ void App::registerCommand(const std::string &name, ICommand &cmd)
 const std::map<std::string, ICommand *> &App::get_commands()
 {
     return this->cmds;
+}
+
+std::string App::lowerCommand(std::string str)
+{
+    std::string newStr = str;
+    for (char& c : newStr){
+        c = (char)tolower(c);
+    }
+    return newStr;
+
 }
