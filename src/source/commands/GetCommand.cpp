@@ -118,8 +118,10 @@ void GetCommand::execute(std::istringstream &args)
         }
     }
     if (pCommon.empty())
-    {
-        m_writer.write("404 Not Found");
+    {   
+        m_writer.write("200 OK\n");
+        // Another \n for printing all the common products (there are none`)
+        m_writer.write("");
         return;
     }
 
@@ -158,7 +160,7 @@ void GetCommand::execute(std::istringstream &args)
 
     // Send an OK siganl as recommendations were internally made.
     
-    m_writer.write("200 OK");
+    m_writer.write("200 OK\n");
     if (!result.empty())
     {
         m_writer.write(result);

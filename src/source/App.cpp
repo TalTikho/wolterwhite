@@ -19,11 +19,6 @@ App::App(IMenu *m, IOutputWriter *defaultWriter) : menu(m), m_defaultWriter(defa
 
 void App::run() noexcept
 {
-    if (this->cmds.count("help")) {
-        std::istringstream empty;
-        this->cmds.at("help")->execute(empty);
-    }
-
     // Check if menu is also an IClientHandler
     // If yes -> use isConnected() to stop loop when client disconnects
     // If no  -> nullptr → while(true) behavior unchanged
