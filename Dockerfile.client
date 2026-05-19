@@ -5,7 +5,7 @@ FROM python:3.11-slim
 WORKDIR /usr/src/wolterwhite_client
 
 # Step 3: Copy the client script from its deep directory path
-COPY src/source/client/client.py .
+COPY src/client/client.py .
 
 # Step 4: Run the Python client with unbuffered output
 CMD ["python", "-u", "client.py"]

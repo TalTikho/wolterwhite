@@ -24,3 +24,4 @@ services:
     tty: true
     depends_on:
       - wolterwhite-server
+    command: tail -f /dev/null
