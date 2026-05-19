@@ -25,6 +25,7 @@ private:
     IMenu *menu;
     std::map<std::string, ICommand *> cmds;
     IOutputWriter *m_defaultWriter; // To handle unknown command responses
+    std::string lowerCommand(std::string str);
 
 public:
     // Updated to take a default writer for system-level responses
@@ -35,13 +36,13 @@ public:
     1. constructor.
     2. run is the app loop.
     3. register command enters a command into the app. Will possible be entered into the constructor later.
-    4. get_commands: returns App's commands map as a const preserving encapsulation. HelpCommand can then 
+    4. get_commands: returns App's commands map as a const preserving encapsulation. HelpCommand can then
        use it to get the commands' print statements. It sees App only as a CommandProvider meaning it can't use App.run().
        However it will be able to use print as it is const.
     */
     void run() noexcept;
     void registerCommand(const std::string &name, ICommand &cmd);
-    const std::map<std::string, ICommand*>& get_commands() override;
+    const std::map<std::string, ICommand *> &get_commands() override;
 };
 
 #endif

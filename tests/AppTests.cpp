@@ -125,7 +125,7 @@ TEST(AppTest, CorrectArgsPassedToCommand)
     MockWriter writer;
 
     App app(&menu, &writer);
-    app.registerCommand("POST", postCmd);
+    app.registerCommand("post", postCmd);
 
     app.run();
 
