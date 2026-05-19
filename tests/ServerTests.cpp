@@ -129,7 +129,7 @@ std::string sendAndReceive(int port, const std::string &command)
     std::string packet = command + "\n";
     send(sock, packet.c_str(), packet.length(), 0);
 
-    // 🎯 Tell the server we are finished writing so it breaks out of nextCommand() loop
+    // Tell the server we are finished writing so it breaks out of nextCommand() loop
     shutdown(sock, SHUT_WR);
 
     char buffer[4096];
@@ -141,7 +141,7 @@ std::string sendAndReceive(int port, const std::string &command)
         response += buffer;
     }
 
-    // 🎯 Cleanly close file descriptor
+    // Cleanly close file descriptor
     close(sock);
     return response;
 }
@@ -170,7 +170,7 @@ std::string sendAndReceiveMultiple(int port, const std::vector<std::string> &com
         send(sock, packet.c_str(), packet.length(), 0);
     }
 
-    // 🎯 Signal execution end to the server application
+    // Signal execution end to the server application
     shutdown(sock, SHUT_WR);
 
     char buffer[4096];
@@ -182,7 +182,7 @@ std::string sendAndReceiveMultiple(int port, const std::vector<std::string> &com
         fullResponse += buffer;
     }
 
-    // 🎯 Clean up connection
+    // Clean up connection
     close(sock);
     return fullResponse;
 }

@@ -101,14 +101,14 @@ TEST_F(HelpCommandTest, HelpExactOutput)
 
     ASSERT_EQ(writer.messages.size(), 5);
     EXPECT_EQ(writer.messages[0],
-              "DELETE, arguments: [userid] [productid1] [productid2] ...\n");
+              "DELETE, arguments: [userid] [productid1] [productid2] ...");
     EXPECT_EQ(writer.messages[1],
-              "GET, arguments: [userid] [productid]\n");
+              "GET, arguments: [userid] [productid]");
     EXPECT_EQ(writer.messages[2],
-              "PATCH, arguments: [userid] [productid1] [productid2] ...\n");
+              "PATCH, arguments: [userid] [productid1] [productid2] ...");
     EXPECT_EQ(writer.messages[3],
-              "POST, arguments: [userid] [productid1] [productid2] ...\n");
-    EXPECT_EQ(writer.messages[4], "help\n");
+              "POST, arguments: [userid] [productid1] [productid2] ...");
+    EXPECT_EQ(writer.messages[4], "help");
 
     // Delete in safe order — commands before app
     delete getCmd;
