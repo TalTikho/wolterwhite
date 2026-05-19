@@ -13,11 +13,10 @@ COPY . .
 # Step 5: Create build folder and compile
 RUN mkdir -p build && cd build && \
     cmake .. && \
-    make 
-    #&& \ ctest --output-on-failure (for tests)
+    make
 
 # Step 6: Set the working directory to where the binary is
 WORKDIR /usr/src/wolterwhite/build
 
-# Step 7: Run the application
-CMD ["./wolterwhite"]
+# Step 7: Run the server binary and pass port 5555 as an argument
+CMD ["./wolterwhite", "5555"]

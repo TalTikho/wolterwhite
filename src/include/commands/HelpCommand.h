@@ -7,7 +7,7 @@
 // ---- Files ----
 #include "ICommand.h"
 #include "../output/IOutputWriter.h" // Added for the writer
-#include "../App.h"
+//#include "../App.h"
 #include "ICommandProvider.h"
 
 //====================================================================================================

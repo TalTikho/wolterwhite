@@ -1,12 +1,27 @@
 services:
-  wolterwhite-app:
-    build: .
-    container_name: wolterwhite_container
+  # ─── SERVER SERVICE ───
+  wolterwhite-server:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: wolterwhite_server_container
     ports:
-      - "5555:5555" # Example: Map host port 5555 to container port 5555
-    # Keep the terminal interactive so you can type commands (add, recommend, help)
-    stdin_open: true
-    tty: true
-    # Sync the local data folder with the container's data folder
+      - "5555:5555" # Exposes port 5555 to your local host machine
     volumes:
       - ./data:/usr/src/wolterwhite/build/data
+    restart: unless-stopped
+
+  # ─── CLIENT SERVICE ───
+  wolterwhite-client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    container_name: wolterwhite_client_container
+    environment:
+      - SERVER_HOST=wolterwhite-server # Matches the server service name above
+      - SERVER_PORT=5555
+    # Keep stdin and tty open so you can type interactively into Client.py
+    stdin_open: true
+    tty: true
+    depends_on:
+      - wolterwhite-server

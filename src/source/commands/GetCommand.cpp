@@ -2,7 +2,7 @@
 // Include all needed headers
 //====================================================================================================
 // ---- Files ----
-#include "../../include/commands/RecommendCommand.h"
+#include "../../include/commands/GetCommand.h"
 
 // ---- System ----
 #include <map>
@@ -148,7 +148,7 @@ void GetCommand::execute(std::istringstream &args)
     m_writer.write(result);
 }
 //GET printing format for usage in HelpCommand.
-const std::string RecommendCommand::getPrintoutFormat()
+const std::string GetCommand::getPrintoutFormat()
 {
     return "GET, arguments: [userid] [productid]\n";
 }

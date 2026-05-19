@@ -1,5 +1,4 @@
 #include "../include/commands/DeleteCommand.h"
-#include "DeleteCommand.h"
 #include <map>
 #include <set>
 #include <vector>
