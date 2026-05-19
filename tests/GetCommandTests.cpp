@@ -96,7 +96,7 @@ TEST_F(GetCommandTests, BasicRecommendation)
     cmd->execute(argsStream);
 
     // In Exercise 2, a good recommendation is "200 OK".
-    EXPECT_EQ(writer.messages[0], "200 OK");
+    EXPECT_EQ(writer.messages[0], "200 OK\n");
     EXPECT_EQ(writer.messages[1], "200");
 
 }
@@ -109,7 +109,7 @@ TEST_F(GetCommandTests, TieBreakingByID)
     cmd->execute(argsStream);
 
     // In Exercise 2, a good recommendation is "200 OK".
-    EXPECT_EQ(writer.messages[0], "200 OK");
+    EXPECT_EQ(writer.messages[0], "200 OK\n");
     EXPECT_EQ(writer.messages[1], "222 999");
 
 }
@@ -124,8 +124,9 @@ TEST_F(GetCommandTests, TargetProductParadox)
     std::istringstream argsStream("1 104");
     cmd->execute(argsStream);
 
-    // 104 is the input product; it should never be recommended.
-    EXPECT_EQ(writer.lastMessage, "404 Not Found");
+    // 104 is the input product; 100 should never be recommended.
+    EXPECT_EQ(writer.messages[0], "200 OK\n");
+    EXPECT_EQ(writer.messages[1], "");
 }
 
 

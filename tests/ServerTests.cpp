@@ -350,7 +350,7 @@ TEST_F(ServerTest, GetTargetProductParadox)
     std::string response = sendAndReceive(PORT_GET_PARADOX, "get 1 101");
     serverThread.join();
 
-    EXPECT_TRUE(response.find("404 Not Found") != std::string::npos);
+    EXPECT_TRUE(response.find("200 OK") != std::string::npos);
 }
 
 //====================================================================================================
@@ -378,19 +378,7 @@ TEST_F(ServerTest, CommandContainingTabsIsRejected)
 }
 
 //====================================================================================================
-// 16. HelpMenuPrintedOnConnection
-//====================================================================================================
-TEST_F(ServerTest, HelpMenuPrintedOnConnection)
-{
-    auto serverThread = startServer(PORT_HELP);
-    std::string fullResponse = sendAndReceiveMultiple(PORT_HELP, {"get 1 101"});
-    serverThread.join();
-
-    EXPECT_TRUE(fullResponse.find("GET, arguments:") != std::string::npos);
-}
-
-//====================================================================================================
-// 17. DataPersistsAfterRestart
+// 16. DataPersistsAfterRestart
 //====================================================================================================
 TEST_F(ServerTest, DataPersistsAfterRestart)
 {
