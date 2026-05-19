@@ -96,7 +96,9 @@ TEST_F(GetCommandTests, BasicRecommendation)
     cmd->execute(argsStream);
 
     // In Exercise 2, a good recommendation is "200 OK".
-    EXPECT_EQ(writer.lastMessage, "200 OK");
+    EXPECT_EQ(writer.messages[0], "200 OK");
+    EXPECT_EQ(writer.messages[1], "200");
+
 }
 
 // Test 3: Tie-Breaking by ID
@@ -107,7 +109,9 @@ TEST_F(GetCommandTests, TieBreakingByID)
     cmd->execute(argsStream);
 
     // In Exercise 2, a good recommendation is "200 OK".
-    EXPECT_EQ(writer.lastMessage, "200 OK");
+    EXPECT_EQ(writer.messages[0], "200 OK");
+    EXPECT_EQ(writer.messages[1], "222 999");
+
 }
 
 // Test 6: Target Product Paradox

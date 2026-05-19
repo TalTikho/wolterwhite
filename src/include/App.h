@@ -30,7 +30,7 @@ public:
     // Updated to take a default writer for system-level responses
     explicit App(IMenu *m, IOutputWriter *defaultWriter);
 
-    ~App() = default;
+    virtual ~App() = default;
     /*
     1. constructor.
     2. run is the app loop.

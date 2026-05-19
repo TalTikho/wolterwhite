@@ -157,11 +157,12 @@ void GetCommand::execute(std::istringstream &args)
     }
 
     // Send an OK siganl as recommendations were internally made.
+    
+    m_writer.write("200 OK");
     if (!result.empty())
     {
         m_writer.write(result);
     }
-    m_writer.write("200 OK");
 
 }
 // GET printing format for usage in HelpCommand.

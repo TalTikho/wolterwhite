@@ -91,10 +91,10 @@ TEST_F(HelpCommandTest, HelpExactOutput)
     App app(&menu, &writer);
     HelpCommand helpCmd(writer, app);
 
-    app.registerCommand("GET", *getCmd);
-    app.registerCommand("DELETE", *deleteCmd);
-    app.registerCommand("PATCH", *patchCmd);
-    app.registerCommand("POST", *postCmd);
+    app.registerCommand("get", *getCmd);
+    app.registerCommand("delete", *deleteCmd);
+    app.registerCommand("patch", *patchCmd);
+    app.registerCommand("post", *postCmd);
     app.registerCommand("help", helpCmd);
 
     helpCmd.execute(args);
