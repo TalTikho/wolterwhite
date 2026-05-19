@@ -6,7 +6,7 @@ services:
       dockerfile: Dockerfile
     container_name: wolterwhite_server_container
     ports:
-      - "5555:5555" # Exposes port 5555 to your local host machine
+      - "5555:5555"
     volumes:
       - ./data:/usr/src/wolterwhite/build/data
     restart: unless-stopped
@@ -19,7 +19,7 @@ services:
     container_name: wolterwhite_client_container
     environment:
       - SERVER_HOST=wolterwhite-server
-      - SERVER_PORT=5555
+      - SERVER_PORT=5555 # Force it to talk to the server on port 5555
     stdin_open: true
     tty: true
     depends_on:

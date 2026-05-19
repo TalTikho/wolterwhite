@@ -80,5 +80,5 @@ void PostCommand::execute(std::istringstream &args)
 //Post printing format for usage in HelpCommand.
 const std::string PostCommand::getPrintoutFormat()
 {
-    return "POST, arguments: [userid] [productid1] [productid2] ...\n";
+    return "POST, arguments: [userid] [productid1] [productid2] ...";
 }

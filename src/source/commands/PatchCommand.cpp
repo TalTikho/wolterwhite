@@ -91,5 +91,5 @@ void PatchCommand::execute(std::istringstream &args)
 //Patch printing format for usage in HelpCommand.
 const std::string PatchCommand::getPrintoutFormat()
 {
-    return "PATCH, arguments: [userid] [productid1] [productid2] ...\n";
+    return "PATCH, arguments: [userid] [productid1] [productid2] ...";
 }

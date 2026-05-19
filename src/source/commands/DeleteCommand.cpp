@@ -89,5 +89,5 @@ void DeleteCommand::execute(std::istringstream &args)
 // Delete's print format for usage in helpCommand.
 const std::string DeleteCommand::getPrintoutFormat()
 {
-    return "DELETE, arguments: [userid] [productid1] [productid2] ...\n";
+    return "DELETE, arguments: [userid] [productid1] [productid2] ...";
 }

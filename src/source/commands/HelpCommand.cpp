@@ -78,5 +78,5 @@ void HelpCommand::execute(std::istringstream &args)
 //====================================================================================================
 const std::string HelpCommand::getPrintoutFormat()
 {
-    return "help\n";
+    return "help";
 }
