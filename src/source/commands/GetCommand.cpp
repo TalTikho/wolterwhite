@@ -168,5 +168,5 @@ void GetCommand::execute(std::istringstream &args)
 // GET printing format for usage in HelpCommand.
 const std::string GetCommand::getPrintoutFormat()
 {
-    return "GET, arguments: [userid] [productid]\n";
+    return "GET, arguments: [userid] [productid]";
 }
