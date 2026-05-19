@@ -46,10 +46,11 @@ class HelpCommandTest : public ::testing::Test
 protected:
 };
 
-class MockMenu : public IMenu
+class MockMenuHelp : public IMenu
 {
 public:
-    std::string nextCommand() noexcept override {
+    std::string nextCommand() noexcept override
+    {
         return " ";
     }
 };
@@ -58,12 +59,15 @@ class MockStorage : public IDataStorage
 {
 private:
     std::string m_filePath;
+
 public:
     MockStorage(std::string path) : m_filePath(std::move(path)) {}
-    void save(const std::string &userId, const std::vector<std::string> &products) override {
+    void save(const std::string &userId, const std::vector<std::string> &products) override
+    {
         return;
     }
-    std::map<std::string, std::set<std::string>> loadAll() override {
+    std::map<std::string, std::set<std::string>> loadAll() override
+    {
         return std::map<std::string, std::set<std::string>>();
     }
 };
@@ -71,38 +75,39 @@ public:
 //====================================================================================================
 // Test 1: HelpExactOutput
 //====================================================================================================
-TEST_F(HelpCommandTest, HelpExactOutput) {
+TEST_F(HelpCommandTest, HelpExactOutput)
+{
     std::istringstream args("");
     MockWriter writer;
-    MockMenu menu;
+    MockMenuHelp menu;
     MockStorage storage("test_data.txt");
 
     // Heap allocate commands so we control when they die
-    GetCommand*    getCmd    = new GetCommand(storage, writer);
-    PostCommand*   postCmd   = new PostCommand(storage, writer);
-    PatchCommand*  patchCmd  = new PatchCommand(storage, writer);
-    DeleteCommand* deleteCmd = new DeleteCommand(storage, writer);
+    GetCommand *getCmd = new GetCommand(storage, writer);
+    PostCommand *postCmd = new PostCommand(storage, writer);
+    PatchCommand *patchCmd = new PatchCommand(storage, writer);
+    DeleteCommand *deleteCmd = new DeleteCommand(storage, writer);
 
     App app(&menu, &writer);
     HelpCommand helpCmd(writer, app);
 
-    app.registerCommand("GET",    *getCmd);
+    app.registerCommand("GET", *getCmd);
     app.registerCommand("DELETE", *deleteCmd);
-    app.registerCommand("PATCH",  *patchCmd);
-    app.registerCommand("POST",   *postCmd);
-    app.registerCommand("help",   helpCmd);
+    app.registerCommand("PATCH", *patchCmd);
+    app.registerCommand("POST", *postCmd);
+    app.registerCommand("help", helpCmd);
 
     helpCmd.execute(args);
 
     ASSERT_EQ(writer.messages.size(), 5);
     EXPECT_EQ(writer.messages[0],
-        "DELETE, arguments: [userid] [productid1] [productid2] ...\n");
+              "DELETE, arguments: [userid] [productid1] [productid2] ...\n");
     EXPECT_EQ(writer.messages[1],
-        "GET, arguments: [userid] [productid]\n");
+              "GET, arguments: [userid] [productid]\n");
     EXPECT_EQ(writer.messages[2],
-        "PATCH, arguments: [userid] [productid1] [productid2] ...\n");
+              "PATCH, arguments: [userid] [productid1] [productid2] ...\n");
     EXPECT_EQ(writer.messages[3],
-        "POST, arguments: [userid] [productid1] [productid2] ...\n");
+              "POST, arguments: [userid] [productid1] [productid2] ...\n");
     EXPECT_EQ(writer.messages[4], "help\n");
 
     // Delete in safe order — commands before app
@@ -122,18 +127,18 @@ TEST_F(HelpCommandTest, HelpWithExtraArgsPrintsNothing)
     std::istringstream args("extra_junk");
     MockWriter writer;
     MockStorage storage("test_data.txt");
-    MockMenu menu;
+    MockMenuHelp menu;
 
     GetCommand getCmd(storage, writer);
     PostCommand postCmd(storage, writer);
 
-    App app(&menu, &writer); 
+    App app(&menu, &writer);
     HelpCommand helpCmd(writer, app);
-    
+
     app.registerCommand("help", helpCmd);
     app.registerCommand("get", getCmd);
     app.registerCommand("post", postCmd);
-    
+
     helpCmd.execute(args);
 
     EXPECT_EQ(writer.messages.size(), 1);
@@ -143,19 +148,19 @@ TEST_F(HelpCommandTest, HelpWithExtraArgsPrintsNothing)
 //====================================================================================================
 // Test 3: HelpWithMultipleExtraArgs
 //====================================================================================================
-TEST_F(HelpCommandTest, HelpWithMultipleExtraArgs) 
+TEST_F(HelpCommandTest, HelpWithMultipleExtraArgs)
 {
     std::istringstream args("foo bar baz");
     MockWriter writer;
     MockStorage storage("test_data.txt");
-    MockMenu menu;
+    MockMenuHelp menu;
 
     GetCommand getCmd(storage, writer);
     PostCommand postCmd(storage, writer);
 
-    App app(&menu, &writer); 
+    App app(&menu, &writer);
     HelpCommand helpCmd(writer, app);
-    
+
     app.registerCommand("help", helpCmd);
     app.registerCommand("get", getCmd);
     app.registerCommand("post", postCmd);
@@ -174,16 +179,16 @@ TEST_F(HelpCommandTest, HelpWithOnlySpacesInArgs)
     std::istringstream args("   ");
     MockWriter writer;
     MockStorage storage("test_data.txt");
-    MockMenu menu;
+    MockMenuHelp menu;
 
     GetCommand getCmd(storage, writer);
     PostCommand postCmd(storage, writer);
     PatchCommand patchCmd(storage, writer);
     DeleteCommand deleteCmd(storage, writer);
 
-    App app(&menu, &writer); 
+    App app(&menu, &writer);
     HelpCommand helpCmd(writer, app);
-    
+
     app.registerCommand("help", helpCmd);
     app.registerCommand("get", getCmd);
     app.registerCommand("post", postCmd);
@@ -204,14 +209,14 @@ TEST_F(HelpCommandTest, HelpNoTabs)
     std::istringstream args("   \t");
     MockWriter writer;
     MockStorage storage("test_data.txt");
-    MockMenu menu;
+    MockMenuHelp menu;
 
     GetCommand getCmd(storage, writer);
     PostCommand postCmd(storage, writer);
 
-    App app(&menu, &writer); 
+    App app(&menu, &writer);
     HelpCommand helpCmd(writer, app);
-    
+
     app.registerCommand("help", helpCmd);
     app.registerCommand("get", getCmd);
     app.registerCommand("post", postCmd);

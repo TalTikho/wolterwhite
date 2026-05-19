@@ -63,7 +63,7 @@ add_library(project_logic STATIC
     src/source/server/TCPServer.cpp
     src/include/server/TCPServer.h
 
-    src/source/commands/DeleteCommand.cpp
+    src/source/commands/DeleteCommand.cpp  
     src/source/commands/PatchCommand.cpp   
 )
 
