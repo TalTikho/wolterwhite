@@ -60,6 +60,11 @@ add_library(project_logic STATIC
     src/include/ui/SocketClientHandler.h
     src/include/ui/IClientHandler.h
 
+    src/source/server/TCPServer.cpp
+    src/include/server/TCPServer.h
+
+    src/source/commands/DeleteCommand.cpp  
+    src/source/commands/PatchCommand.cpp   
 )
 
 # --------------------------------------------------------------------------------------------------------------------

@@ -1,0 +1,11 @@
+# Step 1: Use a lightweight Python base image
+FROM python:3.11-slim
+
+# Step 2: Set working directory for the client
+WORKDIR /usr/src/wolterwhite_client
+
+# Step 3: Copy the client script from its deep directory path
+COPY src/source/client/client.py .
+
+# Step 4: Run the Python client with unbuffered output
+CMD ["python", "-u", "client.py"]

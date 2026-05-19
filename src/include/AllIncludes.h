@@ -26,5 +26,6 @@
 #include "ui/SocketClientHandler.h"
 #include "ui/ConsoleClientHandler.h"
 
+#include "server/TCPServer.h"
 // App
 #include "App.h"

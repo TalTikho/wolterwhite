@@ -2,7 +2,7 @@
 // Include all needed headers
 //====================================================================================================
 // ---- Files ----
-#include "../../include/commands/RecommendCommand.h"
+#include "../../include/commands/GetCommand.h"
 
 // ---- System ----
 #include <map>
@@ -53,6 +53,13 @@ bool GetCommand::is_num(std::string s)
 
 void GetCommand::execute(std::istringstream &args)
 {
+    // No tabs
+    std::string findTabs = args.str();
+    if (findTabs.find('\t') != std::string::npos)
+    {
+        m_writer.write("400 Bad Request");
+        return;
+    }
     // Use CommandInfo to get our UserID and products vector.
     std::vector<std::string> argsV = CommandInfo(args);
 
@@ -81,7 +88,7 @@ void GetCommand::execute(std::istringstream &args)
     else
     {
         // If user doesn't exist, per protocol we return an empty message
-        m_writer.write("");
+        m_writer.write("404 Not Found");
         return;
     }
 
@@ -109,6 +116,11 @@ void GetCommand::execute(std::istringstream &args)
                 }
             }
         }
+    }
+    if (pCommon.empty())
+    {
+        m_writer.write("404 Not Found");
+        return;
     }
 
     std::vector<std::pair<std::string, int>> sortedProducts(pCommon.begin(), pCommon.end());
@@ -144,11 +156,17 @@ void GetCommand::execute(std::istringstream &args)
         printed++;
     }
 
-    // Send the final filtered list to the client
-    m_writer.write(result);
+    // Send an OK siganl as recommendations were internally made.
+    
+    m_writer.write("200 OK");
+    if (!result.empty())
+    {
+        m_writer.write(result);
+    }
+
 }
-//GET printing format for usage in HelpCommand.
-const std::string RecommendCommand::getPrintoutFormat()
+// GET printing format for usage in HelpCommand.
+const std::string GetCommand::getPrintoutFormat()
 {
     return "GET, arguments: [userid] [productid]\n";
 }

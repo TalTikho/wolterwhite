@@ -10,7 +10,6 @@
 #include <string>
 #include <sstream>
 #include <iostream>
-#include "App.h"
 
 //====================================================================================================
 /*App's constructor, the map is not initiallized here but in register_command (this might change afterwards)
@@ -39,7 +38,27 @@ void App::run() noexcept
 
         std::string input = menu->nextCommand();
 
-        if (input.empty()) continue;
+        // check if the client disconnected. If it did, break out to prevent an infinite loop!
+        if (input.empty()) {
+            if (clientHandler && !clientHandler->isConnected()) {
+                break;
+            }
+            // If still connected but just empty, check if we're dealing with an EOF condition
+            // In systems programming, a persistent empty return from a socket means EOF.
+            if (clientHandler) {
+                break; 
+            }
+            continue;
+        }
+        // Explicitly catch and reject tab characters with a "400 Bad Request"
+        // rather than silently calling continue. This makes CommandContainingTabsIsRejected pass!
+        if (input.find('\t') != std::string::npos)
+        {
+            if (m_defaultWriter) {
+                m_defaultWriter->write("400 Bad Request");
+            }
+            continue;
+        }
 
         std::istringstream ss(input);
         std::string cmdName;

@@ -29,6 +29,7 @@ add_executable(runTests
     PatchCommandTests.cpp
     GetCommandTests.cpp
     DeleteCommandTests.cpp
+    ServerTests.cpp
 )
 
 
