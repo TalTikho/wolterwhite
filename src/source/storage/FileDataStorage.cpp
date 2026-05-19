@@ -30,9 +30,7 @@ void FileDataStorage::save(const std::string &userId, const std::vector<std::str
     /*delete the file's content so we can update it in a way each user has its own line
      as one cannot simply find a string in the file and append to it from there.
     */
-    std::ofstream of(m_filePath, std::ofstream::out | std::ofstream::trunc);
-    // Open the file in "append" mode so we add to the end instead of erasing existing data
-    std::ofstream outFile(m_filePath, std::ios::app);
+    std::ofstream outFile(m_filePath, std::ofstream::out | std::ofstream::trunc);
 
     // If the file fails to open, tell the user there was an error and stop
     if (!outFile)
@@ -40,12 +38,12 @@ void FileDataStorage::save(const std::string &userId, const std::vector<std::str
         std::cerr << "Error: Could not open file for writing: " << m_filePath << std::endl;
         return;
     }
-    //try_emplace enters a user into a map if it is not in the map, otherwise it does nothing.
-    All.try_emplace(userId); 
-    //Insert all user's products
-    for (const std::string &p : products)
-    {
-        All[userId].insert(p);
+    // 1. Wipe out the old products completely
+    All[userId].clear(); 
+
+    // 2. Now insert into a fresh, empty set
+    for (const std::string &p : products) {
+        All[userId].insert(p); 
     }
     //Write the entire map into the file. This takes longer than adding one user
     //to the end of the file each time. However it makes sure every user has one line only.

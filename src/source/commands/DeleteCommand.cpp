@@ -5,6 +5,8 @@
 #include <string>
 #include <sstream>
 #include <algorithm>
+#include <iostream>
+
 
 DeleteCommand::DeleteCommand(IDataStorage &storage, IOutputWriter &writer): m_storage(storage), m_writer(writer){}
 std::vector<std::string> DeleteCommand::CommandInfo(std::istringstream &args)
@@ -52,18 +54,18 @@ void DeleteCommand::execute(std::istringstream &args)
         products_to_delete.insert(items[i]);
      }
      //Delete every product in the user's set in map from our map's copy. Smart for loop and iterator are in usage here.
-     for (auto const product : products_to_delete){
-
-        if (std::find(all[userId].begin(), all[userId].end(), product) != all[userId].end()){
-            all[userId].erase(product);
-            continue;
-        }
-        //Product not found so "404 Not Found"".
-        else{
+     for (auto const &product : products_to_delete){
+        //Product not found so "404 Not Found".
+        if (all[userId].find(product) == all[userId].end()){
             this->m_writer.write("404 Not Found");
             return;
-
         }
+    
+     }
+     //All products are in the user's set so could be safely deleted.
+     for (auto const &product : products_to_delete){
+        all[userId].erase(product);
+    
      }
 
      //Get the curret set from our map's copy.
@@ -74,7 +76,8 @@ void DeleteCommand::execute(std::istringstream &args)
 
     //Save the new set.
      this->m_storage.save(userId, newProdList);
-     //All is good "200 OK"
+     std::cout<<newProdList.size()<<std::endl;
+     //All is good "204 No Content"
      this->m_writer.write("204 No Content");
      return;
 
