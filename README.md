@@ -309,9 +309,11 @@ The project includes automated tests for:
 
 ---
 
-## Running the Client
+## Running the Client and Triggering HelpCommand
 
 ![Running](./media/Running_The_Application.png)
+
+![Running](./media/triggeringHelpCommand.png)
 
 ---
 
@@ -325,25 +327,30 @@ The project includes automated tests for:
 
 ![Running](./media/Running_Recommend_Example.png)
 
----
-
-## DELETE / PATCH Example
 
 ![Running](./media/Able_To_Recommend_After_Added.png)
 
 ---
 
-## Invalid Input Example
+## DELETE / PATCH Example
 
-![Running](./media/Invalid_Add_Input.png)
+![Running](./media/patch_and_delete.png)
+
+
+
+---
+
+## Invalid Input  + help + weird working quit prompt Example 
+
+![Running](./media/Invalid_+help_+quitBothCases.png)
 
 ---
 
 ## Tests Passing
 
-![Running](./media/Running_All_Tests_01.png)
+![Running](./media/Running_All_Tests.png)
 
-![Running](./media/Running_All_Tests_02.png)
+
 
 ---
 
