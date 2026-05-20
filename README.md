@@ -1,4 +1,3 @@
-````md
 # 📘 WOLTerWhite 📘
 
 This is the updated README for the **WOLTerWhite** TCP client-server project.
@@ -15,7 +14,8 @@ This is the updated README for the **WOLTerWhite** TCP client-server project.
 
 ## 🔗 Links
 
-- 🗺️ [UML Diagram](https://mermaid.ai/app/projects/765c62d5-1a3e-4a96-ab95-4fd87a13a05f/diagrams/0a04cbb7-babd-47b1-89b0-c4c0fbb969c9/version/v0.1/edit?shouldShowPopup=true&fromOnboarding=true)
+- 🗺️ [UML Diagram](https://tinyurl.com/3cny4kdd)
+
 
 ![Running](./media/UML.png)
 
