@@ -8,3 +8,38 @@ Content-Type: application/json
     "address": "Be'er Ya'akov",
     "password": "mySecretPassword"
 }
+
+###
+
+### Register user with missing fields
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+    "name": "Israel Israeli"
+}
+
+###
+
+### Register user with empty fields
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+    "name": "",
+    "phone": "",
+    "address": "",
+    "password": ""
+}
+
+###
+
+### Get existing user by ID
+GET http://localhost:3000/api/users/REPLACE_WITH_VALID_ID
+
+###
+
+### Get non-existing user
+GET http://localhost:3000/api/users/999999
+
+###

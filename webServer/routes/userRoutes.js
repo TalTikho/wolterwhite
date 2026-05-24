@@ -8,4 +8,8 @@ const router = express.Router();
 // Register a new user
 router.post("/", userController.registerUser);
 
+// GET /api/users/:id
+// Get a user by ID
+router.get("/:id", userController.getUser);
+
 export default router;

@@ -27,8 +27,32 @@ export const registerUser = (req, res) => {
     const { password, ...userResponse } = newUser;
 
     // Return created user
-    res
+    return res
         .status(201)
-        .location(`/api/users/${userResponse.id}`)
-        .json(userResponse);
+        .location(`/api/users/${newUser.id}`)
+        .json(newUser);
+};
+
+/**
+ * Handles fetching a single user by ID
+ */
+export const getUser = (req, res) => {
+
+    // Get the ID from the URL parameters
+    const userId = req.params.id;
+
+    // Call the service to find the user
+    const user = userService.getUserById(userId);
+
+    // If user is not found, return 404
+    if(!user){
+        return res
+            .status(404)
+            .json({ error: "User not found" });
+    }
+
+    // Return the user with 200 OK
+    return res
+        .status(200)
+        .json(user);
 };
