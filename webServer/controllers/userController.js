@@ -1,4 +1,4 @@
-import * as userService from "../services/userService.js";
+import * as userModel from "../models/userModel.js";
 
 /**
  * Handles user registration
@@ -20,8 +20,8 @@ export const registerUser = (req, res) => {
         });
     }
 
-    // Create the user using the service layer
-    const newUser = userService.createUser(userData);
+    // Create the user using the model layer
+    const newUser = userModel.createUser(userData);
 
     // Return created user
     res

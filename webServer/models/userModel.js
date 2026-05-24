@@ -1,25 +1,29 @@
 // In-memory array used to store users temporarily
-// NOTE:
-// Data will be lost whenever the server restarts
+// NOTE: Data will be lost whenever the server restarts
 export const users = [];
 
 /**
- * Creates a user object
+ * Creates and stores a new user
  * 
- * @param {string} id - Unique user ID
- * @param {string} name - User's full name
- * @param {string} phone - User's phone number
- * @param {string} address - User's address
- * @param {string} password - User's password
- * 
- * @returns {Object} User object
+ * @param {Object} userData - User data from request body
+ * @returns {Object} Newly created user
  */
-export const createUserObject = (id, name, phone, address, password) => {
-    return {
-        id,
-        name,
-        phone,
-        address,
-        password
-    };
+export const createUser = (userData) => {
+
+    // Create a unique ID using the current timestamp
+    const uniqueId = Date.now().toString();
+
+    // Create the user object
+    const newUser = {
+        id: uniqueId,
+        name: userData.name,
+        phone: userData.phone,
+        address: userData.address,
+        password: userData.password
+    }
+
+    // Store the user in the in-memory array
+    users.push(newUser);
+
+    return newUser;
 };
