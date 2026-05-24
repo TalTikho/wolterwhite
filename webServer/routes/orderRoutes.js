@@ -10,7 +10,7 @@ import {
     updateOrder,
     deleteOrder
 } from '../controllers/orderController.js';
-import auth from '../middleware/auth.js';
+import auth from '../controllers/authController.js';
 //====================================================================================================
 // Order Routes
 //====================================================================================================
