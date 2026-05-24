@@ -18,7 +18,7 @@ const PORT = 3000;
 // Register user routes
 // All routes inside userRoutes will start with /api/users
 app.use("/api/users", userRoutes);
-app.use("/api/orderRoutes", orderRoutes);
+app.use("/api/order", orderRoutes);
 
 // Start the server
 app.listen(PORT, () => {

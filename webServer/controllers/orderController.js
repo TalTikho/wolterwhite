@@ -14,14 +14,7 @@ import * as orderModel from '../models/orderModel.js';
  * Returns:         201 Created + Location header
  */
 export const createOrder = (req, res) => {
-    // Auth check — userId must come from header
-    const userId = req.headers['x-user-id'];
-    if (!userId) {
-        return res.status(401).json({
-            error: 'Authentication required'
-        });
-    }
-
+    // req.userId already set by auth middleware — no check needed
     const orderData = req.body;
 
     // Validate required fields
@@ -41,8 +34,7 @@ export const createOrder = (req, res) => {
         });
     }
 
-    // Create the order
-    const newOrder = orderModel.createOrder(userId, orderData);
+    const newOrder = orderModel.createOrder(req.userId, orderData);
 
     return res
         .status(201)
@@ -56,16 +48,7 @@ export const createOrder = (req, res) => {
  * Returns:         200 OK + array of orders
  */
 export const getOrders = (req, res) => {
-    // Auth check
-    const userId = req.headers['x-user-id'];
-    if (!userId) {
-        return res.status(401).json({
-            error: 'Authentication required'
-        });
-    }
-
-    // Return only this user's orders — never return other users' orders
-    const userOrders = orderModel.getOrdersByUser(userId);
+    const userOrders = orderModel.getOrdersByUser(req.userId);
     return res.status(200).json(userOrders);
 };
 
@@ -77,13 +60,6 @@ export const getOrders = (req, res) => {
  *                  403 if order belongs to different user
  */
 export const getOrderById = (req, res) => {
-    const userId = req.headers['x-user-id'];
-    if (!userId) {
-        return res.status(401).json({
-            error: 'Authentication required'
-        });
-    }
-
     const order = orderModel.findOrderById(req.params.id);
 
     // Order not found
@@ -94,8 +70,7 @@ export const getOrderById = (req, res) => {
     }
 
     // Order belongs to different user
-    // Return 403 Forbidden — user is authenticated but not authorized
-    if (order.userId !== userId) {
+    if (order.userId !== req.userId) {
         return res.status(403).json({
             error: 'Access denied'
         });
@@ -112,13 +87,6 @@ export const getOrderById = (req, res) => {
  *                  403 if order belongs to different user
  */
 export const updateOrder = (req, res) => {
-    const userId = req.headers['x-user-id'];
-    if (!userId) {
-        return res.status(401).json({
-            error: 'Authentication required'
-        });
-    }
-
     const order = orderModel.findOrderById(req.params.id);
 
     if (!order) {
@@ -127,16 +95,13 @@ export const updateOrder = (req, res) => {
         });
     }
 
-    if (order.userId !== userId) {
+    if (order.userId !== req.userId) {
         return res.status(403).json({
             error: 'Access denied'
         });
     }
 
-    // Perform update
     orderModel.updateOrder(req.params.id, req.body);
-
-    // 204 No Content — no body returned (matches assignment spec)
     return res.status(204).send();
 };
 
@@ -148,13 +113,6 @@ export const updateOrder = (req, res) => {
  *                  403 if order belongs to different user
  */
 export const deleteOrder = (req, res) => {
-    const userId = req.headers['x-user-id'];
-    if (!userId) {
-        return res.status(401).json({
-            error: 'Authentication required'
-        });
-    }
-
     const order = orderModel.findOrderById(req.params.id);
 
     if (!order) {
@@ -163,13 +121,12 @@ export const deleteOrder = (req, res) => {
         });
     }
 
-    if (order.userId !== userId) {
+    if (order.userId !== req.userId) {
         return res.status(403).json({
             error: 'Access denied'
         });
     }
 
     orderModel.deleteOrder(req.params.id);
-
     return res.status(204).send();
 };
