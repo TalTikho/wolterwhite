@@ -3,7 +3,7 @@ services:
   wolterwhite-server:
     build: 
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.server
     container_name: wolterwhite_server_container
     ports:
       - "5555:5555"
