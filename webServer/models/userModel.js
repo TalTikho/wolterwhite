@@ -1,3 +1,5 @@
+import { randomUUID } from 'crypto';
+
 // In-memory array used to store users temporarily
 // NOTE: Data will be lost whenever the server restarts
 export const users = [];
@@ -11,8 +13,8 @@ export const users = [];
 export const createUser = (userData) => {
 
     // Create a unique ID using the current timestamp
-    const uniqueId = Date.now().toString();
-
+    const uniqueId = randomUUID();
+    
     // Create the user object
     const newUser = {
         id: uniqueId,
