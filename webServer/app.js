@@ -1,5 +1,5 @@
 import express from "express";
-import retaurantRoutes from "./routes/retaurantRoutes.js";
+import restaurantRoutes from "./routes/restaurantRoutes.js";
 
 // Create an Express application instance
 const app = express();
