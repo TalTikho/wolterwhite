@@ -14,7 +14,8 @@ export const createRestaurant = (restaurantInfo) =>{
         phone: restaurantInfo.phone,
         email: restaurantInfo.email,
         address: restaurantInfo.address,
-        hours: restaurantInfo.hours
+        hours: restaurantInfo.hours,
+        products: []
     }
     // Add the new restaurant to the temp array and return it for controller to check and show.
     restaurants.push(newRestaurant);
@@ -22,6 +23,7 @@ export const createRestaurant = (restaurantInfo) =>{
     return newRestaurant;
 
 };
+
 
 // Find returns a pointer to the searched by id restaurant.
 export const getRestaurantById = (id) => restaurants.find(a => a.id === id);
