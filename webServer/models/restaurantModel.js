@@ -38,4 +38,12 @@ export const editRestaurantInfo = (restaurantId, restaurantNew) => {
 
 }
 
+export const DeleteRestaurant = (restaurantId) => {
+    // Find index of resaturant with matching id. We do not return the object but -1 if it is not found.
+    const index = restaurants.findIndex(restaurants => restaurants.id === restaurantId);
+    // Use splice to delete 1 restaurant with the provided id.
+    restaurants.splice(index, 1);
+    return index;
+}
+
 

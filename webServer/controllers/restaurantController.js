@@ -4,7 +4,7 @@ import * as restaurantModel from '../models/restaurantModel.js';
 export const getAllRestaurants = (req, res) => {
     try {
         const restaurants = restaurantModel.getAllRestaurants()
-        res.status(200).json(restaurants);
+        res.json(restaurants);
     }
     catch (error) {
         res.status(500).json({ error: 'Bad Request', message: 'Failed to fetch restaurants' });
@@ -42,7 +42,7 @@ export const getRestaurantById = (req, res) => {
 
 export const editRestaurantInfo = (req, res) => {
     // In the request json body we put all of the required fields.
-    const restaurantNew= req.body;
+    const restaurantNew = req.body;
     // Must change at least one field.
     if (
         !restaurantNew.name?.trim() &&
@@ -60,6 +60,17 @@ export const editRestaurantInfo = (req, res) => {
     if (!editedRestaurant)
         return res.status(404).json({ error: 'Restaurant not found' });
     res.status(204).location(`/api/restaurants/${editedRestaurant.id}`).end();
+
+};
+
+export const DeleteRestaurant = (req, res) => {
+    const restaurantId = req.params.id;
+    const deletedRestaurant = restaurantModel.DeleteRestaurant(restaurantId);
+    if (deletedRestaurant == -1) {
+        return res.status(404).json({ error: 'Restaurant not found' });
+    }
+    // We do not need location as after deletion it will be undefined.
+    res.status(204).end();
 
 };
 
