@@ -37,3 +37,15 @@ export const editProduct = (productpId, productInfo, restaurant) => {
     return editedProduct;
 
 }
+
+export const deleteProduct = (restaurant, productPId) => {
+    // Find index of product with matching pId. We do not return the object but -1 if it is not found.
+    const index = restaurant.products.findIndex(product => product.pId === productPId);
+    // Use splice to delete 1 restaurant with the provided id. If findIndex fails to find
+    // target it returns -1. splice(-1, 1) deletes from start to finish so we need the condition below.
+    if (index !== -1) {
+        restaurant.products.splice(index, 1);
+        return 0; // 0 means everything is ok.
+    }
+    return -1;
+}

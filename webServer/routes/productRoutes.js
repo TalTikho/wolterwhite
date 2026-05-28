@@ -14,6 +14,6 @@ router.route('/')
 router.route('/pId')
     .get(productController.verifyRestaurant, productController.verifyProduct, productController.getProductById)
     .patch(productController.verifyRestaurant,productController.verifyProduct, productController.editProduct)
-    // .delete(productController.verifyRestaurant, productController.verifyProduct, productController.deleteProduct)
+    .delete(productController.verifyRestaurant, productController.verifyProduct, productController.deleteProduct)
 
 export default router;

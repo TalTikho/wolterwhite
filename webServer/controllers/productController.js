@@ -85,8 +85,16 @@ export const addProdToRest = (req, res) => {
 }
 
 export const getProductById = (req, res) => {
+    const product = req.currentProduct;
+    // We need await to not mess multiple requests to the views server.
+    const serverReply = await sendAndReceive(`patch ${guest_user_id} ${product.pid}`)
+    console.log("Reply:", serverReply);
+    // User is not yet in the views file. The views server is blind to the js server's data.
+    if (serverReply.includes("400") || serverReply.includes("404")) {
+        await sendAndReceive(`post ${guest_user_id} ${product.pid}`).then(reply => console.log("Reply:", reply));
+    }
     // verifyProduct already checks if the id is good so we return the product.
-    res.status(200).location(`/api/restaurants/${restaurant.id}/products/${product.pId}`).json(req.currentProduct);
+    res.status(200).location(`/api/restaurants/${restaurant.id}/products/${product.pId}`).json(product);
 }
 
 export const editProduct = (req, res) => {
@@ -111,5 +119,16 @@ export const editProduct = (req, res) => {
 
     // verifyProduct already checks if the id is good so we return the edited product.
     res.status(204).location(`/api/restaurants/${restaurant.id}/products/${Editedproduct.pId}`).json(Editedproduct);
+}
+
+export const deleteProduct = (req, res) => {
+    const restaurant = req.currentRestaurant;
+    const productPId = req.currentProduct.pId;
+    const deletedProduct = productModel.deleteProduct(restaurant, productPId);
+    if (deletedProduct == -1) {
+        return res.status(404).json({ error: 'Product not found' });
+    }
+    // We do not need location as after deletion it will be undefined.
+    res.status(204).end();
 }
 
