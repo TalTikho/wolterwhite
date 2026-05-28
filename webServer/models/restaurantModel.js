@@ -6,10 +6,10 @@ export const restaurants = [];
 export const getAllRestaurants = () => restaurants;
 
 // Create a unique id using node.js built in crypto lib and enter all restaurant's details from restaurantInfo.
-export const createRestaurant = (restaurantInfo) =>{
+export const createRestaurant = (restaurantInfo) => {
     const restId = crypto.randomUUID().toString();
     const newRestaurant = {
-        id : restId,
+        id: restId,
         name: restaurantInfo.name,
         phone: restaurantInfo.phone,
         email: restaurantInfo.email,
@@ -19,9 +19,14 @@ export const createRestaurant = (restaurantInfo) =>{
         products: []
     }
     // Add the new restaurant to the temp array and return it for controller to check and show.
+    // Do not add if restaurant already exists using indexOf which returns -1 if a value is not in an array.
+    // Comparision by name and not id because a unique id is generated above randomly anyway.
+    if (restaurants.find(restaurant => restaurant.name === restaurantInfo.name)) {
+        return null;
+    }
     restaurants.push(newRestaurant);
-
     return newRestaurant;
+
 
 };
 
@@ -32,9 +37,9 @@ export const getRestaurantById = (id) => restaurants.find(a => a.id === id);
 // Edit a restaurant using getRestaurantById and (recieved through controller's req.param) restaurantInfo.
 export const editRestaurantInfo = (restaurantId, restaurantNew) => {
     const editedRestaurant = getRestaurantById(restaurantId);
-    if (!editedRestaurant){
+    if (!editedRestaurant) {
         return null;
-    } 
+    }
     // Update is done using Object.assign to avoid multi-conditional code as not all parameters need to be changed.
     Object.assign(editedRestaurant, restaurantNew);
     return editedRestaurant;

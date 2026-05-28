@@ -32,6 +32,9 @@ export const createRestaurant = (req, res) => {
         });
     // succesful post is 201 Created
     const newRestaurant = restaurantModel.createRestaurant(restaurantInfo);
+    if (!restaurant) {
+        return res.status(404).json({ error: 'Restaurant already exists' });
+    }
     res.status(201).location(`/api/restaurants/${newRestaurant.id}`).json(newRestaurant);
 }
 

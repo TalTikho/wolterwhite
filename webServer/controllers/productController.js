@@ -1,9 +1,9 @@
 import * as productModel from '../models/productModel.js';
 
-import crypto from 'crypto'; 
+import crypto from 'crypto';
 const is_user_connected = false;
 // guest does not need an id. It is just default for a state without connected users.
-const guest_user_id = 'guest' +  crypto.randomUUID().toString();
+const guest_user_id = 'guest' + crypto.randomUUID().toString();
 
 
 
@@ -36,9 +36,9 @@ export const getRestaurantProds = async (req, res) => {
     // For each product in the restaurant (if its product array isn't empty) add a view in the user id's list using the cpp server.
     for (const product of products) {
         if (!is_user_connected) {
-            const serverReply  = await sendAndReceive(`patch ${guest_user_id} ${product.pid}`)
+            const serverReply = await sendAndReceive(`patch ${guest_user_id} ${product.pid}`)
             console.log("Reply:", serverReply);
-            if (serverReply.includes("400") || serverReply.includes("404")){
+            if (serverReply.includes("400") || serverReply.includes("404")) {
                 await sendAndReceive(`post ${guest_user_id} ${product.pid}`).then(reply => console.log("Reply:", reply));
             }
         }
@@ -59,15 +59,19 @@ export const addProdToRest = (req, res) => {
         return res.status(400).json({
             error: "All fields must be filled"
         });
-    // succesful post is 201 Created
     const newProd = productModel.addProdToRest(restaurant, productInfo);
+
+    if (!newProd) {
+        return res.status(404).json({ error: 'Product already exists' });
+    }
+    // succesful post is 201 Created
     res.status(201).location(`/api/restaurants/${restaurant.id}/products/${newProd.pId}`).json(newProd);
 }
 
 export const getProductById = (req, res) => {
     const restaurant = req.currentRestaurant;
     const product = productModel.getProductById(req.params.pId);
-    if (!product){
+    if (!product) {
         return res.status(404).json({ error: 'Product not found' });
     }
     res.status(200).location(`/api/restaurants/${restaurant.id}/products/${product.pId}`).json(restaurant);
