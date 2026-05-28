@@ -28,6 +28,3 @@ export const sendAndReceive = async (message) => {
   return response;
 
 }
-
-// await sendAndReceive("Post 50 500").then(reply => console.log("Reply:", reply));
-// await sendAndReceive("Patch 1 50 500 hi").then(reply => console.log("Reply:", reply));
