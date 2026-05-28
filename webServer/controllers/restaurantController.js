@@ -22,7 +22,8 @@ export const createRestaurant = (req, res) => {
         !restaurantInfo.phone?.trim() ||
         !restaurantInfo.email?.trim() ||
         !restaurantInfo.address?.trim() ||
-        !restaurantInfo.hours?.trim()
+        !restaurantInfo.hours?.trim() ||
+        !restaurantInfo.description?.trim()
     )
         return res.status(400).json({
             error: "All fields must be filled"
@@ -49,7 +50,8 @@ export const editRestaurantInfo = (req, res) => {
         !restaurantNew.phone?.trim() &&
         !restaurantNew.email?.trim() &&
         !restaurantNew.address?.trim() &&
-        !restaurantNew.hours?.trim()
+        !restaurantNew.hours?.trim() &&
+        !restaurantNew.description.trim()
     )
         return res.status(400).json({
             error: "There must be at least one proper field entry changed"

@@ -7,6 +7,6 @@ const router = express.Router({ mergeParams: true });
 
 // Methods for address http://foo.com/api/restaurants/:id/products
 router.route('/')
-    .get(productController.getRestaurantProds)
-    //.post(productController.addProdToRest)
+    .get(productController.verifyRestaurant, productController.getRestaurantProds)
+    .post(productController.verifyRestaurant, productController.addProdToRest)
 export default router;

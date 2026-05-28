@@ -15,6 +15,7 @@ export const createRestaurant = (restaurantInfo) =>{
         email: restaurantInfo.email,
         address: restaurantInfo.address,
         hours: restaurantInfo.hours,
+        description: restaurantInfo.description,
         products: []
     }
     // Add the new restaurant to the temp array and return it for controller to check and show.
