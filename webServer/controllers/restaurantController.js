@@ -75,6 +75,17 @@ export const editRestaurantInfo = (req, res) => {
 
 export const DeleteRestaurant = (req, res) => {
     const restaurantId = req.params.id;
+    const products = restaurantModel.getRestaurantById(restaurantId).products;
+    // For each product in the restaurant (if its product array isn't empty) delete the view in the user id's list using the cpp server.
+    // The recommendation system cannot recommend a deleted product.
+    // The list could be empty and then the run just continues.
+    for (const product of products) {
+        if (!is_user_connected) {
+            // We need await to not mess multiple requests to the views server.
+            const serverReply = await sendAndReceive(`delete ${guest_user_id} ${product.pId}`)
+            console.log("Reply:", serverReply);
+        }
+    };
     const deletedRestaurant = restaurantModel.DeleteRestaurant(restaurantId);
     if (deletedRestaurant == -1) {
         return res.status(404).json({ error: 'Restaurant not found' });

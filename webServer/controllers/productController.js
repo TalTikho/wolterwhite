@@ -46,16 +46,16 @@ export const getRestaurantProds = async (req, res) => {
     const restaurant = req.currentRestaurant;
     const products = productModel.getRestaurantProds(restaurant);
 
-    // For each product in the restaurant (if its product array isn't empty) add a view in the user id's list using the cpp server.\
+    // For each product in the restaurant (if its product array isn't empty) add a view in the user id's list using the cpp server.
     // The list could be empty and then the run just continues.
     for (const product of products) {
         if (!is_user_connected) {
             // We need await to not mess multiple requests to the views server.
-            const serverReply = await sendAndReceive(`patch ${guest_user_id} ${product.pid}`)
+            const serverReply = await sendAndReceive(`patch ${guest_user_id} ${product.pId}`)
             console.log("Reply:", serverReply);
             // User is not yet in the views file. The views server is blind to the js server's data.
             if (serverReply.includes("400") || serverReply.includes("404")) {
-                await sendAndReceive(`post ${guest_user_id} ${product.pid}`).then(reply => console.log("Reply:", reply));
+                await sendAndReceive(`post ${guest_user_id} ${product.pId}`).then(reply => console.log("Reply:", reply));
             }
         }
     };
@@ -122,12 +122,20 @@ export const editProduct = (req, res) => {
 }
 
 export const deleteProduct = (req, res) => {
+    // I am using the validations for restaurant and product to fetch them easily.
     const restaurant = req.currentRestaurant;
     const productPId = req.currentProduct.pId;
     const deletedProduct = productModel.deleteProduct(restaurant, productPId);
     if (deletedProduct == -1) {
         return res.status(404).json({ error: 'Product not found' });
     }
+
+    // Product should not stay in a users' views after deletion
+    // as the recommendation alg could in some case recommend it although it is none existent product (!) afterwards.
+    // When we have a users database/products database it will be deleted for all of the users.
+    const serverReply = await sendAndReceive(`delete ${guest_user_id} ${product.pId}`)
+    console.log("Reply:", serverReply);
+
     // We do not need location as after deletion it will be undefined.
     res.status(204).end();
 }
