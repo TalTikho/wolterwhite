@@ -30,11 +30,12 @@ export const createRestaurant = (req, res) => {
         return res.status(400).json({
             error: "All fields must be filled"
         });
-    // succesful post is 201 Created
+
     const newRestaurant = restaurantModel.createRestaurant(restaurantInfo);
     if (!restaurant) {
         return res.status(404).json({ error: 'Restaurant already exists' });
     }
+    // succesful post is 201 Created
     res.status(201).location(`/api/restaurants/${newRestaurant.id}`).json(newRestaurant);
 }
 

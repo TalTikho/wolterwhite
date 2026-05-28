@@ -60,7 +60,7 @@ export const addProdToRest = (req, res) => {
             error: "All fields must be filled"
         });
     const newProd = productModel.addProdToRest(restaurant, productInfo);
-
+    
     if (!newProd) {
         return res.status(404).json({ error: 'Product already exists' });
     }
