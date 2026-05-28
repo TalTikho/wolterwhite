@@ -34,7 +34,7 @@ export const createRestaurant = (restaurantInfo) => {
 // Find returns a pointer to the searched by id restaurant.
 export const getRestaurantById = (id) => restaurants.find(a => a.id === id);
 
-// Edit a restaurant using getRestaurantById and (recieved through controller's req.param) restaurantInfo.
+// Edit a restaurant using getRestaurantById and (recieved through controller's req.param) restaurantNew.
 export const editRestaurantInfo = (restaurantId, restaurantNew) => {
     const editedRestaurant = getRestaurantById(restaurantId);
     if (!editedRestaurant) {

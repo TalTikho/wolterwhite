@@ -51,13 +51,15 @@ export const editRestaurantInfo = (req, res) => {
     // In the request json body we put all of the required fields.
     const restaurantNew = req.body;
     // Must change at least one field.
+    // '?' operates only if the field is found so we do not try to handle null/undifined objects.
+    // This prevents crashes.
     if (
         !restaurantNew.name?.trim() &&
         !restaurantNew.phone?.trim() &&
         !restaurantNew.email?.trim() &&
         !restaurantNew.address?.trim() &&
         !restaurantNew.hours?.trim() &&
-        !restaurantNew.description.trim()
+        !restaurantNew.description?.trim()
     )
         return res.status(400).json({
             error: "There must be at least one proper field entry changed"

@@ -28,16 +28,32 @@ export const verifyRestaurant = (req, res, next) => {
     next()
 }
 
+// Check if a product exists for delete, patch and getById.
+export const verifyProduct = (req, res, next) => {
+    const restaurant = req.currentRestaurant;
+    const product = productModel.getProductById(req.params.pId);
+    if (!product) {
+        return res.status(404).json({ error: 'Product not found' });
+    }
+    req.currentProduct = product;
+
+    next()
+
+}
+
 export const getRestaurantProds = async (req, res) => {
 
     const restaurant = req.currentRestaurant;
     const products = productModel.getRestaurantProds(restaurant);
 
-    // For each product in the restaurant (if its product array isn't empty) add a view in the user id's list using the cpp server.
+    // For each product in the restaurant (if its product array isn't empty) add a view in the user id's list using the cpp server.\
+    // The list could be empty and then the run just continues.
     for (const product of products) {
         if (!is_user_connected) {
+            // We need await to not mess multiple requests to the views server.
             const serverReply = await sendAndReceive(`patch ${guest_user_id} ${product.pid}`)
             console.log("Reply:", serverReply);
+            // User is not yet in the views file. The views server is blind to the js server's data.
             if (serverReply.includes("400") || serverReply.includes("404")) {
                 await sendAndReceive(`post ${guest_user_id} ${product.pid}`).then(reply => console.log("Reply:", reply));
             }
@@ -53,14 +69,14 @@ export const addProdToRest = (req, res) => {
     const productInfo = req.body;
     if (
         !productInfo.pname?.trim() ||
-        !productInfo.pdescription.trim() ||
-        !productInfo.price.trim()
+        !productInfo.pdescription?.trim() ||
+        !productInfo.price?.trim()
     )
         return res.status(400).json({
             error: "All fields must be filled"
         });
     const newProd = productModel.addProdToRest(restaurant, productInfo);
-    
+
     if (!newProd) {
         return res.status(404).json({ error: 'Product already exists' });
     }
@@ -69,11 +85,31 @@ export const addProdToRest = (req, res) => {
 }
 
 export const getProductById = (req, res) => {
+    // verifyProduct already checks if the id is good so we return the product.
+    res.status(200).location(`/api/restaurants/${restaurant.id}/products/${product.pId}`).json(req.currentProduct);
+}
+
+export const editProduct = (req, res) => {
+    // verifyRestaurant and verifyProduct give us the restaurant and product in the request.
+    // productInfo is in the request's body
     const restaurant = req.currentRestaurant;
-    const product = productModel.getProductById(req.params.pId);
-    if (!product) {
-        return res.status(404).json({ error: 'Product not found' });
+    const product = req.currentProduct;
+    const productInfo = req.body;
+    if (
+        !productInfo.pname?.trim() &&
+        !productInfo.pdescription?.trim() &&
+        !productInfo.price?.trim()
+    ) {
+        return res.status(400).json({
+            error: "At least one field must be filled"
+        });
     }
-    res.status(200).location(`/api/restaurants/${restaurant.id}/products/${product.pId}`).json(restaurant);
+    const Editedproduct = productModel.editProduct(product.pId, productInfo, restaurant);
+
+    // The id is good as verified in verifyProduct so the error is not in the request but in the server.
+    // Those are returned automatically.
+
+    // verifyProduct already checks if the id is good so we return the edited product.
+    res.status(204).location(`/api/restaurants/${restaurant.id}/products/${Editedproduct.pId}`).json(Editedproduct);
 }
 
