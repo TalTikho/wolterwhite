@@ -11,6 +11,7 @@ const guest_user_id = 'guest' +  crypto.randomUUID().toString();
 // WIthout a database the products need to be in the restaurant's json.
 import { getRestaurantById } from '../models/restaurantModel.js';
 import { sendAndReceive } from './cppClient.js'
+import { json } from 'stream/consumers';
 
 // This check if a restaurant is "real" is relevant for each of the product methods
 // as products are a restaurant's products and not standalone objects.
@@ -60,6 +61,15 @@ export const addProdToRest = (req, res) => {
         });
     // succesful post is 201 Created
     const newProd = productModel.addProdToRest(restaurant, productInfo);
-    res.status(201).location(`/api/restaurants/${restaurant.id}/products/${newProd.pid}`).json(newProd);
+    res.status(201).location(`/api/restaurants/${restaurant.id}/products/${newProd.pId}`).json(newProd);
+}
+
+export const getProductById = (req, res) => {
+    const restaurant = req.currentRestaurant;
+    const product = productModel.getProductById(req.params.pId);
+    if (!product){
+        return res.status(404).json({ error: 'Product not found' });
+    }
+    res.status(200).location(`/api/restaurants/${restaurant.id}/products/${product.pId}`).json(restaurant);
 }
 

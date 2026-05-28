@@ -6,6 +6,8 @@ export const getAllRestaurants = (req, res) => {
         const restaurants = restaurantModel.getAllRestaurants()
         res.json(restaurants);
     }
+    // No restaurants is not an error and will just return an empty array in a json.
+    // So an error would be a (500) server error.
     catch (error) {
         res.status(500).json({ error: 'Bad Request', message: 'Failed to fetch restaurants' });
     }

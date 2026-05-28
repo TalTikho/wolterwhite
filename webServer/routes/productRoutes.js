@@ -9,4 +9,11 @@ const router = express.Router({ mergeParams: true });
 router.route('/')
     .get(productController.verifyRestaurant, productController.getRestaurantProds)
     .post(productController.verifyRestaurant, productController.addProdToRest)
+
+// Methods for address http://foo.com/api/restaurants/:id/products/:pId
+router.route('/pId')
+    .get(productController.verifyRestaurant, productController.getProductById)
+    .patch(productController.verifyRestaurant, productController.editProduct)
+    .delete(productController.verifyRestaurant, productController.deleteProduct)
+
 export default router;

@@ -7,7 +7,7 @@ export const getRestaurantProds = (restaurant) => {return restaurant.products};
 export const addProdToRest = (restaurant, productInfo) => {
     const pid = crypto.randomUUID().toString();
     const newProduct = {
-        pid : pid,
+        pId : pId,
         pname : productInfo.pname,
         pdescription: productInfo.pdescription,
         price: productInfo.price
