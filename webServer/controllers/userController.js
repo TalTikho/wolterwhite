@@ -10,6 +10,7 @@ export const registerUser = (req, res) => {
 
     // Validate required fields
     if (
+        !userData.username?.trim() ||
         !userData.name?.trim() ||
         !userData.phone?.trim() ||
         !userData.address?.trim() ||
@@ -30,7 +31,7 @@ export const registerUser = (req, res) => {
     return res
         .status(201)
         .location(`/api/users/${newUser.id}`)
-        .json(newUser);
+        .json(userResponse);
 };
 
 /**

@@ -5,16 +5,16 @@ import * as userModel from "../models/userModel.js";
  */
 export const login = (req, res) => {
     // Destructuring
-    const { name, password } = req.body;
+    const { username, password } = req.body;
 
     // Call service to authenticate
-    const user = userModel.authenticateUser(name, password);
+    const user = userModel.authenticateUser(username, password);
 
     // If user not found (authentication failed), return 401 Unauthorized
     if (!user) {
         return res
             .status(401)
-            .json({ error: "Invalid name or password" });
+            .json({ error: "Invalid username or password" });
     }
 
     // Return the user ID on success
