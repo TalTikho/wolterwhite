@@ -69,6 +69,7 @@ export const DeleteRestaurant = (restaurantId) => {
     const index = restaurants.findIndex(restaurants => restaurants.id === restaurantId);
     // Use splice to delete 1 restaurant with the provided id. If findIndex fails to find
     // target it returns -1. splice(-1, 1) deletes from start to finish so we need the condition below.
+    // index is enough. We do not need the entire object nibbling at our RAM right before its deletion!
     if (index !== -1) {
         restaurants.splice(index, 1);
         return 0; // 0 means everything is ok.

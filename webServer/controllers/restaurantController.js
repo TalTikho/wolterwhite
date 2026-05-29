@@ -1,5 +1,6 @@
 import * as restaurantModel from '../models/restaurantModel.js';
 import { sendAndReceive } from '../cppClient.js'
+import { users } from '../models/userModel.js'
 
 // Use restaurantModel to get the entire restaurants array in json format, return get (200 OK).
 export const getAllRestaurants = (req, res) => {
@@ -67,7 +68,7 @@ export const editRestaurantInfo = (req, res) => {
     if (editedRestaurant === undefined) {
         return res.status(409).json({ error: 'Restaurant with the same name already exists' });
     }
-    res.status(204).location(`/api/restaurants/${editedRestaurant.id}`).end();
+    res.status(204).end();
 
 };
 
@@ -77,13 +78,14 @@ export const DeleteRestaurant = async (req, res) => {
     // For each product in the restaurant (if its product array isn't empty) delete the view in the user id's list using the cpp server.
     // The recommendation system cannot recommend a deleted product.
     // The list could be empty and then the run just continues.
-    for (const product of products) {
-        if (!is_user_connected) {
+    for (const user of users) {
+        for (const product of products) {
             // We need await to not mess multiple requests to the views server.
-            const serverReply = await sendAndReceive(`delete ${guest_user_id} ${product.pId}`)
+            const serverReply = await sendAndReceive(`delete ${user.id} ${product.pId}`)
             console.log("Reply:", serverReply);
-        }
-    };
+        };
+    }
+
     const deletedRestaurant = restaurantModel.DeleteRestaurant(restaurantId);
     if (deletedRestaurant == -1) {
         return res.status(404).json({ error: 'Restaurant not found' });

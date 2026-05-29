@@ -1,4 +1,5 @@
 import * as productModel from '../models/productModel.js';
+import { users } from '../models/userModel.js'
 
 import crypto from 'crypto';
 const is_user_connected = false;
@@ -121,11 +122,11 @@ export const editProduct = (req, res) => {
     if (!newProd) {
         return res.status(409).json({ error: 'Product already exists' });
     }
-    // verifyProduct already checks if the id is good so we return the edited product.
-    res.status(204).location(`/api/restaurants/${restaurant.id}/products/${Editedproduct.pId}`).json(Editedproduct);
+    // verifyProduct already checks if the id is good so we return a no content approval.
+    res.status(204).end();
 }
 
-export const deleteProduct = async(req, res) => {
+export const deleteProduct = async (req, res) => {
     // I am using the validations for restaurant and product to fetch them easily.
     const restaurant = req.currentRestaurant;
     const productPId = req.currentProduct.pId;
@@ -136,11 +137,15 @@ export const deleteProduct = async(req, res) => {
 
     // Product should not stay in a users' views after deletion
     // as the recommendation alg could in some case recommend it although it is none existent product (!) afterwards.
-    // When we have a users database/products database it will be deleted for all of the users.
-    const serverReply = await sendAndReceive(`delete ${guest_user_id} ${product.pId}`)
-    console.log("Reply:", serverReply);
+    // Hence it will be deleted for all of the users in the users array.
+    for (const user of users) {
+        // We need await to not mess multiple requests to the views server.
+        const serverReply = await sendAndReceive(`delete ${user.id} ${productPId}`)
+        console.log("Reply:", serverReply);
 
-    // We do not need location as after deletion it will be undefined.
+    }
+
+    // We do not need location as after deletion it will be undefined. And no content anyways does not usually have a body.
     res.status(204).end();
 }
 
