@@ -18,6 +18,7 @@ export const createUser = (userData) => {
     // Create the user object
     const newUser = {
         id: uniqueId,
+        username: userData.username,
         name: userData.name,
         phone: userData.phone,
         address: userData.address,
@@ -40,4 +41,12 @@ export const getUserById = (userId) => {
     const matchingUser = users.find(user => user.id === userId);
 
     return matchingUser;
+};
+
+/**
+ * Authenticates user by checking name and password
+ * @returns {Object|undefined} The user object if found, otherwise undefined
+ */
+export const authenticateUser = (username, password) => {
+    return users.find((user) => user.username === username && user.password === password);
 };
