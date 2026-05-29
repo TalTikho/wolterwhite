@@ -1,6 +1,7 @@
 import * as productModel from '../models/productModel.js';
-import { users } from '../models/userModel.js'
+import { getAllusers } from '../models/userModel.js'
 
+const users = getAllusers();
 import crypto from 'crypto';
 const is_user_connected = false;
 // guest does not need an id. It is just default for a state without connected users.

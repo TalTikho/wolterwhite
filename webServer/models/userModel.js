@@ -4,6 +4,8 @@ import { randomUUID } from 'crypto';
 // NOTE: Data will be lost whenever the server restarts
 export const users = [];
 
+export const getAllusers = () => users;
+
 /**
  * Creates and stores a new user
  * 
