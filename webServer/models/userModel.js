@@ -13,7 +13,7 @@ export const users = [];
 export const createUser = (userData) => {
 
     // Create a unique ID using the current timestamp
-    const uniqueId = randomUUID();
+    const uniqueId = randomUUID().toString();
     
     // Create the user object
     const newUser = {
