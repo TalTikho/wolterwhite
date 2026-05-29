@@ -29,3 +29,15 @@ export const createUser = (userData) => {
 
     return newUser;
 };
+
+/**
+ * Gets a user by their unique ID
+ * * @param {string} userId - The unique ID of the user
+ * @returns {Object|undefined} The user object if found, otherwise undefined
+ */
+export const getUserById = (userId) => {
+
+    const matchingUser = users.find(user => user.id === userId);
+
+    return matchingUser;
+};
