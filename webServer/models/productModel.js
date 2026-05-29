@@ -5,6 +5,10 @@ import crypto from 'crypto';
 export const getRestaurantProds = (restaurant) => { return restaurant.products };
 
 export const addProdToRest = (restaurant, productInfo) => {
+    // Same check as in restaurantModel. We need to make sure we do not create duplicates by name.
+    if (restaurant.products.some(product => product.pname.toLowerCase() === productInfo.pname.toLowerCase())) {
+        return null;
+    }
     const pId = crypto.randomUUID().toString();
     const newProduct = {
         pId: pId,
@@ -12,25 +16,31 @@ export const addProdToRest = (restaurant, productInfo) => {
         pdescription: productInfo.pdescription,
         price: productInfo.price
     }
-    // Same check as in restaurantModel. We need to make sure we do not create duplicates by name.
-    if (restaurant.products.find(product => product.pname === productInfo.pname)) {
-        return null;
-    }
+
     restaurant.products.push(newProduct);
     return newProduct;
 
 }
 
-export const getProductId = (productID, restaurant) => {
+export const getProductById = (productID, restaurant) => {
     return restaurant.products.find(product => product.pId === productID);
 }
 
 // Edit a product using productID + restaurant (from url) and (recieved through controller's req.param) productInfo.
 export const editProduct = (productpId, productInfo, restaurant) => {
     const editedProduct = getProductById(productpId, restaurant);
-    // find returns a pointer to undefined if nothing is found. undefined == null => true, undefined === null => false.
-    if (!editedProduct) {
-        return null;
+    // getProductById utilizes array.find().
+    // find returns a pointer to undefined if nothing is found. 
+    // Due to verifyProduct we know that we get the product here, o.w we would have already returned with a 404.
+
+    // Check for duplicates like in restaurantModel
+    if (productInfo.pname) {
+        const isDouble = restaurant.products.some(product => product.pname.toLowerCase() === productInfo.pname.toLowerCase()
+            && product.pId !== productpId);
+
+        if (isDouble) {
+            return null;
+        }
     }
     // Update is done using Object.assign to avoid multi-conditional code as not all parameters need to be changed.
     Object.assign(editedProduct, productInfo);

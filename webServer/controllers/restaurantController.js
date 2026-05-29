@@ -3,8 +3,8 @@ import { sendAndReceive } from './cppClient.js'
 
 // Use restaurantModel to get the entire restaurants array in json format, return get (200 OK).
 export const getAllRestaurants = (req, res) => {
-        const restaurants = restaurantModel.getAllRestaurants()
-        res.json(restaurants);
+    const restaurants = restaurantModel.getAllRestaurants()
+    res.status(200).json(restaurants);
     // No restaurants is not an error and will just return an empty array in a json.
 
 }
@@ -36,8 +36,6 @@ export const createRestaurant = (req, res) => {
 
 export const getRestaurantById = (req, res) => {
     const restaurant = restaurantModel.getRestaurantById(req.params.id)
-    if (!restaurant)
-        return res.status(404).json({ error: 'Restaurant not found' });
     res.status(200).location(`/api/restaurants/${restaurant.id}`).json(restaurant);
 };
 
@@ -62,8 +60,13 @@ export const editRestaurantInfo = (req, res) => {
     // 204 No content for PATCH
     const restaurantId = req.params.id;
     const editedRestaurant = restaurantModel.editRestaurantInfo(restaurantId, restaurantNew);
-    if (!editedRestaurant)
+    if (editedRestaurant === null) {
         return res.status(404).json({ error: 'Restaurant not found' });
+    }
+    // 409 conflict - the id is valid, but the name creates a conflict.
+    if (editedRestaurant === undefined) {
+        return res.status(409).json({ error: 'Restaurant with the same name already exists' });
+    }
     res.status(204).location(`/api/restaurants/${editedRestaurant.id}`).end();
 
 };

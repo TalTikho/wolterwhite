@@ -76,8 +76,9 @@ export const addProdToRest = (req, res) => {
         });
     const newProd = productModel.addProdToRest(restaurant, productInfo);
 
+    // 409 conflict - the request is valid, but the name is conflicting.
     if (!newProd) {
-        return res.status(404).json({ error: 'Product already exists' });
+        return res.status(409).json({ error: 'Product already exists' });
     }
     // succesful post is 201 Created
     res.status(201).location(`/api/restaurants/${restaurant.id}/products/${newProd.pId}`).json(newProd);
@@ -115,7 +116,11 @@ export const editProduct = (req, res) => {
 
     // The id is good as verified in verifyProduct so the error is not in the request but in the server.
     // Those are returned automatically.
-
+    
+    // 409 conflict - the request is valid, but the name is conflicting.
+    if (!newProd) {
+        return res.status(409).json({ error: 'Product already exists' });
+    }
     // verifyProduct already checks if the id is good so we return the edited product.
     res.status(204).location(`/api/restaurants/${restaurant.id}/products/${Editedproduct.pId}`).json(Editedproduct);
 }
