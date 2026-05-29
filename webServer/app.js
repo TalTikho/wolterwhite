@@ -1,6 +1,6 @@
 import express from "express";
-import userRoutes from "./routes/userRoute.js";
-import authRoutes from "./routes/authRoute.js";
+import userRoutes from "./routes/userRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
 import restaurantRoutes from "./routes/restaurantRoutes.js";
 
 // Create an Express application instance

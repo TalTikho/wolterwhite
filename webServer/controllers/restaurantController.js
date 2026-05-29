@@ -1,4 +1,5 @@
 import * as restaurantModel from '../models/restaurantModel.js';
+import { sendAndReceive } from './cppClient.js'
 
 // Use restaurantModel to get the entire restaurants array in json format. 500 means the server failed, o.w get (200 OK).
 export const getAllRestaurants = (req, res) => {
@@ -6,6 +7,8 @@ export const getAllRestaurants = (req, res) => {
         const restaurants = restaurantModel.getAllRestaurants()
         res.json(restaurants);
     }
+    // No restaurants is not an error and will just return an empty array in a json.
+    // So an error would be a (500) server error.
     catch (error) {
         res.status(500).json({ error: 'Bad Request', message: 'Failed to fetch restaurants' });
     }
@@ -22,13 +25,18 @@ export const createRestaurant = (req, res) => {
         !restaurantInfo.phone?.trim() ||
         !restaurantInfo.email?.trim() ||
         !restaurantInfo.address?.trim() ||
-        !restaurantInfo.hours?.trim()
+        !restaurantInfo.hours?.trim() ||
+        !restaurantInfo.description?.trim()
     )
         return res.status(400).json({
             error: "All fields must be filled"
         });
-    // succesful post is 201 Created
+
     const newRestaurant = restaurantModel.createRestaurant(restaurantInfo);
+    if (!restaurant) {
+        return res.status(404).json({ error: 'Restaurant already exists' });
+    }
+    // succesful post is 201 Created
     res.status(201).location(`/api/restaurants/${newRestaurant.id}`).json(newRestaurant);
 }
 
@@ -44,12 +52,15 @@ export const editRestaurantInfo = (req, res) => {
     // In the request json body we put all of the required fields.
     const restaurantNew = req.body;
     // Must change at least one field.
+    // '?' operates only if the field is found so we do not try to handle null/undifined objects.
+    // This prevents crashes.
     if (
         !restaurantNew.name?.trim() &&
         !restaurantNew.phone?.trim() &&
         !restaurantNew.email?.trim() &&
         !restaurantNew.address?.trim() &&
-        !restaurantNew.hours?.trim()
+        !restaurantNew.hours?.trim() &&
+        !restaurantNew.description?.trim()
     )
         return res.status(400).json({
             error: "There must be at least one proper field entry changed"
@@ -63,8 +74,19 @@ export const editRestaurantInfo = (req, res) => {
 
 };
 
-export const DeleteRestaurant = (req, res) => {
+export const DeleteRestaurant = async (req, res) => {
     const restaurantId = req.params.id;
+    const products = restaurantModel.getRestaurantById(restaurantId).products;
+    // For each product in the restaurant (if its product array isn't empty) delete the view in the user id's list using the cpp server.
+    // The recommendation system cannot recommend a deleted product.
+    // The list could be empty and then the run just continues.
+    for (const product of products) {
+        if (!is_user_connected) {
+            // We need await to not mess multiple requests to the views server.
+            const serverReply = await sendAndReceive(`delete ${guest_user_id} ${product.pId}`)
+            console.log("Reply:", serverReply);
+        }
+    };
     const deletedRestaurant = restaurantModel.DeleteRestaurant(restaurantId);
     if (deletedRestaurant == -1) {
         return res.status(404).json({ error: 'Restaurant not found' });
