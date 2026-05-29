@@ -42,7 +42,7 @@ export const getUser = (req, res) => {
     const userId = req.params.id;
 
     // Call the service to find the user
-    const user = userService.getUserById(userId);
+    const user = userModel.getUserById(userId);
 
     // If user is not found, return 404
     if(!user){
