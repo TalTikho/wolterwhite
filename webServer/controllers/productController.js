@@ -1,9 +1,17 @@
 import * as productModel from '../models/productModel.js';
 import { getAllusers } from '../models/userModel.js'
+import crypto from 'crypto';
+
 
 const users = getAllusers();
-import crypto from 'crypto';
-const is_user_connected = false;
+
+
+export const is_user_connected = (req, res, next ) => {
+    if (req.userID){
+        return req.userID;
+    }
+    return false;
+}
 // guest does not need an id. It is just default for a state without connected users.
 const guest_user_id = 'guest' + crypto.randomUUID().toString();
 
