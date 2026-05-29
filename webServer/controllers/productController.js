@@ -10,7 +10,7 @@ const guest_user_id = 'guest' + crypto.randomUUID().toString();
 // We only need this function from restaurantModel because products are dependant on a restaurant.
 // WIthout a database the products need to be in the restaurant's json.
 import { getRestaurantById } from '../models/restaurantModel.js';
-import { sendAndReceive } from './cppClient.js'
+import { sendAndReceive } from '../cppClient.js'
 
 // This check if a restaurant is "real" is relevant for each of the product methods
 // as products are a restaurant's products and not standalone objects.
@@ -116,7 +116,7 @@ export const editProduct = (req, res) => {
 
     // The id is good as verified in verifyProduct so the error is not in the request but in the server.
     // Those are returned automatically.
-    
+
     // 409 conflict - the request is valid, but the name is conflicting.
     if (!newProd) {
         return res.status(409).json({ error: 'Product already exists' });

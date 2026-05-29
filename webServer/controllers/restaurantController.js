@@ -1,5 +1,5 @@
 import * as restaurantModel from '../models/restaurantModel.js';
-import { sendAndReceive } from './cppClient.js'
+import { sendAndReceive } from '../cppClient.js'
 
 // Use restaurantModel to get the entire restaurants array in json format, return get (200 OK).
 export const getAllRestaurants = (req, res) => {
