@@ -1,17 +1,11 @@
 import * as restaurantModel from '../models/restaurantModel.js';
 import { sendAndReceive } from './cppClient.js'
 
-// Use restaurantModel to get the entire restaurants array in json format. 500 means the server failed, o.w get (200 OK).
+// Use restaurantModel to get the entire restaurants array in json format, return get (200 OK).
 export const getAllRestaurants = (req, res) => {
-    try {
         const restaurants = restaurantModel.getAllRestaurants()
         res.json(restaurants);
-    }
     // No restaurants is not an error and will just return an empty array in a json.
-    // So an error would be a (500) server error.
-    catch (error) {
-        res.status(500).json({ error: 'Bad Request', message: 'Failed to fetch restaurants' });
-    }
 
 }
 
