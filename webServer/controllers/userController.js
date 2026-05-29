@@ -1,5 +1,17 @@
 import * as userModel from "../models/userModel.js";
 
+// Helper function to check if a user is actually connected to the site.
+export const is_user_connected = (req, res) => {
+    // get id from header.
+    const userID = req.headers['userID'];
+    if (userID && getUserById(userID)) {
+        return userID
+    }
+    // guest does not need an id. It is just default for a state without connected users.
+    return 'guest' + crypto.randomUUID().toString();
+
+}
+
 /**
  * Handles user registration
  */

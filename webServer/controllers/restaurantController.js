@@ -4,6 +4,7 @@ import { sendAndReceive } from '../cppClient.js'
 // Import a getter instead of the users array for encapsulation.
 import { getAllusers } from '../models/userModel.js'
 const users = getAllusers();
+
 // Use restaurantModel to get the entire restaurants array in json format, return get (200 OK).
 export const getAllRestaurants = (req, res) => {
     const restaurants = restaurantModel.getAllRestaurants()
