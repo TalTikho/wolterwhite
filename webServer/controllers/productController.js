@@ -11,7 +11,6 @@ const guest_user_id = 'guest' + crypto.randomUUID().toString();
 // WIthout a database the products need to be in the restaurant's json.
 import { getRestaurantById } from '../models/restaurantModel.js';
 import { sendAndReceive } from './cppClient.js'
-import { json } from 'stream/consumers';
 
 // This check if a restaurant is "real" is relevant for each of the product methods
 // as products are a restaurant's products and not standalone objects.
@@ -84,7 +83,7 @@ export const addProdToRest = (req, res) => {
     res.status(201).location(`/api/restaurants/${restaurant.id}/products/${newProd.pId}`).json(newProd);
 }
 
-export const getProductById = (req, res) => {
+export const getProductById = async (req, res) => {
     const product = req.currentProduct;
     // We need await to not mess multiple requests to the views server.
     const serverReply = await sendAndReceive(`patch ${guest_user_id} ${product.pid}`)
@@ -121,7 +120,7 @@ export const editProduct = (req, res) => {
     res.status(204).location(`/api/restaurants/${restaurant.id}/products/${Editedproduct.pId}`).json(Editedproduct);
 }
 
-export const deleteProduct = (req, res) => {
+export const deleteProduct = async(req, res) => {
     // I am using the validations for restaurant and product to fetch them easily.
     const restaurant = req.currentRestaurant;
     const productPId = req.currentProduct.pId;

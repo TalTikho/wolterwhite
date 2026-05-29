@@ -1,4 +1,5 @@
 import * as restaurantModel from '../models/restaurantModel.js';
+import { sendAndReceive } from './cppClient.js'
 
 // Use restaurantModel to get the entire restaurants array in json format. 500 means the server failed, o.w get (200 OK).
 export const getAllRestaurants = (req, res) => {
@@ -73,7 +74,7 @@ export const editRestaurantInfo = (req, res) => {
 
 };
 
-export const DeleteRestaurant = (req, res) => {
+export const DeleteRestaurant = async (req, res) => {
     const restaurantId = req.params.id;
     const products = restaurantModel.getRestaurantById(restaurantId).products;
     // For each product in the restaurant (if its product array isn't empty) delete the view in the user id's list using the cpp server.
