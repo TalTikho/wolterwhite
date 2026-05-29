@@ -1,4 +1,4 @@
-import * as authService from "../services/authService.js";
+import * as userModel from "../models/userModel.js";
 
 /**
  * Handles login request
@@ -8,7 +8,7 @@ export const login = (req, res) => {
     const { name, password } = req.body;
 
     // Call service to authenticate
-    const user = authService.authenticateUser(name, password);
+    const user = userModel.authenticateUser(name, password);
 
     // If user not found (authentication failed), return 401 Unauthorized
     if (!user) {
