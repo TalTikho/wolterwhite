@@ -142,6 +142,8 @@ export const deleteProduct = async (req, res) => {
         // We need await to not mess multiple requests to the views server.
         const serverReply = await sendAndReceive(`delete ${user.id} ${productPId}`)
         console.log("Reply:", serverReply);
+        // If a user did not view the product it's ok, just an error message 
+        // from the cpp client and the code continues running afterwards.
 
     }
 
