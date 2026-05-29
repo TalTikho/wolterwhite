@@ -12,5 +12,11 @@ router.get('/', restaurantController.getAllRestaurants);
 // Use controller func to create a new restaurant.
 router.post('/', restaurantController.createRestaurant);
 
+// Methods for address http://foo.com/api/restaurants/:id
+router.route('/:id')
+    .get(restaurantController.getRestaurantById)
+    .patch(restaurantController.editRestaurantInfo)
+    .delete(restaurantController.DeleteRestaurant)
+
 // export router so app.js can use it for routing.
 export default router;
