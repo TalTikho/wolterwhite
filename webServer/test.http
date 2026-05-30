@@ -1,8 +1,11 @@
+### ==================== USERS ====================
+
 ### Register a new user
 POST http://localhost:3000/api/users
 Content-Type: application/json
 
 {
+    "username": "israel_israeli",
     "name": "Israel Israeli",
     "phone": "050-1234567",
     "address": "Be'er Ya'akov",
@@ -11,7 +14,21 @@ Content-Type: application/json
 
 ###
 
-### Register user with missing fields
+### Register a second user
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+    "username": "israela_israeli",
+    "name": "Israela Israeli",
+    "phone": "052-7654321",
+    "address": "Tel Aviv",
+    "password": "anotherPassword"
+}
+
+###
+
+### Register user with missing fields (expect 400)
 POST http://localhost:3000/api/users
 Content-Type: application/json
 
@@ -21,11 +38,12 @@ Content-Type: application/json
 
 ###
 
-### Register user with empty fields
+### Register user with empty fields (expect 400)
 POST http://localhost:3000/api/users
 Content-Type: application/json
 
 {
+    "username": "",
     "name": "",
     "phone": "",
     "address": "",
@@ -34,23 +52,524 @@ Content-Type: application/json
 
 ###
 
-### Get existing user by ID
-GET http://localhost:3000/api/users/REPLACE_WITH_VALID_ID
+### Register with empty body (expect 400)
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{}
 
 ###
 
-### Get non-existing user
-GET http://localhost:3000/api/users/999999
+### Get existing user by ID (replace with a valid ID from POST response)
+GET http://localhost:3000/api/users/REPLACE_WITH_VALID_USER_ID
 
 ###
 
-### Login check
+### Get non-existing user (expect 404)
+GET http://localhost:3000/api/users/nonexistent-id-999
+
+###
+
+
+### ==================== TOKENS (Login) ====================
+
+### Login with correct credentials (expect 200 + user ID)
 POST http://localhost:3000/api/tokens
 Content-Type: application/json
 
 {
-    "name": "Israel Israeli",
+    "username": "israel_israeli",
     "password": "mySecretPassword"
 }
+
+###
+
+### Login with wrong password (expect 401 or error)
+POST http://localhost:3000/api/tokens
+Content-Type: application/json
+
+{
+    "username": "israel_israeli",
+    "password": "wrongPassword"
+}
+
+###
+
+### Login with non-existing user (expect 404 or error)
+POST http://localhost:3000/api/tokens
+Content-Type: application/json
+
+{
+    "username": "ghost_user",
+    "password": "doesntMatter"
+}
+
+###
+
+### Login with missing password (expect 400)
+POST http://localhost:3000/api/tokens
+Content-Type: application/json
+
+{
+    "username": "israel_israeli"
+}
+
+###
+
+### Login with empty body (expect 400)
+POST http://localhost:3000/api/tokens
+Content-Type: application/json
+
+{}
+
+###
+
+
+### ==================== RESTAURANTS ====================
+
+### Get all restaurants (empty list initially, expect 200 + [])
+GET http://localhost:3000/api/restaurants
+
+###
+
+### Create a new restaurant
+POST http://localhost:3000/api/restaurants
+Content-Type: application/json
+X-User-Id: REPLACE_WITH_VALID_USER_ID
+
+{
+    "name": "Pizza Palace",
+    "phone": "03-1234567",
+    "email": "pizza@palace.com",
+    "address": "123 Main St, Tel Aviv",
+    "hours": "10:00-23:00",
+    "description": "Best pizza in town"
+}
+
+###
+
+### Create a second restaurant
+POST http://localhost:3000/api/restaurants
+Content-Type: application/json
+X-User-Id: REPLACE_WITH_VALID_USER_ID
+
+{
+    "name": "Burger Barn",
+    "phone": "04-7654321",
+    "email": "info@burgerbarn.com",
+    "address": "456 Side St, Haifa",
+    "hours": "11:00-22:00",
+    "description": "Juicy burgers and loaded fries"
+}
+
+###
+
+### Create duplicate restaurant (same name, expect 409 or 400)
+POST http://localhost:3000/api/restaurants
+Content-Type: application/json
+X-User-Id: REPLACE_WITH_VALID_USER_ID
+
+{
+    "name": "Pizza Palace",
+    "phone": "03-0000000",
+    "email": "info@Somewhereelse.com",
+    "address": "Somewhere else",
+    "hours": "11:00-22:00",
+    "description": "Somewhere else description"
+}
+
+###
+
+### Create restaurant with missing name (expect 400)
+POST http://localhost:3000/api/restaurants
+Content-Type: application/json
+X-User-Id: REPLACE_WITH_VALID_USER_ID
+
+{
+    "phone": "03-0000000",
+    "address": "789 Other St"
+}
+
+###
+
+### Create restaurant with empty body (expect 400)
+POST http://localhost:3000/api/restaurants
+Content-Type: application/json
+X-User-Id: REPLACE_WITH_VALID_USER_ID
+
+{}
+
+###
+
+### Get all restaurants (should show the two created ones)
+GET http://localhost:3000/api/restaurants
+
+###
+
+### Get a specific restaurant by ID
+GET http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID
+
+###
+
+### Get non-existing restaurant (expect 404)
+GET http://localhost:3000/api/restaurants/nonexistent-restaurant-id
+
+###
+
+### Update restaurant name and hours (PATCH)
+PATCH http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID
+Content-Type: application/json
+X-User-Id: REPLACE_WITH_VALID_USER_ID
+
+{
+    "name": "Pizza Palace Updated",
+    "hours": "09:00-00:00"
+}
+
+###
+
+### Update restaurant to a duplicate name (expect 409 or 400)
+PATCH http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID
+Content-Type: application/json
+X-User-Id: REPLACE_WITH_VALID_USER_ID
+
+{
+    "name": "Burger Barn"
+}
+
+###
+
+### Update non-existing restaurant (expect 404)
+PATCH http://localhost:3000/api/restaurants/nonexistent-restaurant-id
+Content-Type: application/json
+X-User-Id: REPLACE_WITH_VALID_USER_ID
+
+{
+    "name": "Doesn't Matter"
+}
+
+###
+
+### Delete a restaurant (expect 204)
+DELETE http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID
+X-User-Id: REPLACE_WITH_VALID_USER_ID
+
+###
+
+### Delete non-existing restaurant (expect 404)
+DELETE http://localhost:3000/api/restaurants/nonexistent-restaurant-id
+X-User-Id: REPLACE_WITH_VALID_USER_ID
+
+###
+
+
+### ==================== PRODUCTS (Menu) ====================
+
+### Get all products for a restaurant (empty initially)
+GET http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products
+
+###
+
+### Add a product to a restaurant
+POST http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products
+Content-Type: application/json
+X-User-Id: REPLACE_WITH_VALID_USER_ID
+
+{
+    "pname": "Margherita Pizza",
+    "pdescription": "Classic tomato and mozzarella",
+    "price": 52
+}
+
+###
+
+### Add a second product
+POST http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products
+Content-Type: application/json
+X-User-Id: REPLACE_WITH_VALID_USER_ID
+
+{
+    "pname": "Pepperoni Pizza",
+    "pdescription": "Tomato, mozzarella and pepperoni",
+    "price": 62
+}
+
+###
+
+### Add duplicate product (same pname, expect 409 or 400)
+POST http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products
+Content-Type: application/json
+X-User-Id: REPLACE_WITH_VALID_USER_ID
+
+{
+    "pname": "Margherita Pizza",
+    "pdescription": "Duplicate entry",
+    "price": 45
+}
+
+###
+
+### Add product with missing pname (expect 400)
+POST http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products
+Content-Type: application/json
+X-User-Id: REPLACE_WITH_VALID_USER_ID
+
+{
+    "pdescription": "No name product",
+    "price": 30
+}
+
+###
+
+### Add product with empty body (expect 400)
+POST http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products
+Content-Type: application/json
+X-User-Id: REPLACE_WITH_VALID_USER_ID
+
+{}
+
+###
+
+### Add product to non-existing restaurant (expect 404)
+POST http://localhost:3000/api/restaurants/nonexistent-restaurant-id/products
+Content-Type: application/json
+X-User-Id: REPLACE_WITH_VALID_USER_ID
+
+{
+    "pname": "Ghost Pizza",
+    "pdescription": "Shouldn't exist",
+    "price": 50
+}
+
+###
+
+### Get all products for a restaurant
+GET http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products
+
+###
+
+### Get a specific product by ID (also triggers a view in Ex2 server)
+GET http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products/REPLACE_WITH_VALID_PRODUCT_ID
+
+###
+
+### Get non-existing product (expect 404)
+GET http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products/nonexistent-product-id
+
+###
+
+### Get product from non-existing restaurant (expect 404)
+GET http://localhost:3000/api/restaurants/nonexistent-restaurant-id/products/REPLACE_WITH_VALID_PRODUCT_ID
+
+###
+
+### Update a product — name and price (PATCH)
+PATCH http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products/REPLACE_WITH_VALID_PRODUCT_ID
+Content-Type: application/json
+X-User-Id: REPLACE_WITH_VALID_USER_ID
+
+{
+    "pname": "Margherita Pizza XL",
+    "price": 65
+}
+
+###
+
+### Update product to duplicate pname (expect 409 or 400)
+PATCH http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products/REPLACE_WITH_VALID_PRODUCT_ID
+Content-Type: application/json
+X-User-Id: REPLACE_WITH_VALID_USER_ID
+
+{
+    "pname": "Pepperoni Pizza"
+}
+
+###
+
+### Update non-existing product (expect 404)
+PATCH http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products/nonexistent-product-id
+Content-Type: application/json
+X-User-Id: REPLACE_WITH_VALID_USER_ID
+
+{
+    "pname": "Doesn't Matter"
+}
+
+###
+
+### Delete a product (expect 204)
+DELETE http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products/REPLACE_WITH_VALID_PRODUCT_ID
+X-User-Id: REPLACE_WITH_VALID_USER_ID
+
+###
+
+### Delete non-existing product (expect 404)
+DELETE http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products/nonexistent-product-id
+X-User-Id: REPLACE_WITH_VALID_USER_ID
+
+###
+
+
+### ==================== ORDERS ====================
+
+### Create a new order
+POST http://localhost:3000/api/orders
+Content-Type: application/json
+X-User-Id: REPLACE_WITH_VALID_USER_ID
+
+{
+    "restaurantId": "REPLACE_WITH_VALID_RESTAURANT_ID",
+    "products": [
+        "REPLACE_WITH_VALID_PRODUCT_ID"
+    ],
+    "status": "pending"
+}
+
+###
+
+### Create order with no products (expect 400)
+POST http://localhost:3000/api/orders
+Content-Type: application/json
+X-User-Id: REPLACE_WITH_VALID_USER_ID
+
+{
+    "restaurantId": "REPLACE_WITH_VALID_RESTAURANT_ID",
+    "products": []
+}
+
+###
+
+### Create order with missing restaurantId (expect 400)
+POST http://localhost:3000/api/orders
+Content-Type: application/json
+X-User-Id: REPLACE_WITH_VALID_USER_ID
+
+{
+    "products": [
+        "REPLACE_WITH_VALID_PRODUCT_ID"
+    ]
+}
+
+###
+
+### Create order with empty body (expect 400)
+POST http://localhost:3000/api/orders
+Content-Type: application/json
+X-User-Id: REPLACE_WITH_VALID_USER_ID
+
+{}
+
+###
+
+### Get all orders for the logged-in user
+GET http://localhost:3000/api/orders
+X-User-Id: REPLACE_WITH_VALID_USER_ID
+
+###
+
+### Get orders for a different user (should return only their orders)
+GET http://localhost:3000/api/orders
+X-User-Id: REPLACE_WITH_SECOND_VALID_USER_ID
+
+###
+
+### Get a specific order by ID
+GET http://localhost:3000/api/orders/REPLACE_WITH_VALID_ORDER_ID
+X-User-Id: REPLACE_WITH_VALID_USER_ID
+
+###
+
+### Get non-existing order (expect 404)
+GET http://localhost:3000/api/orders/nonexistent-order-id
+X-User-Id: REPLACE_WITH_VALID_USER_ID
+
+###
+
+### Update an order — change status and products (PATCH)
+PATCH http://localhost:3000/api/orders/REPLACE_WITH_VALID_ORDER_ID
+Content-Type: application/json
+X-User-Id: REPLACE_WITH_VALID_USER_ID
+
+{
+    "products": [
+        "REPLACE_WITH_VALID_PRODUCT_ID"
+    ],
+    "status": "confirmed"
+}
+
+###
+
+### Verify protected fields are immutable — id, userId, createdAt should not change
+PATCH http://localhost:3000/api/orders/REPLACE_WITH_VALID_ORDER_ID
+Content-Type: application/json
+X-User-Id: REPLACE_WITH_VALID_USER_ID
+
+{
+    "id": "hacked-id",
+    "userId": "hacked-user",
+    "createdAt": "1970-01-01T00:00:00.000Z",
+    "status": "cancelled"
+}
+
+###
+
+### Update non-existing order (expect 404)
+PATCH http://localhost:3000/api/orders/nonexistent-order-id
+Content-Type: application/json
+X-User-Id: REPLACE_WITH_VALID_USER_ID
+
+{
+    "status": "cancelled"
+}
+
+###
+
+### Delete an order (expect 204)
+DELETE http://localhost:3000/api/orders/REPLACE_WITH_VALID_ORDER_ID
+X-User-Id: REPLACE_WITH_VALID_USER_ID
+
+###
+
+### Delete non-existing order (expect 404)
+DELETE http://localhost:3000/api/orders/nonexistent-order-id
+X-User-Id: REPLACE_WITH_VALID_USER_ID
+
+###
+
+
+### ==================== SEARCH ====================
+
+### Search matching a restaurant name
+GET http://localhost:3000/api/search/pizza
+
+###
+
+### Search matching a restaurant description
+GET http://localhost:3000/api/search/burger
+
+###
+
+### Search matching a product pname
+GET http://localhost:3000/api/search/margherita
+
+###
+
+### Search matching a product pdescription
+GET http://localhost:3000/api/search/mozzarella
+
+###
+
+### Case-insensitive search
+GET http://localhost:3000/api/search/PIZZA
+
+###
+
+### Search with no matches (expect 200 + empty array)
+GET http://localhost:3000/api/search/xyznotfound
+
+###
+
+### Search with a single character
+GET http://localhost:3000/api/search/a
 
 ###

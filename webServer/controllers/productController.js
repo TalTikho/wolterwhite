@@ -30,7 +30,7 @@ export const verifyRestaurant = (req, res, next) => {
 // Check if a product exists for delete, patch and getById.
 export const verifyProduct = (req, res, next) => {
     const restaurant = req.currentRestaurant;
-    const product = productModel.getProductById(req.params.pId);
+    const product = productModel.getProductById(req.params.pId, restaurant);
     if (!product) {
         return res.status(404).json({ error: 'Product not found' });
     }
@@ -50,7 +50,7 @@ export const getRestaurantProds = async (req, res) => {
     // The list could be empty and then the run just continues.
     for (const product of products) {
         // We need await to not mess multiple requests to the views server.
-        const serverReply = await sendAndReceive(`patch ${guest_user_id} ${product.pId}`)
+        const serverReply = await sendAndReceive(`patch ${userID} ${product.pId}`)
         console.log("Reply:", serverReply);
         // User is not yet in the views file. The views server is blind to the js server's data.
         if (serverReply.includes("400") || serverReply.includes("404")) {
@@ -68,7 +68,7 @@ export const addProdToRest = (req, res) => {
     if (
         !productInfo.pname?.trim() ||
         !productInfo.pdescription?.trim() ||
-        !productInfo.price?.trim()
+        productInfo.price === undefined || productInfo.price === null
     )
         return res.status(400).json({
             error: "All fields must be filled"
@@ -87,7 +87,7 @@ export const getProductById = async (req, res) => {
     const product = req.currentProduct;
     const userID = is_user_connected(req, res);
     // We need await to not mess multiple requests to the views server.
-    const serverReply = await sendAndReceive(`patch ${guest_user_id} ${product.pid}`)
+    const serverReply = await sendAndReceive(`patch ${userID} ${product.pid}`)
     console.log("Reply:", serverReply);
     // User is not yet in the views file. The views server is blind to the js server's data.
     if (serverReply.includes("400") || serverReply.includes("404")) {
@@ -106,7 +106,7 @@ export const editProduct = (req, res) => {
     if (
         !productInfo.pname?.trim() &&
         !productInfo.pdescription?.trim() &&
-        !productInfo.price?.trim()
+        productInfo.price === undefined && productInfo.price === null
     ) {
         return res.status(400).json({
             error: "At least one field must be filled"
@@ -118,7 +118,7 @@ export const editProduct = (req, res) => {
     // Those are returned automatically.
 
     // 409 conflict - the request is valid, but the name is conflicting.
-    if (!newProd) {
+    if (!Editedproduct) {
         return res.status(409).json({ error: 'Product already exists' });
     }
     // verifyProduct already checks if the id is good so we return a no content approval.
