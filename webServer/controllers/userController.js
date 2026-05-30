@@ -1,5 +1,7 @@
 import * as userModel from "../models/userModel.js";
 
+import crypto from 'crypto';
+
 // Helper function to check if a user is actually connected to the site.
 export const is_user_connected = (req, res) => {
     // get id from header.
