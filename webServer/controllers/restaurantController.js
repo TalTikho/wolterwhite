@@ -31,9 +31,10 @@ export const createRestaurant = (req, res) => {
         });
 
     const newRestaurant = restaurantModel.createRestaurant(restaurantInfo);
-    if (!restaurant) {
-        return res.status(404).json({ error: 'Restaurant already exists' });
+    if (!newRestaurant) {
+        return res.status(409).json({ error: 'Restaurant already exists' });
     }
+    
     // succesful post is 201 Created
     res.status(201).location(`/api/restaurants/${newRestaurant.id}`).json(newRestaurant);
 }
@@ -81,7 +82,15 @@ export const editRestaurantInfo = (req, res) => {
 
 export const DeleteRestaurant = async (req, res) => {
     const restaurantId = req.params.id;
-    const products = restaurantModel.getRestaurantById(restaurantId).products;
+
+    const targetRestaurant = restaurantModel.getRestaurantById(restaurantId);
+    
+    if (!targetRestaurant) {
+        return res.status(404).json({ error: 'Restaurant not found' });
+    }
+
+    const products = targetRestaurant.products || [];
+
     // For each product in the restaurant (if its product array isn't empty) delete the view in the user id's list using the cpp server.
     // The recommendation system cannot recommend a deleted product.
     // The list could be empty and then the run just continues.
@@ -95,10 +104,8 @@ export const DeleteRestaurant = async (req, res) => {
         };
     }
 
-    const deletedRestaurant = restaurantModel.DeleteRestaurant(restaurantId);
-    if (deletedRestaurant == -1) {
-        return res.status(404).json({ error: 'Restaurant not found' });
-    }
+    restaurantModel.DeleteRestaurant(restaurantId);
+
     // We do not need location as after deletion it will be undefined.
     res.status(204).end();
 

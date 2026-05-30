@@ -21,7 +21,7 @@ const PORT = 3000;
 
 // Register all routes
 app.use("/api/users", userRoutes);
-app.use("/api/order", orderRoutes);
+app.use("/api/orders", orderRoutes);
 app.use("/api/tokens", authRoutes);
 app.use("/api/restaurants", restaurantRoutes);
 app.use('/api/search', searchRoutes);
