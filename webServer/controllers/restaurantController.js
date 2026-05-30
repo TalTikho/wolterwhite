@@ -1,17 +1,15 @@
 import * as restaurantModel from '../models/restaurantModel.js';
-import { sendAndReceive } from './cppClient.js'
+import { sendAndReceive } from '../cppClient.js'
 
-// Use restaurantModel to get the entire restaurants array in json format. 500 means the server failed, o.w get (200 OK).
+// Import a getter instead of the users array for encapsulation.
+import { getAllusers } from '../models/userModel.js'
+const users = getAllusers();
+
+// Use restaurantModel to get the entire restaurants array in json format, return get (200 OK).
 export const getAllRestaurants = (req, res) => {
-    try {
-        const restaurants = restaurantModel.getAllRestaurants()
-        res.json(restaurants);
-    }
+    const restaurants = restaurantModel.getAllRestaurants()
+    res.status(200).json(restaurants);
     // No restaurants is not an error and will just return an empty array in a json.
-    // So an error would be a (500) server error.
-    catch (error) {
-        res.status(500).json({ error: 'Bad Request', message: 'Failed to fetch restaurants' });
-    }
 
 }
 
@@ -42,8 +40,10 @@ export const createRestaurant = (req, res) => {
 
 export const getRestaurantById = (req, res) => {
     const restaurant = restaurantModel.getRestaurantById(req.params.id)
-    if (!restaurant)
+    // getRestaurantById uses find and if not found find returns undefined.
+    if (!restaurant) {
         return res.status(404).json({ error: 'Restaurant not found' });
+    }
     res.status(200).location(`/api/restaurants/${restaurant.id}`).json(restaurant);
 };
 
@@ -68,9 +68,14 @@ export const editRestaurantInfo = (req, res) => {
     // 204 No content for PATCH
     const restaurantId = req.params.id;
     const editedRestaurant = restaurantModel.editRestaurantInfo(restaurantId, restaurantNew);
-    if (!editedRestaurant)
+    if (editedRestaurant === null) {
         return res.status(404).json({ error: 'Restaurant not found' });
-    res.status(204).location(`/api/restaurants/${editedRestaurant.id}`).end();
+    }
+    // 409 conflict - the id is valid, but the name creates a conflict.
+    if (editedRestaurant === undefined) {
+        return res.status(409).json({ error: 'Restaurant with the same name already exists' });
+    }
+    res.status(204).end();
 
 };
 
@@ -80,13 +85,16 @@ export const DeleteRestaurant = async (req, res) => {
     // For each product in the restaurant (if its product array isn't empty) delete the view in the user id's list using the cpp server.
     // The recommendation system cannot recommend a deleted product.
     // The list could be empty and then the run just continues.
-    for (const product of products) {
-        if (!is_user_connected) {
+    for (const user of users) {
+        for (const product of products) {
             // We need await to not mess multiple requests to the views server.
-            const serverReply = await sendAndReceive(`delete ${guest_user_id} ${product.pId}`)
+            const serverReply = await sendAndReceive(`delete ${user.id} ${product.pId}`)
             console.log("Reply:", serverReply);
-        }
-    };
+            // If a user did not view the product it's ok, just an error message 
+            // from the cpp client and the code continues running afterwards.
+        };
+    }
+
     const deletedRestaurant = restaurantModel.DeleteRestaurant(restaurantId);
     if (deletedRestaurant == -1) {
         return res.status(404).json({ error: 'Restaurant not found' });
