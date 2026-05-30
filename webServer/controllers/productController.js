@@ -1,6 +1,5 @@
 import * as productModel from '../models/productModel.js';
-import { getAllusers } from '../models/userModel.js'
-import { getUserById } from '../models/userModel.js'
+import { getAllusers,  getUserById} from '../models/userModel.js'
 import { is_user_connected } from './userController.js'
 
 // We only need this function from restaurantModel because products are dependant on a restaurant.
