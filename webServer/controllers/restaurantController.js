@@ -40,6 +40,10 @@ export const createRestaurant = (req, res) => {
 
 export const getRestaurantById = (req, res) => {
     const restaurant = restaurantModel.getRestaurantById(req.params.id)
+    // getRestaurantById uses find and if not found find returns undefined.
+    if (!restaurant) {
+        return res.status(404).json({ error: 'Restaurant not found' });
+    }
     res.status(200).location(`/api/restaurants/${restaurant.id}`).json(restaurant);
 };
 
