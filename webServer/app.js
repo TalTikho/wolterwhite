@@ -1,8 +1,14 @@
-import searchRoutes from './routes/searchRoutes.js';
+//====================================================================================================
+// Imports
+//====================================================================================================
 import express from "express";
 import userRoutes from "./routes/userRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import restaurantRoutes from "./routes/restaurantRoutes.js";
+import searchRoutes from './routes/searchRoutes.js';
+
+//====================================================================================================
 
 // Create an Express application instance
 const app = express();
@@ -15,6 +21,7 @@ const PORT = 3000;
 
 // Register all routes
 app.use("/api/users", userRoutes);
+app.use("/api/order", orderRoutes);
 app.use("/api/tokens", authRoutes);
 app.use("/api/restaurants", restaurantRoutes);
 app.use('/api/search', searchRoutes);
