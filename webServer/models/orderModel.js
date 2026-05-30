@@ -18,7 +18,7 @@ export const orders = [];
  */
 export const createOrder = (userId, orderData) => {
     const newOrder = {
-        id:           randomUUID(), // Unique identifier
+        id:           randomUUID().toString(), // Unique identifier
         userId:       userId, // Who placed the order
         restaurantId: orderData.restaurantId, // Which restaurant
         products:     orderData.products || [], // Array of product IDs ordered
