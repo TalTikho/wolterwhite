@@ -6,6 +6,7 @@ import userRoutes from "./routes/userRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import restaurantRoutes from "./routes/restaurantRoutes.js";
+import searchRoutes from './routes/searchRoutes.js';
 
 //====================================================================================================
 
@@ -18,14 +19,12 @@ app.use(express.json());
 // Define the server port
 const PORT = 3000;
 
-// Register user routes
-// All routes inside userRoutes will start with /api/users
+// Register all routes
 app.use("/api/users", userRoutes);
 app.use("/api/order", orderRoutes);
 app.use("/api/tokens", authRoutes);
-// Register restaurant routes
-// All routes inside restaurantRoutes will start with /api/restaurants
 app.use("/api/restaurants", restaurantRoutes);
+app.use('/api/search', searchRoutes);
 
 // Start the server
 app.listen(PORT, () => {
