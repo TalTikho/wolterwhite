@@ -344,17 +344,15 @@ curl -i http://localhost:3000/api/search/pizza
 
 ---
 
-## 📜 C++ TCP Server Commands
+## 📜 C++ TCP Server Commands (ex2 server)
 
-Used directly via the Python client or internally by the web server.
+Used indirectly via cppClient.js 
 
 | Command | Description | Response |
 | --------- | ------------- | ---------- |
-| `POST [userid] [pid1] [pid2]...` | Create user + add products | `201 Created` |
-| `PATCH [userid] [pid1] [pid2]...` | Add products to existing user | `204 No Content` |
-| `DELETE [userid] [pid1] [pid2]...` | Remove products from user | `204 No Content` |
-| `GET [userid] [productid]` | Get recommendations | `200 Ok` + products |
-| `help` | List all commands | command list |
+| `POST [userid] [pid1] [pid2]...` | Create a userID row + adds viewed products' ids | `201 Created` |
+| `PATCH [userid] [pid1] [pid2]...` | Adds viewed products' ids to existing user | `204 No Content` |
+| `DELETE [userid] [pid1] [pid2]...` | Removes viewed products' ids from user | `204 No Content` |
 
 ### Error Responses
 
@@ -385,6 +383,7 @@ using a **persistent TCP socket** via `cppClient.js`
 | 401 Unauthorized | Missing x-user-id header |
 | 403 Forbidden | Authenticated but accessing another user's resource |
 | 404 Not Found | Resource not found |
+| 409 Conflict | Conflict with existing data, for instance name conflict|
 
 ### C++ TCP Server
 
@@ -395,93 +394,24 @@ using a **persistent TCP socket** via `cppClient.js`
 
 ---
 
-## 🧪 Testing
+## 🧪 Testing 
 
-The C++ server includes automated unit tests for:
+Run the tests found in [`test.http`](./webServer/test.http)
 
-| Test Suite | Coverage |
-| ------------ | ---------- |
-| AppTests | Application loop and dispatch |
-| MenuTests | Input parsing and tab rejection |
-| StorageTests | File persistence and round-trips |
-| HelpCommandTests | Output format and argument handling |
-| PostCommandTests | User creation and validation |
-| PatchCommandTests | Product addition and edge cases |
-| GetCommandTests | Recommendation algorithm |
-| DeleteCommandTests | Product removal and atomicity |
-| ServerTests | Full TCP integration tests |
-
-### Run Tests
-
-```bash
-docker exec -it wolterwhite_server_container ./tests/runTests
-```
-
----
 
 ## 📝 Implementation Notes
 
-- The Node.js web server stores all data **in-memory** — restarting
+- The Node.js web server stores all data **in-memory** - restarting
   the web server clears all users, restaurants, products and orders
-- The C++ server stores data in the `data/` directory — persists
+- The C++ server stores data in the `data/` directory  - persists
   across restarts
-- The Python client is intentionally lightweight ("dumb client") —
-  it sends whatever the user types directly to the C++ server
+- The Python client is intentionally lightweight ("dumb client") -
+  it sends whatever the user types directly to the C++ server (ex2)
 - The TCP connection from the web server to the C++ server is
-  persistent — opened once on startup and reused for all requests
+  persistent - opened once on startup and reused for all requests
 - `node_modules/` is excluded from the repository via `.gitignore`
 - The system follows SOLID principles and loose coupling throughout
 
----
-
-## 📸 Example Runs
-
-## Starting the Environment
-
-![Running](./media/Starting_The_Environment.png)
-
----
-
-## Running the Client and Triggering HelpCommand
-
-![Running](./media/Running_The_Application.png)
-
-![Running](./media/triggeringHelpCommand.png)
-
----
-
-## Running Example Commands
-
-![Running](./media/Running_The_Application_Using_An_Example.png)
-
----
-
-## GET Recommendation Example
-
-![Running](./media/Running_Recommend_Example.png)
-
-![Running](./media/Able_To_Recommend_After_Added.png)
-
----
-
-## DELETE / PATCH Example
-
-![Running](./media/patch_and_delete.png)
-
----
-
-## Invalid Input  + help + weird working quit prompt Example
-
-![Running](./media/Invalid_+help_+quitBothCases.png)
-
----
-
-## Tests Passing
-
-![Running](./media/Running_All_Tests.png)
-
----
-
 ## 📄 License
 
-- This project was developed as part of an academic systems programming assignment
+- This project was developed as part of an advanced systems programming assignment
