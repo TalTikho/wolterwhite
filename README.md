@@ -14,13 +14,13 @@ This is the updated README for the **WOLTerWhite** TCP client-server project.
 
 ## 🔗 Links
 
-- 🗺️ [UML Diagram](https://tinyurl.com/27bmcw6j)
+- 🗺️ [UML Diagram](https://tinyurl.com/UMLinkMe)
 
 ![Running](./media/UML.png)
 
 ---
 
-## 🌿 Branch Strategy
+## 🌿 Branch Strategy (finished exercises go this way)
 
 | Branch | Exercise | Description |
 | -------- | ---------- | ------------- |
@@ -28,7 +28,7 @@ This is the updated README for the **WOLTerWhite** TCP client-server project.
 | `finished-ex2` | Exercise 2 | TCP client-server system |
 | `finished-ex3` | Exercise 3 | web server (current) |
 
-> ⚠️ **NOTE**: Do not modify `finished-ex1` or `finished-ex2` branches after submission
+> ⚠️ **NOTE**: Do not modify `finished-ex1` or `finished-ex2` or `finished-ex3` branches after submission
 > to preserve grace days.
 
 ---
@@ -204,6 +204,13 @@ docker-compose down
 ```
 
 This shuts down all running containers.
+
+---
+
+#### 5️⃣ Starting and Closing
+![Running](./media/Running.png)
+
+![Running](./media/!Running.png)
 
 ---
 
