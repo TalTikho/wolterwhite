@@ -2,8 +2,8 @@ import net from 'net';
 // Use net to open a socket - a must for operating as a client.
 const client = new net.Socket();
 
-// Connect to the port the cpp server uses (currently with home ip)
-client.connect(5555, '127.0.0.1', () => { console.log('Connected to C++'); });
+// Connect to the port the cpp server uses (currently with the docker-cpp server container)
+client.connect(5555, 'wolterwhite-server', () => { console.log('Connected to C++'); });
 // If the connection fails we send an error message.
 client.on('error', (err) => console.log('C++ Server offline:', err.message));
 
@@ -11,6 +11,7 @@ client.on('error', (err) => console.log('C++ Server offline:', err.message));
 // When one is sent async and promise hold a request until the response comes.
 export const sendAndReceive = async (message) => {
 
+  console.log(">> SENDING MESSAGE TO C++:", message);
   // Write the message using net's write.
   client.write(message + '\n');
 
