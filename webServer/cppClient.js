@@ -11,7 +11,7 @@ client.on('error', (err) => console.log('C++ Server offline:', err.message));
 // When one is sent async and promise hold a request until the response comes.
 export const sendAndReceive = async (message) => {
 
-  console.log(">> SENDING TO C++:", message);
+  console.log(">> SENDING MESSAGE TO C++:", message);
   // Write the message using net's write.
   client.write(message + '\n');
 
