@@ -3,7 +3,7 @@
 // Imports
 //====================================================================================================
 import * as orderModel from '../models/orderModel.js';
-
+import { is_user_connected } from './userController.js'
 //====================================================================================================
 // Methods
 //====================================================================================================
@@ -14,9 +14,13 @@ import * as orderModel from '../models/orderModel.js';
  * Returns:         201 Created + Location header
  */
 export const createOrder = (req, res) => {
+    const userID = is_user_connected(req, res);
+
+    if (userID.includes('guest')) {
+        return res.status(400).json({ error: 'User must login' })
+    }
     // req.userId already set by auth middleware — no check needed
     const orderData = req.body;
-
     // Validate required fields
     if (!orderData.restaurantId?.trim()) {
         return res.status(400).json({
@@ -48,6 +52,11 @@ export const createOrder = (req, res) => {
  * Returns:         200 OK + array of orders
  */
 export const getOrders = (req, res) => {
+    const userID = is_user_connected(req, res);
+
+    if (userID.includes('guest')) {
+        return res.status(400).json({ error: 'User must login' })
+    }
     const userOrders = orderModel.getOrdersByUser(req.userId);
     return res.status(200).json(userOrders);
 };
@@ -60,6 +69,11 @@ export const getOrders = (req, res) => {
  *                  403 if order belongs to different user
  */
 export const getOrderById = (req, res) => {
+    const userID = is_user_connected(req, res);
+
+    if (userID.includes('guest')) {
+        return res.status(400).json({ error: 'User must login' })
+    }
     const order = orderModel.findOrderById(req.params.id);
 
     // Order not found
@@ -87,6 +101,11 @@ export const getOrderById = (req, res) => {
  *                  403 if order belongs to different user
  */
 export const updateOrder = (req, res) => {
+    const userID = is_user_connected(req, res);
+
+    if (userID.includes('guest')) {
+        return res.status(400).json({ error: 'User must login' })
+    }
     const order = orderModel.findOrderById(req.params.id);
 
     if (!order) {
@@ -113,6 +132,11 @@ export const updateOrder = (req, res) => {
  *                  403 if order belongs to different user
  */
 export const deleteOrder = (req, res) => {
+    const userID = is_user_connected(req, res);
+
+    if (userID.includes('guest')) {
+        return res.status(400).json({ error: 'User must login' })
+    }
     const order = orderModel.findOrderById(req.params.id);
 
     if (!order) {
