@@ -16,7 +16,7 @@ import * as productModel from '../models/productModel.js';
  * contains the query string
  *
  * Returns: 200 OK + { restaurants: [...], products: [...] }
- *          200 OK + { restaurants: [], products: [] } if no matches
+ * 200 OK + { restaurants: [], products: [] } if no matches
  *
  * Does not require authentication — anyone can search
  */
@@ -30,8 +30,18 @@ export const search = (req, res) => {
         });
     }
 
-    // Convert both query and field to lowercase before comparing
-    const queryLower = query.toLowerCase();
+    let queryLower;
+
+    try {
+        // Decode URL components (e.g., converts "%20" back to a space " ")
+        const decodedQuery = decodeURIComponent(query);
+        queryLower = decodedQuery.toLowerCase();
+    } catch (error) {
+        // Catch malformed URI components (e.g., a lone "%" character)
+        return res.status(400).json({
+            error: 'Invalid search query format'
+        });
+    }
 
     // Search restaurants
     // Match if name OR description contains the query
@@ -49,21 +59,20 @@ export const search = (req, res) => {
             return nameMatch || descriptionMatch;
         });
 
-    // Search products
-    // Match if name OR description contains the query
-    const matchingProducts = productModel
-        .getAllProducts()
-        .filter(product => {
-            const nameMatch = product.name
-                ?.toLowerCase()
-                .includes(queryLower);
+    // Fetch all products across the platform.
+    const allProducts = productModel.getAllProducts ? productModel.getAllProducts() : [];
 
-            const descriptionMatch = product.description
-                ?.toLowerCase()
-                .includes(queryLower);
+    const matchingProducts = allProducts.filter(product => {
+        const nameMatch = product.pname
+            ?.toLowerCase()
+            .includes(queryLower);
 
-            return nameMatch || descriptionMatch;
-        });
+        const descriptionMatch = product.pdescription
+            ?.toLowerCase()
+            .includes(queryLower);
+
+        return nameMatch || descriptionMatch;
+    });
 
     // 200 even if no matches — empty arrays signal no results
     return res.status(200).json({

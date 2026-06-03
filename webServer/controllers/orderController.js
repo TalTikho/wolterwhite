@@ -83,13 +83,6 @@ export const getOrderById = (req, res) => {
         });
     }
 
-    // Order belongs to different user
-    if (order.userId !== req.userId) {
-        return res.status(403).json({
-            error: 'Access denied'
-        });
-    }
-
     return res.status(200).json(order);
 };
 
