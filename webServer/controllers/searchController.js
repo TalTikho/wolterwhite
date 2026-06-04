@@ -43,10 +43,10 @@ export const search = (req, res) => {
         });
     }
 
+    const Allrest = restaurantModel.getAllRestaurants();
     // Search restaurants
     // Match if name OR description contains the query
-    const matchingRestaurants = restaurantModel
-        .getAllRestaurants()
+    const matchingRestaurants = Allrest
         .filter(restaurant => {
             const nameMatch = restaurant.name
                 ?.toLowerCase()
@@ -60,23 +60,44 @@ export const search = (req, res) => {
         });
 
     // Fetch all products across the platform.
-    const allProducts = productModel.getAllProducts ? productModel.getAllProducts() : [];
+    // Use getAllRestaurants and for each get its products.
+    const matchingProducts = [];
+  if (Allrest != null) {
+    for (const rest of Allrest) {
+        // If a specific restaurant is null, return what we have so far
+        if (rest == null) {
+            return res.status(200).json({
+                restaurants: matchingRestaurants,
+                products: matchingProducts
+            });
+        }
+        
+        // Fetch products for the current restaurant
+        const products = productModel.getRestaurantProds(rest);
+        
+        // FIX: Check if products exist, then filter the 'products' array directly (not 'rest')
+        if (products && Array.isArray(products)) {
+            let tempProds = products.filter(product => {
+                const nameMatch = product.pname
+                    ?.toLowerCase()
+                    .includes(queryLower);
 
-    const matchingProducts = allProducts.filter(product => {
-        const nameMatch = product.pname
-            ?.toLowerCase()
-            .includes(queryLower);
+                const descriptionMatch = product.pdescription
+                    ?.toLowerCase()
+                    .includes(queryLower);
 
-        const descriptionMatch = product.pdescription
-            ?.toLowerCase()
-            .includes(queryLower);
+                return nameMatch || descriptionMatch;
+            });
+            
+            // Push the filtered products into the main array
+            matchingProducts.push(...tempProds);
+        }
+    }
+}
 
-        return nameMatch || descriptionMatch;
-    });
-
-    // 200 even if no matches — empty arrays signal no results
-    return res.status(200).json({
-        restaurants: matchingRestaurants,
-        products:    matchingProducts
-    });
-};
+        // 200 even if no matches — empty arrays signal no results
+        return res.status(200).json({
+            restaurants: matchingRestaurants,
+            products: matchingProducts
+        });
+    };
