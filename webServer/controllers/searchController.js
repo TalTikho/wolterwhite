@@ -75,7 +75,7 @@ export const search = (req, res) => {
         // Fetch products for the current restaurant
         const products = productModel.getRestaurantProds(rest);
         
-        // FIX: Check if products exist, then filter the 'products' array directly (not 'rest')
+        // Check if products exist, then filter the 'products' array directly 
         if (products && Array.isArray(products)) {
             let tempProds = products.filter(product => {
                 const nameMatch = product.pname
