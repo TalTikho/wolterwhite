@@ -86,6 +86,7 @@ export const addProdToRest = (req, res) => {
 export const getProductById = async (req, res) => {
     const product = req.currentProduct;
     const userID = is_user_connected(req, res);
+    const restaurant = req.currentRestaurant;
     // We need await to not mess multiple requests to the views server.
     const serverReply = await sendAndReceive(`patch ${userID} ${product.pid}`)
     console.log("Reply:", serverReply);

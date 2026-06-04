@@ -10,14 +10,14 @@ import {
     updateOrder,
     deleteOrder
 } from '../controllers/orderController.js';
-import { login } from '../controllers/authController.js';
+// import { login } from '../controllers/authController.js';
 //====================================================================================================
 // Order Routes
 //====================================================================================================
 const router = Router();
 
 // If missing → auth middleware returns 401 before controller runs
-router.use(login);
+// router.use(login);
 // /api/orders
 router.post('/',   createOrder);  // POST   — create new order
 router.get('/',    getOrders);    // GET    — get all orders for user

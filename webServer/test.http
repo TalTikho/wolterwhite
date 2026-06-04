@@ -266,12 +266,12 @@ X-User-Id: REPLACE_WITH_VALID_USER_ID
 ### ==================== PRODUCTS (Menu) ====================
 
 ### Get all products for a restaurant (empty initially)
-GET http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products
+GET http://localhost:3000/api/restaurants/2789e062-97a3-4aec-89e5-5cc661715896/products
 
 ###
 
 ### Add a product to a restaurant
-POST http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products
+POST http://localhost:3000/api/restaurants/2789e062-97a3-4aec-89e5-5cc661715896/products
 Content-Type: application/json
 X-User-Id: REPLACE_WITH_VALID_USER_ID
 
@@ -284,7 +284,7 @@ X-User-Id: REPLACE_WITH_VALID_USER_ID
 ###
 
 ### Add a second product
-POST http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products
+POST http://localhost:3000/api/restaurants/2789e062-97a3-4aec-89e5-5cc661715896/products
 Content-Type: application/json
 X-User-Id: REPLACE_WITH_VALID_USER_ID
 
@@ -540,7 +540,7 @@ X-User-Id: REPLACE_WITH_VALID_USER_ID
 ### ==================== SEARCH ====================
 
 ### Search matching a restaurant name
-GET http://localhost:3000/api/search/pizza
+GET http://localhost:3000/api/search/Burger Barn
 
 ###
 
@@ -550,12 +550,10 @@ GET http://localhost:3000/api/search/burger
 ###
 
 ### Search matching a product pname
-GET http://localhost:3000/api/search/margherita
-
-###
+GET http://localhost:3000/api/search/Nuclear Taco v2
 
 ### Search matching a product pdescription
-GET http://localhost:3000/api/search/mozzarella
+GET http://localhost:3000/api/search/Stress 
 
 ###
 
@@ -570,6 +568,6 @@ GET http://localhost:3000/api/search/xyznotfound
 ###
 
 ### Search with a single character
-GET http://localhost:3000/api/search/a
+GET http://localhost:3000/api/search/r
 
 ###
