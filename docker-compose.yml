@@ -17,7 +17,7 @@ services:
         dockerfile: Dockerfile.web
       container_name: wolterwhite_web_container
       ports:
-      - "3000:3000"
+      - "5000:5000"
       environment:
       - SERVER_HOST=wolterwhite-server 
       - SERVER_PORT=5555 

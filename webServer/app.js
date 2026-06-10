@@ -2,6 +2,8 @@
 // Imports
 //====================================================================================================
 import express from "express";
+import cors from "cors";
+import expressCors from "express-cors";
 import userRoutes from "./routes/userRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
@@ -15,9 +17,11 @@ const app = express();
 
 // Middleware to parse incoming JSON requests
 app.use(express.json());
+// Middleware to allow connection to another server, in this case React.
+app.use(cors());
 
 // Define the server port
-const PORT = 3000;
+const PORT = 5000;
 
 // Register all routes
 app.use("/api/users", userRoutes);
@@ -26,7 +30,7 @@ app.use("/api/tokens", authRoutes);
 app.use("/api/restaurants", restaurantRoutes);
 app.use('/api/search', searchRoutes);
 
-// Start the server
+// Start the backend server
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`backend is running on http://localhost:${PORT}`);
 });
