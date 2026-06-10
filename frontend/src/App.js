@@ -1,5 +1,5 @@
 import './App.css';
-
+import fetch, { ApiExample } from './components/fetch.js'
 function App() {
   return (
     <div className="App">
@@ -7,6 +7,7 @@ function App() {
         <p>
           <code>src/App.js</code> 
         </p>
+        <p><ApiExample /></p>
         <a
           className="App-link"
           href="https://reactjs.org"
