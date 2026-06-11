@@ -2,25 +2,15 @@ import React from 'react';
 import '../index.css';
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { sendPOST } from '../services/api';
 
 async function login(username, password) {
-    const data = { username, password };
-
+    const body = { username, password };
     //send a post request to tokens in api to register a token.
-    const res = await fetch("http://localhost:5000/api/tokens", {
-        method: "post",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-    });
-
-    if (!res.ok) {
-        throw new Error("Invalid username or password");
-    }
+    const res = await sendPOST('/tokens', body);
 
     //set the token is localStorage to access it in future calls to backend api.
-    const { token } = await res.json();
+    const { token } = res;
     localStorage.setItem("token", token);
     //Welcome the user once after login, we
     //will remove justLoggedIn after welcoming the
