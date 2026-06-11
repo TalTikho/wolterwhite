@@ -1,6 +1,5 @@
 import * as productModel from '../models/productModel.js';
-import { getAllusers,  getUserById} from '../models/userModel.js'
-import { is_user_connected } from './userController.js'
+import { getAllusers, getUserById } from '../models/userModel.js'
 
 // We only need this function from restaurantModel because products are dependant on a restaurant.
 // WIthout a database the products need to be in the restaurant's json.
@@ -12,39 +11,13 @@ import crypto from 'crypto';
 
 const users = getAllusers();
 
-// This check if a restaurant is "real" is relevant for each of the product methods
-// as products are a restaurant's products and not standalone objects.
-// It is a middleware function saving us from redundant code checking validity in each method in this file.
-export const verifyRestaurant = (req, res, next) => {
-    // Use the restaurant object obtainted by id from the url to get its products.
-    const restaurant = getRestaurantById(req.params.id);
-    // No restaurant so the request is logical but the parameter (id) is wrong.
-    if (!restaurant)
-        return res.status(404).json({ error: 'Restaurant not found' });
-    // Attach restaurant to the request for the methods to take.
-    req.currentRestaurant = restaurant;
-    // Move to the actual logic after verification is good.
-    next()
-}
-
-// Check if a product exists for delete, patch and getById.
-export const verifyProduct = (req, res, next) => {
-    const restaurant = req.currentRestaurant;
-    const product = productModel.getProductById(req.params.pId, restaurant);
-    if (!product) {
-        return res.status(404).json({ error: 'Product not found' });
-    }
-    req.currentProduct = product;
-
-    next()
-
-}
 
 export const getRestaurantProds = async (req, res) => {
 
     const restaurant = req.currentRestaurant;
     const products = productModel.getRestaurantProds(restaurant);
-    const userID = is_user_connected(req, res);
+    // isLoggedIn middleware installed the userid if successful, guest if no user is connected and we had no bouncer
+    const userID = req.userId || 'guest_' + crypto.randomUUID().toString();
 
     // For each product in the restaurant (if its product array isn't empty) add a view in the user id's list using the cpp server.
     // The list could be empty and then the run just continues.
@@ -85,7 +58,8 @@ export const addProdToRest = (req, res) => {
 
 export const getProductById = async (req, res) => {
     const product = req.currentProduct;
-    const userID = is_user_connected(req, res);
+    // isLoggedIn middleware installed the userid if successful, guest if no user is connected and we had no bouncer
+    const userID = req.userId || 'guest_' + crypto.randomUUID().toString();
     const restaurant = req.currentRestaurant;
     // We need await to not mess multiple requests to the views server.
     const serverReply = await sendAndReceive(`patch ${userID} ${product.pId}`)
@@ -101,6 +75,7 @@ export const getProductById = async (req, res) => {
 export const editProduct = (req, res) => {
     // verifyRestaurant and verifyProduct give us the restaurant and product in the request.
     // productInfo is in the request's body
+    const userID = req.userId
     const restaurant = req.currentRestaurant;
     const product = req.currentProduct;
     const productInfo = req.body;
@@ -128,6 +103,7 @@ export const editProduct = (req, res) => {
 
 export const deleteProduct = async (req, res) => {
     // I am using the validations for restaurant and product to fetch them easily.
+    const userID = req.userId
     const restaurant = req.currentRestaurant;
     const productPId = req.currentProduct.pId;
     const deletedProduct = productModel.deleteProduct(restaurant, productPId);

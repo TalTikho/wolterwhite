@@ -3,7 +3,7 @@
 // Imports
 //====================================================================================================
 import * as orderModel from '../models/orderModel.js';
-import { is_user_connected } from './userController.js'
+import { users } from '../models/userModel.js';
 //====================================================================================================
 // Methods
 //====================================================================================================
@@ -14,12 +14,7 @@ import { is_user_connected } from './userController.js'
  * Returns:         201 Created + Location header
  */
 export const createOrder = (req, res) => {
-    const userID = is_user_connected(req, res);
-
-    if (userID.includes('guest')) {
-        return res.status(400).json({ error: 'User must login' })
-    }
-    // req.userId already set by auth middleware — no check needed
+    // req.userId already set by auth middleware func if succeful login was made — no extra check needed
     const orderData = req.body;
     // Validate required fields
     if (!orderData.restaurantId?.trim()) {
@@ -52,11 +47,7 @@ export const createOrder = (req, res) => {
  * Returns:         200 OK + array of orders
  */
 export const getOrders = (req, res) => {
-    const userID = is_user_connected(req, res);
-
-    if (userID.includes('guest')) {
-        return res.status(400).json({ error: 'User must login' })
-    }
+    // req.userId already set by auth middleware func if succeful login was made — no extra check needed
     const userOrders = orderModel.getOrdersByUser(req.userId);
     return res.status(200).json(userOrders);
 };
@@ -69,11 +60,7 @@ export const getOrders = (req, res) => {
  *                  403 if order belongs to different user
  */
 export const getOrderById = (req, res) => {
-    const userID = is_user_connected(req, res);
-
-    if (userID.includes('guest')) {
-        return res.status(400).json({ error: 'User must login' })
-    }
+    // req.userId already set by auth middleware func if succeful login was made — no extra check needed
     const order = orderModel.findOrderById(req.params.id);
 
     // Order not found
@@ -94,11 +81,7 @@ export const getOrderById = (req, res) => {
  *                  403 if order belongs to different user
  */
 export const updateOrder = (req, res) => {
-    const userID = is_user_connected(req, res);
-
-    if (userID.includes('guest')) {
-        return res.status(400).json({ error: 'User must login' })
-    }
+    // req.userId already set by auth middleware func if succeful login was made — no extra check needed
     const order = orderModel.findOrderById(req.params.id);
 
     if (!order) {
@@ -125,11 +108,7 @@ export const updateOrder = (req, res) => {
  *                  403 if order belongs to different user
  */
 export const deleteOrder = (req, res) => {
-    const userID = is_user_connected(req, res);
-
-    if (userID.includes('guest')) {
-        return res.status(400).json({ error: 'User must login' })
-    }
+    // req.userId already set by auth middleware func if succeful login was made — no extra check needed
     const order = orderModel.findOrderById(req.params.id);
 
     if (!order) {

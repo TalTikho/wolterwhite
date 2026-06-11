@@ -1,8 +1,14 @@
 import './App.css';
 import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
 import React from 'react';
-import  { ApiExample } from './components/Fetch.js'
-import { Home } from './components/Home.js';
+import  { ApiExample } from './pages/Fetch.js'
+import { Home } from './pages/HomePage.js';
+import { Login } from './pages/LoginPage .js';
+import { Register } from './pages/RegisterPage .js';
+import { Restaurant } from './pages/RestaurantPage .js';
+import { Orders } from './pages/OrdersPage .js';
+import { HomeRouter } from './services/HomeRouter.js';
+import 'bootstrap/dist/css/bootstrap.min.css'
 function App() {
   return (
     //BrowserRouter acts as the master wrapper that watches the URL
@@ -10,18 +16,27 @@ function App() {
       {/*Anything placed outside <Routes> (like a NavBar) will show on EVERY page */}
       <nav style={{ padding: '10px', background: '#333', color: 'yellow' }}>
         <h3>Wolterwhite Delivery</h3>
-        <Link to="/">Home</Link> |{" "}
+        <Link to="/">Home (now in navbar to ease testing)</Link> |{" "}
         <Link to="/example">Watch Our beautiful restaurant list (ApiExample)</Link> |{" "}
+        <Link to="/login">Login</Link> |{" "}
+        <Link to="/register">Register</Link> |{" "}
+        <Link to="/restaurants/:id">RestaurantPage (now in navbar to ease testing)</Link> |{" "}
+        <Link to="/orders">OrderPage (now in navbar to ease testing)</Link>
       </nav>
 
       {/*The Routes block acts as the map. It looks at the URL and chooses one Route to draw */}
       <Routes>
+        <Route path="/" element={<HomeRouter />} />
         <Route path="/" element={<Home />} />
         <Route path="/example" element={<ApiExample />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/restaurants/:id" element={ <Restaurant />} />
+        <Route path="/orders" element={ <Orders />} />
+        
 
-        {/*<Route path="/login" element={<Login />} /> */}
+        <Route path="/login" element={<Login />} /> 
         {/* <Route path="/restaurants" element={<RestaurantList />} /> */}
-        {/*A catch-all route for bad URLs (to be a page)*/}
+        {/*A catch-all route for bad URLs */}
         <Route path="*" element={<h2>404 - Page Not Found - Better Call Saul! (505) 503-4455 </h2>} />
       </Routes>
     </BrowserRouter>

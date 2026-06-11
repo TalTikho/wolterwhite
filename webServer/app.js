@@ -24,7 +24,8 @@ app.use(express.json());
 app.use(cors());
 
 // Define the server port
-const PORT = process.env.PORT
+// for safety reasons the env files are in .gitignore so hardcoded 5000 is a fallback
+const PORT = process.env.PORT || 5000
 
 // Register all routes
 app.use("/api/users", userRoutes);
