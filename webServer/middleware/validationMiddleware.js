@@ -9,7 +9,6 @@ export const isLoggedIn = (req, res, next) => {
         try {
             const data = jwt.verify(token, key);
             console.log('The logged in user is: ' + data.username);
-            console.log("DEBUG - Token Payload:", data);
             req.userId = data.id;
             return next()
         } catch (err) {

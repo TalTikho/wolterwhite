@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 dotenv.config({ path: './config/.env' });
 
 // for safety reasons the env files are in .gitignore so hardcoded 5000 is a fallback
-const key =  process.env.JWT_SECRET || "BlueStuff@"
+const key = process.env.JWT_SECRET || "BlueStuff@"
 /**
  * Handles login request
  */
@@ -23,7 +23,10 @@ export const login = (req, res) => {
     }
 
     // Return the user token on success
-    const data = { username: req.body.username }
+    const data = {
+        username: user.username,
+        id: user.id 
+    };
     const token = jwt.sign(data, key)
     return res.status(201).json({ token });
 };
