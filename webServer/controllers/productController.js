@@ -88,11 +88,11 @@ export const getProductById = async (req, res) => {
     const userID = is_user_connected(req, res);
     const restaurant = req.currentRestaurant;
     // We need await to not mess multiple requests to the views server.
-    const serverReply = await sendAndReceive(`patch ${userID} ${product.pid}`)
+    const serverReply = await sendAndReceive(`patch ${userID} ${product.pId}`)
     console.log("Reply:", serverReply);
     // User is not yet in the views file. The views server is blind to the js server's data.
     if (serverReply.includes("400") || serverReply.includes("404")) {
-        await sendAndReceive(`post ${userID} ${product.pid}`).then(reply => console.log("Reply:", reply));
+        await sendAndReceive(`post ${userID} ${product.pId}`).then(reply => console.log("Reply:", reply));
     }
     // verifyProduct already checks if the id is good so we return the product.
     res.status(200).location(`/api/restaurants/${restaurant.id}/products/${product.pId}`).json(product);
