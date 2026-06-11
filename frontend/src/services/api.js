@@ -109,16 +109,14 @@ export const sendPATCH = async (uri, body = null, jwt = null, params = {}, custo
     
 }
 
-
-
-// export const sendPut = async (uri, jwt, headers = {}, body = {}, params = {}) => {
-//     return await axios.put(`${apiBase}${uri}`, body, getHeaders(jwt, headers, params, body));
-// }
-
-// export const sendDelete = async (uri, jwt, headers = {}, params = {}) => {
-//     return await axios.delete(`${apiBase}${uri}`, getHeaders(jwt, headers, params, {}));
-// }
-
-// export const sendPatch = async (uri, jwt, headers = {}, body = {}, params = {}) => {
-//     return await axios.patch(`${apiBase}${uri}`, body, getHeaders(jwt, headers, params, body));
-// }
+export const sendDELETE = async (uri, body = null, jwt = null, params = {}, customHeaders = {}) => {
+    //get the url
+    const address =  buildUrl(uri, params);
+    //set its parameters
+    const config = buildConfig("DELETE", jwt, customHeaders, body);
+    //fetch the response/error
+    const response = await fetch(address, config);
+    //wait patiently for the response.
+    return await handleResponse(response);
+    
+}
