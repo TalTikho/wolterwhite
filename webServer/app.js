@@ -9,6 +9,9 @@ import orderRoutes from "./routes/orderRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import restaurantRoutes from "./routes/restaurantRoutes.js";
 import searchRoutes from './routes/searchRoutes.js';
+import 'dotenv/config';
+import dotenv from 'dotenv';
+dotenv.config({ path: './config/.env' });
 
 //====================================================================================================
 
@@ -21,7 +24,7 @@ app.use(express.json());
 app.use(cors());
 
 // Define the server port
-const PORT = 5000;
+const PORT = process.env.PORT
 
 // Register all routes
 app.use("/api/users", userRoutes);
