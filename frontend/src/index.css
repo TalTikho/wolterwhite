@@ -11,3 +11,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.Home {
+  /* Relative path starting from the location of this CSS file */
+  background-image: url('../public/knock.png'); 
+  background-size: cover;
+  min-height: 400px;
+}
