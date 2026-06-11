@@ -8,6 +8,7 @@ import { Register } from './pages/RegisterPage .js';
 import { Restaurant } from './pages/RestaurantPage .js';
 import { Orders } from './pages/OrdersPage .js';
 import { HomeRouter } from './services/HomeRouter.js';
+import { ProtectedRoute } from './services/LoginRouter.js';
 import 'bootstrap/dist/css/bootstrap.min.css'
 function App() {
   return (
@@ -16,12 +17,9 @@ function App() {
       {/*Anything placed outside <Routes> (like a NavBar) will show on EVERY page */}
       <nav style={{ padding: '10px', background: '#333', color: 'yellow' }}>
         <h3>Wolterwhite Delivery</h3>
-        <Link to="/">Home (now in navbar to ease testing)</Link> |{" "}
         <Link to="/example">Watch Our beautiful restaurant list (ApiExample)</Link> |{" "}
         <Link to="/login">Login</Link> |{" "}
         <Link to="/register">Register</Link> |{" "}
-        <Link to="/restaurants/:id">RestaurantPage (now in navbar to ease testing)</Link> |{" "}
-        <Link to="/orders">OrderPage (now in navbar to ease testing)</Link>
       </nav>
 
       {/*The Routes block acts as the map. It looks at the URL and chooses one Route to draw */}
@@ -30,9 +28,9 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/example" element={<ApiExample />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/restaurants/:id" element={ <Restaurant />} />
-        <Route path="/orders" element={ <Orders />} />
-        
+        {/*protected comps*/}
+        <Route path="/restaurants/:id" element={<ProtectedRoute component={<Restaurant />} />} />
+        <Route path="/orders" element={<ProtectedRoute component={<Orders />} />} />
 
         <Route path="/login" element={<Login />} /> 
         {/* <Route path="/restaurants" element={<RestaurantList />} /> */}

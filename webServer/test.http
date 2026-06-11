@@ -26,6 +26,19 @@ Content-Type: application/json
     "password": "anotherPassword"
 }
 
+
+### Try to register the same user again. (expect 409 conflict)
+POST http://localhost:5000/api/users
+Content-Type: application/json
+
+{
+    "username": "israel_israeli",
+    "name": "Israel Israeli",
+    "phone": "050-1234567",
+    "address": "Be'er Ya'akov",
+    "password": "mySecretPassword"
+}
+
 ###
 
 ### Register user with missing fields (expect 400)

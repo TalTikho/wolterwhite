@@ -4,7 +4,7 @@ import { Landing }from '../pages/LandingPage'
 import { Home } from '../pages/HomePage'
 
 export const HomeRouter = () => {
-const token = '';
+const token = localStorage.getItem("token");
 
     //If the visitor has a wristband to enter the Nacho party, paint the public Landing Page UI
     if (!token) {

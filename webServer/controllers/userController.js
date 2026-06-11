@@ -20,10 +20,12 @@ export const registerUser = (req, res) => {
             error: "Missing required fields"
         });
     }
-
+    //Make sure the username is unique.
+    if (userModel.users.some(user=>user.username == userData.username)) {
+        return res.status(409).json({ error: 'User with the same username already exists' });
+    }
     // Create the user using the model layer
     const newUser = userModel.createUser(userData);
-
     // Create userResponse without returning the password
     const { password, ...userResponse } = newUser;
 
@@ -46,7 +48,7 @@ export const getUser = (req, res) => {
     const user = userModel.getUserById(userId);
 
     // If user is not found, return 404
-    if(!user){
+    if (!user) {
         return res
             .status(404)
             .json({ error: "User not found" });
