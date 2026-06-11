@@ -59,11 +59,20 @@ const buildUrl = (uri, params = {}) => {
 const handleResponse = async (res) => {
     //Check for bad status codes 
     if (!res.ok) {
+        //Force a checkout only if not in login page.
+        //login page is not protected but should give a 401 
+        //for wrong credentials.
+        if (res.status === 401 && window.location.pathname !== '/login') {
+            //force the user to login page through pure js window.location.href
+            localStorage.removeItem('token');
+            window.location.href = '/login';
+        }
         //Read the stream to get the server's error message
         const errorMessage = await res.text();
 
         //Throw the error, falling back to the status code if the server sent no message
         throw new Error(errorMessage || `HTTP error! Status: ${res.status}`);
+
     }
 
     //If the response was ok (200-299), handle a 204 No Content edge case (like a DELETE or PATCH request)
@@ -76,7 +85,7 @@ const handleResponse = async (res) => {
 
 export const sendGet = async (uri, jwt = null, params = {}, customHeaders = {}) => {
     //get the url
-    const address =  buildUrl(uri, params);
+    const address = buildUrl(uri, params);
     //set its parameters
     const config = buildConfig("GET", jwt, customHeaders);
     //fetch the response/error
@@ -87,36 +96,36 @@ export const sendGet = async (uri, jwt = null, params = {}, customHeaders = {}) 
 
 export const sendPOST = async (uri, body = null, jwt = null, params = {}, customHeaders = {}) => {
     //get the url
-    const address =  buildUrl(uri, params);
+    const address = buildUrl(uri, params);
     //set its parameters
     const config = buildConfig("POST", jwt, customHeaders, body);
     //fetch the response/error
     const response = await fetch(address, config);
     //wait patiently for the response.
     return await handleResponse(response);
-    
+
 }
 
 export const sendPATCH = async (uri, body = null, jwt = null, params = {}, customHeaders = {}) => {
     //get the url
-    const address =  buildUrl(uri, params);
+    const address = buildUrl(uri, params);
     //set its parameters
     const config = buildConfig("PATCH", jwt, customHeaders, body);
     //fetch the response/error
     const response = await fetch(address, config);
     //wait patiently for the response.
     return await handleResponse(response);
-    
+
 }
 
 export const sendDELETE = async (uri, body = null, jwt = null, params = {}, customHeaders = {}) => {
     //get the url
-    const address =  buildUrl(uri, params);
+    const address = buildUrl(uri, params);
     //set its parameters
     const config = buildConfig("DELETE", jwt, customHeaders, body);
     //fetch the response/error
     const response = await fetch(address, config);
     //wait patiently for the response.
     return await handleResponse(response);
-    
+
 }

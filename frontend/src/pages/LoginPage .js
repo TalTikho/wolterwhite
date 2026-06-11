@@ -1,8 +1,9 @@
 import React from 'react';
 import '../index.css';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { sendPOST } from '../services/api';
+import { useLocation } from 'react-router-dom';
 
 async function login(username, password) {
     const body = { username, password };
@@ -25,7 +26,13 @@ export const Login = () => {
     const passwordRef = useRef(null);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
-
+    const location = useLocation();
+    useEffect(() => {
+        // If the router passed us an authError state, put it on the screen!
+        if (location.state && location.state.authError) {
+            setError(location.state.authError);
+        }
+    }, [location]);
     const handleLogin = async () => {
         try {
             setError(null);

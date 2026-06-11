@@ -2,16 +2,16 @@
 FROM node:lts-alpine3.23
 
 # Set the working directory inside the container
-WORKDIR /webServer/app
+WORKDIR /app
 
 # Copy package.json and package-lock.json first to leverage Docker cache
-COPY webServer/package*.json ./
+COPY package*.json ./
 
 # Install dependencies
 RUN npm install
 
 # Copy the rest of the application code (including your MVC folders and app.js)
-COPY webServer/ .
+COPY . .
 
 # Expose the port your Express app is listening on (matching the compose file)
 EXPOSE 5000
