@@ -7,8 +7,8 @@ import { Login } from './pages/LoginPage .js';
 import { Register } from './pages/RegisterPage .js';
 import { Restaurant } from './pages/RestaurantPage .js';
 import { Orders } from './pages/OrdersPage .js';
-import { HomeRouter } from './services/HomeRouter.js';
-import { ProtectedRoute } from './services/LoginRouter.js';
+import { HomeRouter } from './components/HomeRouter.js';
+import { ProtectedRoute } from './components/LoginRouter.js';
 import 'bootstrap/dist/css/bootstrap.min.css'
 function App() {
   return (
