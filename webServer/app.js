@@ -11,7 +11,7 @@ import restaurantRoutes from "./routes/restaurantRoutes.js";
 import searchRoutes from './routes/searchRoutes.js';
 import 'dotenv/config';
 import dotenv from 'dotenv';
-dotenv.config({ path: './config/.env' });
+dotenv.config({ path: './configLocal/.env' });
 
 //====================================================================================================
 
