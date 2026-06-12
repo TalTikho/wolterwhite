@@ -169,28 +169,47 @@ This starts three containers:
 | Container | Service | Port |
 | ----------- | --------- | ------ |
 | `wolterwhite_server_container` | C++ TCP server | 5555 |
-| `wolterwhite_web_container` | Node.js web server | 3000 |
+| `wolterwhite_web_container` | Node.js backend server | 5000 |
 | `wolterwhite_client_container` | Python client | — |
+| `wolterwhite-front` | React.js frontend server | 3000 |
+
+
+---
+
+#### 3️⃣ Use the React site
+
+After building everything with 
+```bash
+docker-compose up --build 
+```
+just command:
+ ```bash
+docker-compose up 
+```
+and navigate to [WolterWhite](http://localhost:3000)
+ and 
+start your journey.
+
 
 ---
 
 #### 3️⃣ Use the Web Server API
 
-The REST API is available at `http://localhost:3000`.
+The REST API is available at `http://localhost:5000`.
 
 Example using curl:
 
 ```bash
 # Get all restaurants
-curl -i http://localhost:3000/api/restaurants
+curl -i http://localhost:5000/api/restaurants
 
 # Register a new user
-curl -i -X POST http://localhost:3000/api/users 
+curl -i -X POST http://localhost:5000/api/users 
   -H "Content-Type: application/json" 
   -d '{"username":"john","name":"John Smith","phone":"050-1234567","address":"Tel Aviv","password":"1234"}'
 
 # Login
-curl -i -X POST http://localhost:3000/api/tokens 
+curl -i -X POST http://localhost:5000/api/tokens 
   -H "Content-Type: application/json" 
   -d '{"username":"john","password":"1234"}'
 ```
@@ -217,7 +236,7 @@ This shuts down all running containers.
 ## 📡 REST API Reference
 
 All `/api/` endpoints return JSON.
-Protected endpoints require `x-user-id` header.
+Protected endpoints require authentication.
 
 ---
 
@@ -251,7 +270,7 @@ curl -i -X POST http://localhost:3000/api/users
 
 | Method | Endpoint | Auth | Description |
 | -------- | ---------- | ------ | ------------- |
-| POST | `/api/tokens` | ❌ | Login, returns userId |
+| POST | `/api/tokens` | ❌ | Login, returns token |
 
 ### Login — `POST /api/tokens`
 
@@ -262,10 +281,10 @@ curl -i -X POST http://localhost:3000/api/tokens
 ```
 
 ```json
-{ "id": "abc123" }
+{ "token": "abc1sdfsfds23" }
 ```
 
-> ⚠️ **NOTE**: Use the returned `id` as the `x-user-id` header in subsequent requests.
+> ⚠️ **NOTE**: Use the returned `token` as the token in subsequent requests.
 
 ---
 
