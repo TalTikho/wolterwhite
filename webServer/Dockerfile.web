@@ -1,5 +1,5 @@
-# Use a lightweight Node.js image
-FROM node:lts-alpine3.23
+# Use a debian linux build
+FROM node:lts-slim
 
 # Set the working directory inside the container
 WORKDIR /app
