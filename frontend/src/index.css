@@ -14,7 +14,9 @@ code {
 
 .Home {
   /* Relative path starting from the location of this CSS file */
-  background-image: url('../public/knock.png'); 
+  background-image: url('../public/knock.png'); /* Creative Commons Attribution-ShareAlike 3.0 License  
+  https://www.deviantart.com/rahuldanim8or/art/Breaking-Bad-I-am-the-one-who-knocks-411516530
+  https://creativecommons.org/licenses/by-sa/3.0/*/
   background-size: cover;
   min-height: 400px;
 }
