@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { sendPOST } from '../services/api';
 import { useLocation } from 'react-router-dom';
 
-async function login(username, password) {
+async function login(username, password, onLoginSuccess) {
     const body = { username, password };
     //send a post request to tokens in api to register a token.
     const res = await sendPOST('/api/tokens', body);
@@ -13,6 +13,11 @@ async function login(username, password) {
     //set the token is localStorage to access it in future calls to backend api.
     const { token } = res;
     localStorage.setItem("token", token);
+    //sanity check to make sure the func onLoginSuccess actually arrived.
+    if (onLoginSuccess){
+        //set the token state.
+        onLoginSuccess(token);
+    }
     //Welcome the user once after login, we
     //will remove justLoggedIn after welcoming the
     //user with an alert.
@@ -20,7 +25,7 @@ async function login(username, password) {
     return token;
 }
 
-export const Login = () => {
+export const Login = ({onLoginSuccess}) => {
     //No need for the password after we get the login but username should be reachable and updated.
     const [username, setUsername] = useState("");
     const passwordRef = useRef(null);
@@ -37,7 +42,7 @@ export const Login = () => {
         try {
             setError(null);
             const password = passwordRef.current.value;
-            await login(username, password);
+            await login(username, password, onLoginSuccess);
             //navigate to HomePage (same address as landing but different page)
             //HomeRouter should find the token and send us to HomePage and not to LandingPage
             navigate("/");
