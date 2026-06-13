@@ -8,7 +8,7 @@ import { useLocation } from 'react-router-dom';
 async function login(username, password) {
     const body = { username, password };
     //send a post request to tokens in api to register a token.
-    const res = await sendPOST('/tokens', body);
+    const res = await sendPOST('/api/tokens', body);
 
     //set the token is localStorage to access it in future calls to backend api.
     const { token } = res;

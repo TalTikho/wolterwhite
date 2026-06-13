@@ -42,8 +42,10 @@ const buildConfig = (method, jwt, customHeaders = {}, body = null) => {
 };
 
 const buildUrl = (uri, params = {}) => {
-    //Create the main URL object
-    const url = new URL(`${API_BASE}${uri}`);
+    //Create the main URL object using URL to go from relative to 
+    //absolute if not using an env.
+    //No env on github for security purposes hence this patch.
+    const url = new URL(`${API_BASE}${uri}`, window.location.origin);
 
     //create formated parameters for a query.
     const urlParams = new URLSearchParams(params);

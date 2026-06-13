@@ -1,5 +1,6 @@
 import React from 'react';
 import '../index.css'; 
+import { BackG } from '../components/BgImage';
 
 export const Landing = () => {
 
@@ -7,6 +8,7 @@ export const Landing = () => {
         <div>
             <h3>Wolterwhite</h3>
             <div className="Home">
+                <BackG />
             </div>
 
         </div>

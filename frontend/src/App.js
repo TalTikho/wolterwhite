@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
 import React from 'react';
 import  { ApiExample } from './pages/Fetch.js'
 import { Home } from './pages/HomePage.js';
-import { Login } from './pages/LoginPage .js';
+import { Login } from './pages/LoginPage.js';
 import { Register } from './pages/RegisterPage .js';
 import { Restaurant } from './pages/RestaurantPage .js';
 import { Orders } from './pages/OrdersPage .js';

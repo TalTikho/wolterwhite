@@ -33,6 +33,10 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/tokens", authRoutes);
 app.use("/api/restaurants", restaurantRoutes);
 app.use('/api/search', searchRoutes);
+//return json when html is not found.
+app.use((req, res) => {
+    res.status(404).json({ error: `Route ${req.method} ${req.originalUrl} not found` });
+});
 
 // Start the backend server
 app.listen(PORT, () => {

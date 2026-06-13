@@ -1,6 +1,7 @@
 import React from 'react';
 import '../index.css';
 import { useEffect } from 'react';
+import { BackG } from '../components/BgImage';
 
 export const Home = () => {
 
@@ -26,6 +27,7 @@ export const Home = () => {
             <h3>Wolterwhite</h3>
             <p>Welcome, {username}!</p>
             <div className="Home">
+                <BackG />
             </div>
         </div>
 
