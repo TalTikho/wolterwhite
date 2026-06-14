@@ -1,7 +1,7 @@
 ### ==================== USERS ====================
 
 ### Register a new user
-POST http://localhost:3000/api/users
+POST http://localhost:5000/api/users
 Content-Type: application/json
 
 {
@@ -15,7 +15,7 @@ Content-Type: application/json
 ###
 
 ### Register a second user
-POST http://localhost:3000/api/users
+POST http://localhost:5000/api/users
 Content-Type: application/json
 
 {
@@ -26,10 +26,23 @@ Content-Type: application/json
     "password": "anotherPassword"
 }
 
+
+### Try to register the same user again. (expect 409 conflict)
+POST http://localhost:5000/api/users
+Content-Type: application/json
+
+{
+    "username": "israel_israeli",
+    "name": "Israel Israeli",
+    "phone": "050-1234567",
+    "address": "Be'er Ya'akov",
+    "password": "mySecretPassword"
+}
+
 ###
 
 ### Register user with missing fields (expect 400)
-POST http://localhost:3000/api/users
+POST http://localhost:5000/api/users
 Content-Type: application/json
 
 {
@@ -39,7 +52,7 @@ Content-Type: application/json
 ###
 
 ### Register user with empty fields (expect 400)
-POST http://localhost:3000/api/users
+POST http://localhost:5000/api/users
 Content-Type: application/json
 
 {
@@ -53,7 +66,7 @@ Content-Type: application/json
 ###
 
 ### Register with empty body (expect 400)
-POST http://localhost:3000/api/users
+POST http://localhost:5000/api/users
 Content-Type: application/json
 
 {}
@@ -61,12 +74,12 @@ Content-Type: application/json
 ###
 
 ### Get existing user by ID (replace with a valid ID from POST response)
-GET http://localhost:3000/api/users/REPLACE_WITH_VALID_USER_ID
+GET http://localhost:5000/api/users/REPLACE_WITH_VALID_USER_ID
 
 ###
 
 ### Get non-existing user (expect 404)
-GET http://localhost:3000/api/users/nonexistent-id-999
+GET http://localhost:5000/api/users/nonexistent-id-999
 
 ###
 
@@ -74,7 +87,7 @@ GET http://localhost:3000/api/users/nonexistent-id-999
 ### ==================== TOKENS (Login) ====================
 
 ### Login with correct credentials (expect 200 + user ID)
-POST http://localhost:3000/api/tokens
+POST http://localhost:5000/api/tokens
 Content-Type: application/json
 
 {
@@ -85,7 +98,7 @@ Content-Type: application/json
 ###
 
 ### Login with wrong password (expect 401 or error)
-POST http://localhost:3000/api/tokens
+POST http://localhost:5000/api/tokens
 Content-Type: application/json
 
 {
@@ -96,7 +109,7 @@ Content-Type: application/json
 ###
 
 ### Login with non-existing user (expect 404 or error)
-POST http://localhost:3000/api/tokens
+POST http://localhost:5000/api/tokens
 Content-Type: application/json
 
 {
@@ -107,7 +120,7 @@ Content-Type: application/json
 ###
 
 ### Login with missing password (expect 400)
-POST http://localhost:3000/api/tokens
+POST http://localhost:5000/api/tokens
 Content-Type: application/json
 
 {
@@ -117,7 +130,7 @@ Content-Type: application/json
 ###
 
 ### Login with empty body (expect 400)
-POST http://localhost:3000/api/tokens
+POST http://localhost:5000/api/tokens
 Content-Type: application/json
 
 {}
@@ -128,14 +141,14 @@ Content-Type: application/json
 ### ==================== RESTAURANTS ====================
 
 ### Get all restaurants (empty list initially, expect 200 + [])
-GET http://localhost:3000/api/restaurants
+GET http://localhost:5000/api/restaurants
 
 ###
 
 ### Create a new restaurant
-POST http://localhost:3000/api/restaurants
+POST http://localhost:5000/api/restaurants
 Content-Type: application/json
-X-User-Id: REPLACE_WITH_VALID_USER_ID
+Authorization: Bearer REPLACE_WITH_VALID_TOKEN
 
 {
     "name": "Pizza Palace",
@@ -149,9 +162,9 @@ X-User-Id: REPLACE_WITH_VALID_USER_ID
 ###
 
 ### Create a second restaurant
-POST http://localhost:3000/api/restaurants
+POST http://localhost:5000/api/restaurants
 Content-Type: application/json
-X-User-Id: REPLACE_WITH_VALID_USER_ID
+Authorization: Bearer REPLACE_WITH_VALID_TOKEN
 
 {
     "name": "Burger Barn",
@@ -165,9 +178,9 @@ X-User-Id: REPLACE_WITH_VALID_USER_ID
 ###
 
 ### Create duplicate restaurant (same name, expect 409 or 400)
-POST http://localhost:3000/api/restaurants
+POST http://localhost:5000/api/restaurants
 Content-Type: application/json
-X-User-Id: REPLACE_WITH_VALID_USER_ID
+Authorization: Bearer REPLACE_WITH_VALID_TOKEN
 
 {
     "name": "Pizza Palace",
@@ -181,9 +194,9 @@ X-User-Id: REPLACE_WITH_VALID_USER_ID
 ###
 
 ### Create restaurant with missing name (expect 400)
-POST http://localhost:3000/api/restaurants
+POST http://localhost:5000/api/restaurants
 Content-Type: application/json
-X-User-Id: REPLACE_WITH_VALID_USER_ID
+Authorization: Bearer REPLACE_WITH_VALID_TOKEN
 
 {
     "phone": "03-0000000",
@@ -193,33 +206,33 @@ X-User-Id: REPLACE_WITH_VALID_USER_ID
 ###
 
 ### Create restaurant with empty body (expect 400)
-POST http://localhost:3000/api/restaurants
+POST http://localhost:5000/api/restaurants
 Content-Type: application/json
-X-User-Id: REPLACE_WITH_VALID_USER_ID
+Authorization: Bearer REPLACE_WITH_VALID_TOKEN
 
 {}
 
 ###
 
 ### Get all restaurants (should show the two created ones)
-GET http://localhost:3000/api/restaurants
+GET http://localhost:5000/api/restaurants
 
 ###
 
 ### Get a specific restaurant by ID
-GET http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID
+GET http://localhost:5000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID
 
 ###
 
 ### Get non-existing restaurant (expect 404)
-GET http://localhost:3000/api/restaurants/nonexistent-restaurant-id
+GET http://localhost:5000/api/restaurants/nonexistent-restaurant-id
 
 ###
 
 ### Update restaurant name and hours (PATCH)
-PATCH http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID
+PATCH http://localhost:5000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID
 Content-Type: application/json
-X-User-Id: REPLACE_WITH_VALID_USER_ID
+Authorization: Bearer REPLACE_WITH_VALID_TOKEN
 
 {
     "name": "Pizza Palace Updated",
@@ -229,9 +242,9 @@ X-User-Id: REPLACE_WITH_VALID_USER_ID
 ###
 
 ### Update restaurant to a duplicate name (expect 409 or 400)
-PATCH http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID
+PATCH http://localhost:5000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID
 Content-Type: application/json
-X-User-Id: REPLACE_WITH_VALID_USER_ID
+Authorization: Bearer REPLACE_WITH_VALID_TOKEN
 
 {
     "name": "Burger Barn"
@@ -240,9 +253,9 @@ X-User-Id: REPLACE_WITH_VALID_USER_ID
 ###
 
 ### Update non-existing restaurant (expect 404)
-PATCH http://localhost:3000/api/restaurants/nonexistent-restaurant-id
+PATCH http://localhost:5000/api/restaurants/nonexistent-restaurant-id
 Content-Type: application/json
-X-User-Id: REPLACE_WITH_VALID_USER_ID
+Authorization: Bearer REPLACE_WITH_VALID_TOKEN
 
 {
     "name": "Doesn't Matter"
@@ -251,14 +264,14 @@ X-User-Id: REPLACE_WITH_VALID_USER_ID
 ###
 
 ### Delete a restaurant (expect 204)
-DELETE http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID
-X-User-Id: REPLACE_WITH_VALID_USER_ID
+DELETE http://localhost:5000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID
+Authorization: Bearer REPLACE_WITH_VALID_TOKEN
 
 ###
 
 ### Delete non-existing restaurant (expect 404)
-DELETE http://localhost:3000/api/restaurants/nonexistent-restaurant-id
-X-User-Id: REPLACE_WITH_VALID_USER_ID
+DELETE http://localhost:5000/api/restaurants/nonexistent-restaurant-id
+Authorization: Bearer REPLACE_WITH_VALID_TOKEN
 
 ###
 
@@ -266,14 +279,14 @@ X-User-Id: REPLACE_WITH_VALID_USER_ID
 ### ==================== PRODUCTS (Menu) ====================
 
 ### Get all products for a restaurant (empty initially)
-GET http://localhost:3000/api/restaurants/2789e062-97a3-4aec-89e5-5cc661715896/products
+GET http://localhost:5000/api/restaurants/2789e062-97a3-4aec-89e5-5cc661715896/products
 
 ###
 
 ### Add a product to a restaurant
-POST http://localhost:3000/api/restaurants/2789e062-97a3-4aec-89e5-5cc661715896/products
+POST http://localhost:5000/api/restaurants/2789e062-97a3-4aec-89e5-5cc661715896/products
 Content-Type: application/json
-X-User-Id: REPLACE_WITH_VALID_USER_ID
+Authorization: Bearer REPLACE_WITH_VALID_TOKEN
 
 {
     "pname": "Margherita Pizza",
@@ -284,9 +297,9 @@ X-User-Id: REPLACE_WITH_VALID_USER_ID
 ###
 
 ### Add a second product
-POST http://localhost:3000/api/restaurants/2789e062-97a3-4aec-89e5-5cc661715896/products
+POST http://localhost:5000/api/restaurants/2789e062-97a3-4aec-89e5-5cc661715896/products
 Content-Type: application/json
-X-User-Id: REPLACE_WITH_VALID_USER_ID
+Authorization: Bearer REPLACE_WITH_VALID_TOKEN
 
 {
     "pname": "Pepperoni Pizza",
@@ -297,9 +310,9 @@ X-User-Id: REPLACE_WITH_VALID_USER_ID
 ###
 
 ### Add duplicate product (same pname, expect 409 or 400)
-POST http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products
+POST http://localhost:5000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products
 Content-Type: application/json
-X-User-Id: REPLACE_WITH_VALID_USER_ID
+Authorization: Bearer REPLACE_WITH_VALID_TOKEN
 
 {
     "pname": "Margherita Pizza",
@@ -310,9 +323,9 @@ X-User-Id: REPLACE_WITH_VALID_USER_ID
 ###
 
 ### Add product with missing pname (expect 400)
-POST http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products
+POST http://localhost:5000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products
 Content-Type: application/json
-X-User-Id: REPLACE_WITH_VALID_USER_ID
+Authorization: Bearer REPLACE_WITH_VALID_TOKEN
 
 {
     "pdescription": "No name product",
@@ -322,18 +335,18 @@ X-User-Id: REPLACE_WITH_VALID_USER_ID
 ###
 
 ### Add product with empty body (expect 400)
-POST http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products
+POST http://localhost:5000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products
 Content-Type: application/json
-X-User-Id: REPLACE_WITH_VALID_USER_ID
+Authorization: Bearer REPLACE_WITH_VALID_TOKEN
 
 {}
 
 ###
 
 ### Add product to non-existing restaurant (expect 404)
-POST http://localhost:3000/api/restaurants/nonexistent-restaurant-id/products
+POST http://localhost:5000/api/restaurants/nonexistent-restaurant-id/products
 Content-Type: application/json
-X-User-Id: REPLACE_WITH_VALID_USER_ID
+Authorization: Bearer REPLACE_WITH_VALID_TOKEN
 
 {
     "pname": "Ghost Pizza",
@@ -344,29 +357,29 @@ X-User-Id: REPLACE_WITH_VALID_USER_ID
 ###
 
 ### Get all products for a restaurant
-GET http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products
+GET http://localhost:5000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products
 
 ###
 
 ### Get a specific product by ID (also triggers a view in Ex2 server)
-GET http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products/REPLACE_WITH_VALID_PRODUCT_ID
+GET http://localhost:5000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products/REPLACE_WITH_VALID_PRODUCT_ID
 
 ###
 
 ### Get non-existing product (expect 404)
-GET http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products/nonexistent-product-id
+GET http://localhost:5000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products/nonexistent-product-id
 
 ###
 
 ### Get product from non-existing restaurant (expect 404)
-GET http://localhost:3000/api/restaurants/nonexistent-restaurant-id/products/REPLACE_WITH_VALID_PRODUCT_ID
+GET http://localhost:5000/api/restaurants/nonexistent-restaurant-id/products/REPLACE_WITH_VALID_PRODUCT_ID
 
 ###
 
 ### Update a product — name and price (PATCH)
-PATCH http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products/REPLACE_WITH_VALID_PRODUCT_ID
+PATCH http://localhost:5000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products/REPLACE_WITH_VALID_PRODUCT_ID
 Content-Type: application/json
-X-User-Id: REPLACE_WITH_VALID_USER_ID
+Authorization: Bearer REPLACE_WITH_VALID_TOKEN
 
 {
     "pname": "Margherita Pizza XL",
@@ -376,9 +389,9 @@ X-User-Id: REPLACE_WITH_VALID_USER_ID
 ###
 
 ### Update product to duplicate pname (expect 409 or 400)
-PATCH http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products/REPLACE_WITH_VALID_PRODUCT_ID
+PATCH http://localhost:5000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products/REPLACE_WITH_VALID_PRODUCT_ID
 Content-Type: application/json
-X-User-Id: REPLACE_WITH_VALID_USER_ID
+Authorization: Bearer REPLACE_WITH_VALID_TOKEN
 
 {
     "pname": "Pepperoni Pizza"
@@ -387,9 +400,9 @@ X-User-Id: REPLACE_WITH_VALID_USER_ID
 ###
 
 ### Update non-existing product (expect 404)
-PATCH http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products/nonexistent-product-id
+PATCH http://localhost:5000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products/nonexistent-product-id
 Content-Type: application/json
-X-User-Id: REPLACE_WITH_VALID_USER_ID
+Authorization: Bearer REPLACE_WITH_VALID_TOKEN
 
 {
     "pname": "Doesn't Matter"
@@ -398,14 +411,14 @@ X-User-Id: REPLACE_WITH_VALID_USER_ID
 ###
 
 ### Delete a product (expect 204)
-DELETE http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products/REPLACE_WITH_VALID_PRODUCT_ID
-X-User-Id: REPLACE_WITH_VALID_USER_ID
+DELETE http://localhost:5000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products/REPLACE_WITH_VALID_PRODUCT_ID
+Authorization: Bearer REPLACE_WITH_VALID_TOKEN
 
 ###
 
 ### Delete non-existing product (expect 404)
-DELETE http://localhost:3000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products/nonexistent-product-id
-X-User-Id: REPLACE_WITH_VALID_USER_ID
+DELETE http://localhost:5000/api/restaurants/REPLACE_WITH_VALID_RESTAURANT_ID/products/nonexistent-product-id
+Authorization: Bearer REPLACE_WITH_VALID_TOKEN
 
 ###
 
@@ -413,9 +426,9 @@ X-User-Id: REPLACE_WITH_VALID_USER_ID
 ### ==================== ORDERS ====================
 
 ### Create a new order
-POST http://localhost:3000/api/orders
+POST http://localhost:5000/api/orders
 Content-Type: application/json
-X-User-Id: REPLACE_WITH_VALID_USER_ID
+Authorization: Bearer REPLACE_WITH_VALID_TOKEN
 
 {
     "restaurantId": "REPLACE_WITH_VALID_RESTAURANT_ID",
@@ -428,9 +441,9 @@ X-User-Id: REPLACE_WITH_VALID_USER_ID
 ###
 
 ### Create order with no products (expect 400)
-POST http://localhost:3000/api/orders
+POST http://localhost:5000/api/orders
 Content-Type: application/json
-X-User-Id: REPLACE_WITH_VALID_USER_ID
+Authorization: Bearer REPLACE_WITH_VALID_TOKEN
 
 {
     "restaurantId": "REPLACE_WITH_VALID_RESTAURANT_ID",
@@ -440,9 +453,9 @@ X-User-Id: REPLACE_WITH_VALID_USER_ID
 ###
 
 ### Create order with missing restaurantId (expect 400)
-POST http://localhost:3000/api/orders
+POST http://localhost:5000/api/orders
 Content-Type: application/json
-X-User-Id: REPLACE_WITH_VALID_USER_ID
+Authorization: Bearer REPLACE_WITH_VALID_TOKEN
 
 {
     "products": [
@@ -453,42 +466,42 @@ X-User-Id: REPLACE_WITH_VALID_USER_ID
 ###
 
 ### Create order with empty body (expect 400)
-POST http://localhost:3000/api/orders
+POST http://localhost:5000/api/orders
 Content-Type: application/json
-X-User-Id: REPLACE_WITH_VALID_USER_ID
+Authorization: Bearer REPLACE_WITH_VALID_TOKEN
 
 {}
 
 ###
 
 ### Get all orders for the logged-in user
-GET http://localhost:3000/api/orders
-X-User-Id: REPLACE_WITH_VALID_USER_ID
+GET http://localhost:5000/api/orders
+Authorization: Bearer REPLACE_WITH_VALID_TOKEN
 
 ###
 
 ### Get orders for a different user (should return only their orders)
-GET http://localhost:3000/api/orders
+GET http://localhost:5000/api/orders
 X-User-Id: REPLACE_WITH_SECOND_VALID_USER_ID
 
 ###
 
 ### Get a specific order by ID
-GET http://localhost:3000/api/orders/REPLACE_WITH_VALID_ORDER_ID
-X-User-Id: REPLACE_WITH_VALID_USER_ID
+GET http://localhost:5000/api/orders/REPLACE_WITH_VALID_ORDER_ID
+Authorization: Bearer REPLACE_WITH_VALID_TOKEN
 
 ###
 
 ### Get non-existing order (expect 404)
-GET http://localhost:3000/api/orders/nonexistent-order-id
-X-User-Id: REPLACE_WITH_VALID_USER_ID
+GET http://localhost:5000/api/orders/nonexistent-order-id
+Authorization: Bearer REPLACE_WITH_VALID_TOKEN
 
 ###
 
 ### Update an order — change status and products (PATCH)
-PATCH http://localhost:3000/api/orders/REPLACE_WITH_VALID_ORDER_ID
+PATCH http://localhost:5000/api/orders/REPLACE_WITH_VALID_ORDER_ID
 Content-Type: application/json
-X-User-Id: REPLACE_WITH_VALID_USER_ID
+Authorization: Bearer REPLACE_WITH_VALID_TOKEN
 
 {
     "products": [
@@ -500,9 +513,9 @@ X-User-Id: REPLACE_WITH_VALID_USER_ID
 ###
 
 ### Verify protected fields are immutable — id, userId, createdAt should not change
-PATCH http://localhost:3000/api/orders/REPLACE_WITH_VALID_ORDER_ID
+PATCH http://localhost:5000/api/orders/REPLACE_WITH_VALID_ORDER_ID
 Content-Type: application/json
-X-User-Id: REPLACE_WITH_VALID_USER_ID
+Authorization: Bearer REPLACE_WITH_VALID_TOKEN
 
 {
     "id": "hacked-id",
@@ -514,9 +527,9 @@ X-User-Id: REPLACE_WITH_VALID_USER_ID
 ###
 
 ### Update non-existing order (expect 404)
-PATCH http://localhost:3000/api/orders/nonexistent-order-id
+PATCH http://localhost:5000/api/orders/nonexistent-order-id
 Content-Type: application/json
-X-User-Id: REPLACE_WITH_VALID_USER_ID
+Authorization: Bearer REPLACE_WITH_VALID_TOKEN
 
 {
     "status": "cancelled"
@@ -525,14 +538,14 @@ X-User-Id: REPLACE_WITH_VALID_USER_ID
 ###
 
 ### Delete an order (expect 204)
-DELETE http://localhost:3000/api/orders/REPLACE_WITH_VALID_ORDER_ID
-X-User-Id: REPLACE_WITH_VALID_USER_ID
+DELETE http://localhost:5000/api/orders/REPLACE_WITH_VALID_ORDER_ID
+Authorization: Bearer REPLACE_WITH_VALID_TOKEN
 
 ###
 
 ### Delete non-existing order (expect 404)
-DELETE http://localhost:3000/api/orders/nonexistent-order-id
-X-User-Id: REPLACE_WITH_VALID_USER_ID
+DELETE http://localhost:5000/api/orders/nonexistent-order-id
+Authorization: Bearer REPLACE_WITH_VALID_TOKEN
 
 ###
 
@@ -540,34 +553,34 @@ X-User-Id: REPLACE_WITH_VALID_USER_ID
 ### ==================== SEARCH ====================
 
 ### Search matching a restaurant name
-GET http://localhost:3000/api/search/Burger Barn
+GET http://localhost:5000/api/search/Burger Barn
 
 ###
 
 ### Search matching a restaurant description
-GET http://localhost:3000/api/search/burger
+GET http://localhost:5000/api/search/burger
 
 ###
 
 ### Search matching a product pname
-GET http://localhost:3000/api/search/Nuclear Taco v2
+GET http://localhost:5000/api/search/Nuclear Taco v2
 
 ### Search matching a product pdescription
-GET http://localhost:3000/api/search/Stress 
+GET http://localhost:5000/api/search/Stress 
 
 ###
 
 ### Case-insensitive search
-GET http://localhost:3000/api/search/PIZZA
+GET http://localhost:5000/api/search/PIZZA
 
 ###
 
 ### Search with no matches (expect 200 + empty array)
-GET http://localhost:3000/api/search/xyznotfound
+GET http://localhost:5000/api/search/xyznotfound
 
 ###
 
 ### Search with a single character
-GET http://localhost:3000/api/search/r
+GET http://localhost:5000/api/search/r
 
 ###

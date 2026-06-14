@@ -10,6 +10,7 @@ import {
     updateOrder,
     deleteOrder
 } from '../controllers/orderController.js';
+import { isLoggedIn } from '../middleware/validationMiddleware.js';
 // import { login } from '../controllers/authController.js';
 //====================================================================================================
 // Order Routes
@@ -19,12 +20,12 @@ const router = Router();
 // If missing → auth middleware returns 401 before controller runs
 // router.use(login);
 // /api/orders
-router.post('/',   createOrder);  // POST   — create new order
-router.get('/',    getOrders);    // GET    — get all orders for user
+router.post('/',   isLoggedIn, createOrder);  // POST   — create new order
+router.get('/',    isLoggedIn, getOrders);    // GET    — get all orders for user
 
 // /api/orders/:id
-router.get('/:id',    getOrderById); // GET    — get specific order
-router.patch('/:id',  updateOrder);  // PATCH  — update order
-router.delete('/:id', deleteOrder);  // DELETE — delete order
+router.get('/:id',    isLoggedIn, getOrderById); // GET    — get specific order
+router.patch('/:id',  isLoggedIn, updateOrder);  // PATCH  — update order
+router.delete('/:id', isLoggedIn, deleteOrder);  // DELETE — delete order
 
 export default router;

@@ -8,4 +8,5 @@ const router = express.Router();
 // Show the information of a user by id
 router.post("/", authController.login);
 
+
 export default router;

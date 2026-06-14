@@ -1,0 +1,24 @@
+# Use a debian linux build
+FROM node:lts-slim
+
+# Set working directory inside the container
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy rest of the source code
+COPY . .
+
+#swap localhost for the backend service name ONLY inside Docker's alpine linux
+#It is done after the final copy so the change to the BASE_API remains.
+RUN sed -i 's|"http://localhost:5000"|"http://wolterwhite-web:5000"|g' package.json
+
+# Expose create-react-app server port
+EXPOSE 3000
+
+# Run with start npm command
+CMD ["npm", "start"]

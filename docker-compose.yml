@@ -13,14 +13,25 @@ services:
 
   wolterwhite-web:
       build:
-        context: .
+        context: ./webServer
         dockerfile: Dockerfile.web
       container_name: wolterwhite_web_container
       ports:
-      - "3000:3000"
+      - "5000:5000"
       environment:
       - SERVER_HOST=wolterwhite-server 
       - SERVER_PORT=5555 
+      restart: unless-stopped
+  wolterwhite-front:
+      build:
+        context: ./frontend
+        dockerfile: Dockerfile.front
+      container_name: wolterwhite_front_container
+      ports:
+        - "3000:3000"
+      environment:
+        #Default to relative routing
+        - REACT_APP_API_BASE_URL=
       restart: unless-stopped
   # ─── CLIENT SERVICE ───
   wolterwhite-client:
