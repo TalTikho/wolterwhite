@@ -15,7 +15,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 function App() {
   return (
     <BrowserRouter>
-      {/* Replaced the old line navbar with your modular themed navbar */}
+      {/* Replaced the old line navbar with modular themed navbar */}
       <Navbar />
 
       {/* Main wrapper that physically forces the background to update dynamically */}
