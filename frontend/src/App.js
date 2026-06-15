@@ -9,10 +9,12 @@ import { Restaurant } from './pages/RestaurantPage .js';
 import { Orders } from './pages/OrdersPage .js';
 import { HomeRouter } from './components/HomeRouter.js';
 import { ProtectedRoute } from './components/LoginRouter.js';
+import { TokenProvider } from './context/AuthContext.js';
 import 'bootstrap/dist/css/bootstrap.min.css'
 function App() {
   return (
-    //BrowserRouter acts as the master wrapper that watches the URL
+    <TokenProvider>
+    {/*BrowserRouter acts as the master wrapper that watches the URL*/}
     <BrowserRouter>
       {/*Anything placed outside <Routes> (like a NavBar) will show on EVERY page */}
       <nav style={{ padding: '10px', background: '#333', color: 'yellow' }}>
@@ -38,6 +40,7 @@ function App() {
         <Route path="*" element={<h2>404 - Page Not Found - Better Call Saul! (505) 503-4455 </h2>} />
       </Routes>
     </BrowserRouter>
+    </TokenProvider>
   );
 }
 
