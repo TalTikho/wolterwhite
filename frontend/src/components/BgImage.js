@@ -5,10 +5,12 @@ export const BackG = () => {
       src="/knock.png"
       alt="I am the one who knocks"
       style={{
-        width: "100%",
-        maxWidth:
-          "1200px" /* Prevents it from getting too massive on huge screens */,
-        height: "auto" /* Maintains perfect proportions */,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        position: "relative",
+        zIndex: 1,
       }}
     />
   );

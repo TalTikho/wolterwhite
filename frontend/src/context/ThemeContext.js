@@ -13,7 +13,6 @@ export const ThemeProvider = ({ children }) => {
         setIsDarkMode((prevMode) => !prevMode);
     };
 
-    // 🟢 Keep the document body class perfectly synced with the React state
     useEffect(() => {
         const body = document.body;
         if (isDarkMode) {
