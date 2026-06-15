@@ -53,9 +53,6 @@ export const Login = ({onLoginSuccess}) => {
         }
     };
 
-    const handleBackHome = async () =>{
-        navigate ("/")
-    };
     return (
         <div>
             <input value={username}
@@ -64,7 +61,6 @@ export const Login = ({onLoginSuccess}) => {
             <input ref={passwordRef} type="password" placeholder='Password' />
             {error && <p style={{ color: "red" }}>{error}</p>}
             <button onClick={handleLogin}>Login</button>
-            <button onClick={handleBackHome}> Back</button>
         </div>
     );
 }
