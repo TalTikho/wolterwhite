@@ -1,5 +1,6 @@
 import React from 'react';
-import '../index.css'; 
+import '../style/index.css';
+
 
 export const Orders = () => {
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import '../index.css';
+import '../style/index.css';
 import { Landing } from '../pages/LandingPage'
 import { Home } from '../pages/HomePage'
 import { useState } from 'react';

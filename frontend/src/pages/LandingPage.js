@@ -1,5 +1,5 @@
 import React from 'react';
-import '../index.css'; 
+import '../style/index.css';
 import { BackG } from '../components/BgImage';
 import { Login } from './LoginPage';
 

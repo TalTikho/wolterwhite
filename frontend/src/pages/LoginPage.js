@@ -1,5 +1,7 @@
 import React from 'react';
-import '../index.css';
+import '../style/index.css';
+
+
 import { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { sendPOST } from '../services/api';
@@ -51,6 +53,9 @@ export const Login = ({onLoginSuccess}) => {
         }
     };
 
+    const handleBackHome = async () =>{
+        navigate ("/")
+    };
     return (
         <div>
             <input value={username}
@@ -59,6 +64,7 @@ export const Login = ({onLoginSuccess}) => {
             <input ref={passwordRef} type="password" placeholder='Password' />
             {error && <p style={{ color: "red" }}>{error}</p>}
             <button onClick={handleLogin}>Login</button>
+            <button onClick={handleBackHome}> Back</button>
         </div>
     );
 }
