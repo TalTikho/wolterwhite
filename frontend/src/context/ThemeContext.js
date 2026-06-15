@@ -3,7 +3,7 @@ import React, { createContext, useState, useEffect } from 'react';
 export const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-    // 🟢 Read initial state from localStorage so it remembers your choice on refresh!
+    // Read initial state from localStorage so it remembers your choice on refresh!
     const [isDarkMode, setIsDarkMode] = useState(() => {
         const savedTheme = localStorage.getItem('theme');
         return savedTheme === 'dark';
