@@ -1,11 +1,16 @@
 import React, { useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ThemeContext } from '../context/ThemeContext';
+import { useAuthContext } from '../context/AuthContext';
+
 
 export const Navbar = () => {
+    //release the items returned by the Contexts
     const { toggleTheme } = useContext(ThemeContext);
+    const { token } = useAuthContext();
+    const { logOut } = useAuthContext();
     const navigate = useNavigate();
-    const token = localStorage.getItem("token");
+
 
     let displayName = "Operator";
     let profilePic = "/knock.png";
@@ -21,8 +26,8 @@ export const Navbar = () => {
     }
 
     const handleLogout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("justLoggedIn");
+
+        logOut();
         navigate('/login');
         window.location.reload();
     };
