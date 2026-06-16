@@ -1,5 +1,7 @@
 import React from 'react';
-import '../index.css';
+import '../style/index.css';
+
+
 import { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { sendPOST } from '../services/api';

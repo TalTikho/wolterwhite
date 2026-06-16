@@ -1,5 +1,6 @@
 import React from 'react';
-import '../index.css';
+import '../style/index.css';
+
 import { useEffect } from 'react';
 import { BackG } from '../components/BgImage';
 import { useAuthContext } from '../context/AuthContext';
