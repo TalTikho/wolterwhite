@@ -10,10 +10,13 @@ import { Orders } from './pages/OrdersPage .js';
 import { HomeRouter } from './components/HomeRouter.js';
 import { ProtectedRoute } from './components/LoginRouter.js';
 import { Navbar } from './components/NavBar.js';
+import { TokenProvider } from './context/AuthContext.js';
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 function App() {
   return (
+    <TokenProvider>
+    {/*BrowserRouter acts as the master wrapper that watches the URL*/}
     <BrowserRouter>
       {/* Replaced the old line navbar with modular themed navbar */}
       <Navbar />
@@ -32,6 +35,7 @@ function App() {
         </Routes>
       </div>
     </BrowserRouter>
+    </TokenProvider>
   );
 }
 
