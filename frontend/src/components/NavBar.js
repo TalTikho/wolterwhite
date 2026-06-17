@@ -3,14 +3,10 @@ import { useNavigate, Link } from 'react-router-dom';
 import { ThemeContext } from '../context/ThemeContext';
 import { useAuthContext } from '../context/AuthContext';
 
-
 export const Navbar = () => {
-    //release the items returned by the Contexts
     const { toggleTheme } = useContext(ThemeContext);
-    const { token } = useAuthContext();
-    const { logOut } = useAuthContext();
+    const { token, logOut } = useAuthContext();
     const navigate = useNavigate();
-
 
     let displayName = "Operator";
     let profilePic = "/knock.png";
@@ -26,7 +22,6 @@ export const Navbar = () => {
     }
 
     const handleLogout = () => {
-
         logOut();
         navigate('/login');
         window.location.reload();
@@ -35,14 +30,13 @@ export const Navbar = () => {
     return (
         <nav className="navbar-container">
             {/* Brand */}
-            <div className="navbar-brand" onClick={() => navigate(token ? '/home' : '/')}>
+            <div className="navbar-brand" onClick={() => navigate('/')}>
                 <span className="navbar-logo-square">WoLTerWhite Delivery</span>
                 <span className="navbar-title"></span>
             </div>
 
             {/* Right-side controls */}
             <div className="navbar-controls">
-                {/* Theme toggle */}
                 <button onClick={toggleTheme} id="theme-toggle" aria-label="Toggle theme">
                     <img src="/WolterWhiteLightTheme.png" alt="Walter White" className="icon-light" />
                     <img src="/GusFringDarkTheme.png" alt="Gus Fring" className="icon-dark" />
@@ -50,9 +44,7 @@ export const Navbar = () => {
 
                 {token ? (
                     <div className="navbar-profile-section">
-                        <Link to="/orders" className="navbar-btn navbar-btn-outline">
-                            Orders
-                        </Link>
+                        <Link to="/orders" className="navbar-btn navbar-btn-outline">Orders</Link>
                         <div className="navbar-user-info">
                             <img src={profilePic} alt="Avatar" className="navbar-avatar" />
                             <span className="navbar-username">{displayName}</span>
@@ -63,12 +55,8 @@ export const Navbar = () => {
                     </div>
                 ) : (
                     <div className="navbar-profile-section">
-                        <Link to="/login" className="navbar-btn navbar-btn-outline">
-                            Login
-                        </Link>
-                        <Link to="/register" className="navbar-btn navbar-btn-ghost">
-                            Register
-                        </Link>
+                        <Link to="/login" className="navbar-btn navbar-btn-outline">Login</Link>
+                        <Link to="/register" className="navbar-btn navbar-btn-ghost">Register</Link>
                     </div>
                 )}
             </div>
