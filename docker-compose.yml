@@ -32,6 +32,7 @@ services:
       environment:
         #Default to relative routing
         - REACT_APP_API_BASE_URL=
+        - ALLOWED_HOSTS=all
       restart: unless-stopped
   # ─── CLIENT SERVICE ───
   wolterwhite-client:
