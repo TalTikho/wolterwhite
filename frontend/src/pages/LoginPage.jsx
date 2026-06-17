@@ -60,6 +60,22 @@ export const Login = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        //Fields completely empty? You gotta be warned.
+        //trim() lets us ignore trailing whitespaces which cannot be a username/password.
+        if (passwordRef?.current.value.trim() === "" && username?.trim() === ""){
+            setError("Please fill all the fields\n");
+            return;
+        }
+        if (username?.trim() === ""){
+            setError("Please enter your username\n");
+            return;
+        }
+        if (passwordRef?.current.value.trim() === ""){
+            setError("Please enter your password\n");
+            return;
+        }
+
+        
         try {
             const password = passwordRef.current.value;
             setError(null);
