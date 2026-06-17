@@ -10,7 +10,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   
-  /* Forces the root page layer to respect your light/dark theme variables */
   background-color: var(--bg-color) !important;
   color: var(--text-color) !important;
   transition: background-color 0.2s ease, color 0.2s ease;

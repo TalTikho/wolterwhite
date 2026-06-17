@@ -1,24 +1,11 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { sendPOST } from '../services/api';
-import { useAuthContext } from '../context/AuthContext';
 import '../style/index.css';
 import '../style/Login.css';
 
-export const Login = () => {
-    const [username, setUsername] = useState("");
-    const passwordRef = useRef(null);
-    const [error, setError] = useState(null);
-    
-    const navigate = useNavigate();
-    const location = useLocation();
-    
-    const { tokenToStorage } = useAuthContext();
+import React, { useRef, useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-    useEffect(() => {
-        if (location.state?.authError) {
-            setError(location.state.authError);
-        }
+import { sendPOST } from '../services/api';
+import { useAuthContext } from '../context/AuthContext';
     }, [location]);
 
     const handleLogin = async () => {
@@ -41,6 +28,8 @@ export const Login = () => {
             }
         } catch (err) {
             setError(err.message);
+            //Error loging in so we ask the user "WhoTheHellAreYou".
+            failLog('/WhoTheHellAreYou.wav');
         }
     };
 
@@ -49,38 +38,40 @@ export const Login = () => {
     };
 
     return (
-        <div className="login-wrapper">
+   <div className="login-wrapper">
             <div className="login-card">
                 <div className="login-header">
                     <span className="login-logo">Wo</span>
                     <h2 className="login-title">LTerWhite Delivery</h2>
                     <p className="login-subtitle">Sign in to your account</p>
                 </div>
+                <form>
+                    <input
+                        value={username}
+                        onChange={e => setUsername(e.target.value)}
+                        placeholder="Username"
+                        className="login-input"
+                    />
+                    <input
+                        ref={passwordRef}
+                        type="password"
+                        placeholder="Password"
+                        className="login-input"
+                    />
 
-                <input
-                    value={username}
-                    onChange={e => setUsername(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    placeholder="Username"
-                    className="login-input"
-                />
-                <input
-                    ref={passwordRef}
-                    type="password"
-                    placeholder="Password"
-                    onKeyDown={handleKeyDown}
-                    className="login-input"
-                />
+                    <button onClick={handleLogin} className="navbar-btn navbar-btn-outline login-btn" type='submit'>
+                        Login
+                    </button>
+                </form>
+
 
                 {error && <p className="login-error">{error}</p>}
 
-                <button onClick={handleLogin} className="navbar-btn navbar-btn-outline login-btn">
-                    Login
-                </button>
-                <button onClick={() => navigate('/')} className="navbar-btn navbar-btn-ghost login-btn">
-                    &larr; Back to Home
+                <button type="button" onClick={() => navigate('/')} className="navbar-btn navbar-btn-ghost login-btn">
+                    Back to Home
                 </button>
             </div>
         </div>
+
     );
 };
