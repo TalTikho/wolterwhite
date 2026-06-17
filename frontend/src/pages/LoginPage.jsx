@@ -1,5 +1,5 @@
 import React from 'react';
-import '../style/index.css';
+import '../style/login.css';
 
 import { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -62,20 +62,20 @@ export const Login = () => {
         e.preventDefault();
         //Fields completely empty? You gotta be warned.
         //trim() lets us ignore trailing whitespaces which cannot be a username/password.
-        if (passwordRef?.current.value.trim() === "" && username?.trim() === ""){
+        if (passwordRef?.current.value.trim() === "" && username?.trim() === "") {
             setError("Please fill all the fields\n");
             return;
         }
-        if (username?.trim() === ""){
+        if (username?.trim() === "") {
             setError("Please enter your username\n");
             return;
         }
-        if (passwordRef?.current.value.trim() === ""){
+        if (passwordRef?.current.value.trim() === "") {
             setError("Please enter your password\n");
             return;
         }
 
-        
+
         try {
             const password = passwordRef.current.value;
             setError(null);
@@ -96,15 +96,18 @@ export const Login = () => {
     };
 
     return (
-        <div>
-            <form onSubmit={handleLogin}>
-                <input value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    placeholder="Username" />
-                <input ref={passwordRef} type="password" placeholder='Password' />
-                {error && <p style={{ color: "red" }}>{error}</p>}
-                <button type="submit">Login</button>
-            </form>
-        </div>
+            <div className='form-container'>
+                <form className='login-form' onSubmit={handleLogin} >
+                    <span className="navbar-logo-square" style={{backgroundColor: '#C4BE00', 
+                        WebkitTextFillColor: "#000000"
+                     }}>WoLTerWhite Delivery</span>
+                    <input  value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        placeholder="Username" />
+                    <input  ref={passwordRef} type="password" placeholder='Password' />
+                    {error && <p style={{ color: "red" }}>{error}</p>}
+                    <button type="submit">Login</button>
+                </form>
+            </div>
     );
 }
