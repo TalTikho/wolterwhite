@@ -1,4 +1,7 @@
 import * as userModel from "../models/userModel.js";
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+dotenv.config({ path: './config/.env' });
 
 /**
  * Handles user registration
@@ -21,7 +24,7 @@ export const registerUser = (req, res) => {
         });
     }
     //Make sure the username is unique.
-    if (userModel.users.some(user=>user.username == userData.username)) {
+    if (userModel.users.some(user => user.username == userData.username)) {
         return res.status(409).json({ error: 'User with the same username already exists' });
     }
     // Create the user using the model layer
@@ -29,11 +32,13 @@ export const registerUser = (req, res) => {
     // Create userResponse without returning the password
     const { password, ...userResponse } = newUser;
 
-    // Return created user
-    return res
-        .status(201)
-        .location(`/api/users/${newUser.id}`)
-        .json(userResponse);
+    // Return the user token on success
+    const data = {
+        username: user.username,
+        id: user.id
+    };
+    const token = jwt.sign(data, key)
+    return res.status(201).json({ token });
 };
 
 /**
