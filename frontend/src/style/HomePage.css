@@ -3,22 +3,30 @@
    ========================================================================== */
 .home-wrapper {
     position: relative;
-    zIndex: 1;
     min-height: 100vh;
 }
 
 .home-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Centers the search bar horizontally */
+
+    /* This simply creates a giant empty space at the top of the page, 
+       pushing everything else down to the bottom! */
+    padding-top: 75vh;
+
     position: relative;
-    z-index: 2;
-    padding: 32px 24px;
+    z-index: 10;
 }
 
 /* ==========================================================================
    Search Bar
    ========================================================================== */
 .home-search-wrapper {
-    max-width: 520px;
-    margin: 0 auto 32px;
+    width: 100%;
+    max-width: 600px;
+    /* No absolute positioning. It just sits naturally inside the flex container. */
 }
 
 .home-search-input {
@@ -60,4 +68,11 @@
     gap: 20px;
     max-width: 1200px;
     margin: 0 auto;
+}
+
+.home-grid,
+.home-status {
+    width: 100%;
+    margin-top: 2rem;
+    /* Just a normal gap between the search bar and the restaurants */
 }
