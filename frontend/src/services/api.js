@@ -1,7 +1,7 @@
 //local env or fallback to relative addressing in docker.
 const API_BASE = process.env.REACT_APP_API_BASE_URL || '';
 //handle the method and body params.
-const buildConfig = (method, jwt, customHeaders = {}, body = null) => {
+const buildConfig = (method, jwt=localStorage.getItem("token"), customHeaders = {}, body = null) => {
 
     //We start by merging our default Content-Type with any custom headers passed in
     const headers = {
