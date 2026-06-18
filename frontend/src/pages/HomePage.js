@@ -62,7 +62,8 @@ export const Home = () => {
           style={{
             pointerEvents: 'auto',
             backgroundColor: '#C4BE00', // Wolt's gown color
-            color: '#1C4028' // The right green color           
+            color: '#1C4028', // The right green color 
+            fontSize: 17          
           }}>
           <Toast.Header>
             <strong className="me-auto">Welcome to WolterWhite</strong>
