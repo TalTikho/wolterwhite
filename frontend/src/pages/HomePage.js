@@ -94,7 +94,7 @@ export const Home = () => {
         {!loading && !error && (
           <div className="home-grid">
             {filtered.map((restaurant) => (
-              <RestaurantCard key={restaurant._id} restaurant={restaurant} />
+              <RestaurantCard key={restaurant.id} restaurant={restaurant} />
             ))}
           </div>
         )}

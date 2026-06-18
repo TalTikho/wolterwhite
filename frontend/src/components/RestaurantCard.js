@@ -4,12 +4,12 @@ import "../style/RestaurantCard.css";
 
 export const RestaurantCard = ({ restaurant }) => {
   const navigate = useNavigate();
-  const { _id, name, cuisine, address, rating, image } = restaurant;
+  const { id, name, cuisine, address, rating, image } = restaurant;
 
   return (
     <div
       className="restaurant-card"
-      onClick={() => navigate(`/restaurants/${_id}`)}
+      onClick={() => navigate(`/restaurants/${id}`)}
     >
       <div className="restaurant-card__image-wrapper">
         <img
