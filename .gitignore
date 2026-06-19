@@ -1,4 +1,6 @@
 build/
 node_modules/
 .env
-webServer/uploads
+
+webServer/uploads/*
+webServer/uploads/.gitkeep
