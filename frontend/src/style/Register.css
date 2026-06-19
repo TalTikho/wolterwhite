@@ -1,0 +1,105 @@
+.register-form-container {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    background-color: #f0f2f5;
+    /*A soft grey background makes the white form 'pop'*/
+}
+
+/*The Form Card*/
+.register-form-container form {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 400px;
+    padding: 40px 30px;
+    border-radius: 12px;
+    /*Smooth, modern corners*/
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    /*The 'elevation' effect*/
+
+    display: grid;
+    gap: 15px;
+    /*Grid handles ALL the spacing between inputs automatically*/
+    box-sizing: border-box;
+}
+
+/*The Inputs*/
+.register-form-container form>input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    font-size: 16px;
+    /*Prevents iOS from zooming in automatically*/
+    background-color: #f8f9fa;
+    color: #333;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+    /*Smooth animations*/
+}
+
+/*The Interaction (Focus State)*/
+.register-form-container form>input:focus {
+    outline: none;
+    background-color: #ffffff;
+    border-color: #3B5F4A;
+    /*periodic breaking bad table green*/
+    /*A glowing ring effect to show exactly what is active*/
+    box-shadow: 0 0 0 4px rgba(59, 95, 74, 0.15);
+}
+
+/*The File Input*/
+.register-form-container form>input[type="file"] {
+    padding: 10px;
+    background-color: #ffffff;
+    border: 2px dashed #3B5F4A;
+    color: #555;
+    cursor: pointer;
+}
+
+/*The Primary Button (Register)*/
+.register-form-container form>button[type="submit"] {
+    width: 100%;
+    padding: 14px;
+    margin-top: 10px;
+    /*A little extra separation from the inputs*/
+    background-color: #3B5F4A;
+    color: #D6CA00;
+    /*Wolt's labratory hazmat yellow*/
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.1s, background-color 0.2s;
+}
+
+.register-form-container form>button[type="submit"]:hover {
+    background-color: #2A4535;
+    /*Darker green on hover*/
+    transform: translateY(-2px);
+    /*Makes the button feel tactile*/
+}
+
+/*The Secondary Button (Back to Home)*/
+.register-form-container form>button[type="button"] {
+    background-color: transparent;
+    color: #666;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    text-decoration: underline;
+    margin-top: -5px;
+}
+
+.register-form-container form>button[type="button"]:hover {
+    color: #3B5F4A;
+}
+
+.register-error {
+    margin: 0;
+    font-size: 1rem;
+    color: red;
+    font-weight: bold;
+    padding: 8px 12px 8px 12px;
+}

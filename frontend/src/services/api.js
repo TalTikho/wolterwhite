@@ -1,7 +1,7 @@
 //local env or fallback to relative addressing in docker.
 const API_BASE = process.env.REACT_APP_API_BASE_URL || '';
 //handle the method and body params.
-const buildConfig = (method, jwt=localStorage.getItem("token"), customHeaders = {}, body = null) => {
+const buildConfig = (method, jwt = localStorage.getItem("token"), customHeaders = {}, body = null) => {
 
     //We start by merging our default Content-Type with any custom headers passed in
     const headers = {
@@ -80,12 +80,20 @@ const handleResponse = async (res) => {
     //If the response was ok (200-299), handle a 204 No Content edge case (like a DELETE or PATCH request)
     if (res.status === 204) return null;
 
+    //Read the shipping label
+    const contentType = res.headers.get("content-type");
+
+    //If the server explicitly sent an image, return the raw Blob
+    if (contentType && contentType.includes("image")) {
+        return await res.blob();
+    }
+
     //Otherwise, read the stream and return the clean JSON data
     return res.json();
 };
 
 
-export const sendGet = async (uri, jwt = null, params = {}, customHeaders = {}) => {
+export const sendGet = async (uri, jwt, params = {}, customHeaders = {}) => {
     //get the url
     const address = buildUrl(uri, params);
     //set its parameters
@@ -96,7 +104,7 @@ export const sendGet = async (uri, jwt = null, params = {}, customHeaders = {}) 
     return await handleResponse(response);
 }
 
-export const sendPOST = async (uri, body = null, jwt = null, params = {}, customHeaders = {}) => {
+export const sendPOST = async (uri, body = null, jwt, params = {}, customHeaders = {}) => {
     //get the url
     const address = buildUrl(uri, params);
     //set its parameters
@@ -108,7 +116,7 @@ export const sendPOST = async (uri, body = null, jwt = null, params = {}, custom
 
 }
 
-export const sendPATCH = async (uri, body = null, jwt = null, params = {}, customHeaders = {}) => {
+export const sendPATCH = async (uri, body = null, jwt, params = {}, customHeaders = {}) => {
     //get the url
     const address = buildUrl(uri, params);
     //set its parameters
@@ -120,7 +128,7 @@ export const sendPATCH = async (uri, body = null, jwt = null, params = {}, custo
 
 }
 
-export const sendDELETE = async (uri, body = null, jwt = null, params = {}, customHeaders = {}) => {
+export const sendDELETE = async (uri, body = null, jwt, params = {}, customHeaders = {}) => {
     //get the url
     const address = buildUrl(uri, params);
     //set its parameters

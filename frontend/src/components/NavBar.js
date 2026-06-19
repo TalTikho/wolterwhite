@@ -1,25 +1,49 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ThemeContext } from '../context/ThemeContext';
 import { useAuthContext } from '../context/AuthContext';
+import { sendGet } from '../services/api';
 
 export const Navbar = () => {
     const { toggleTheme } = useContext(ThemeContext);
     const { token, logOut } = useAuthContext();
     const navigate = useNavigate();
 
-    let displayName = "Operator";
-    let profilePic = "/knock.png";
 
-    if (token) {
-        try {
-            const payload = JSON.parse(atob(token.split(".")[1]));
-            displayName = payload.displayName || payload.username;
-            profilePic = payload.profilePic || "/knock.png";
-        } catch (error) {
-            console.error("Error decoding token in Navbar:", error);
+    //We should update the screen if the user's credentials are retrieved.
+    const [displayName, setDisplayName] = useState("Operator");
+    const [profilePic, setProfilePic] = useState("/knock.png");
+
+    useEffect(() => {
+        //helper method to make an async call inside useEffect.
+        const setParams = async () => {
+            if (token) {
+                try {
+                    //parse the 64base token to a json.
+                    const payload = JSON.parse(atob(token.split(".")[1]));
+                    //extract the username and the profilePic binary.
+                    setDisplayName(payload.displayName);
+                    //get the binary's url through a token validating get request.
+                    const binaryImage = await sendGet(`/api/images/${payload.profilePic}`);
+                    //construct a temp URL so we can view and use the image.
+                    const imageURL = URL.createObjectURL(binaryImage);
+                    setProfilePic(imageURL);
+                } catch (error) {
+                    console.error("Error decoding token in Navbar:", error);
+                }
+            }
         }
-    }
+        setParams();
+        //cleanup the URL so we do not have a chunk of URLs in RAM if a user logs in and out many times.
+        return () => {
+            if (profilePic !== "/knock.png") {
+                URL.revokeObjectURL(profilePic);
+                console.log("Memory freed!");
+            }
+        };
+    }, [token]);
+
+
 
     const handleLogout = () => {
         logOut();

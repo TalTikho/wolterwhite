@@ -1,5 +1,6 @@
 import React from 'react';
-
+import '../style/index.css';
+import '../style/Register.css'
 
 import { sendPOST } from '../services/api';
 import { useAuthContext } from '../context/AuthContext';
@@ -7,8 +8,17 @@ import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 //curly braces in register destructure the input user form object.
-async function register(username, name, password, phone, address) {
-    const body = { username, name, password, phone, address };
+async function register(username, displayName, password, phone, address, profilePic) {
+    const body = new FormData();
+    body.append('username', username);
+    body.append('displayName', displayName);
+    body.append('password', password);
+    body.append('phone', phone);
+    body.append('address', address);
+
+    if (profilePic) {
+        body.append('profilePic', profilePic);
+    }
     //send a post request to tokens in api to register a token.
     const res = await sendPOST('/api/users', body);
 
@@ -28,9 +38,10 @@ export const Register = () => {
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [name, setName] = useState("");
+    const [displayName, setDisplayName] = useState("");
     const [phone, setPhone] = useState("");
     const [address, setAddress] = useState("");
+    const profilePicRef = useRef(null);
 
     //Take the token setter from the Auth hook's getter.
     const { tokenToStorage } = useAuthContext();
@@ -39,9 +50,12 @@ export const Register = () => {
     const [error, setError] = useState(null);
     const navigate = useNavigate();
     const handleRegister = async (e) => {
+        e.preventDefault();
         try {
             setError(null);
-            const newToken = await register(username, name, password, phone, address);
+            //extract the image.
+            const profilePic = profilePicRef.current.files[0];
+            const newToken = await register(username, displayName, password, phone, address, profilePic);
 
             //set the token's state using AuthContext's setter.
             tokenToStorage(newToken);
@@ -55,45 +69,50 @@ export const Register = () => {
 
     return (
         <div>
+            <div className='register-form-container '>
+                <form onSubmit={handleRegister}>
+                    <input
+                        value={username}
+                        onChange={handleFieldChange(setUsername)}
+                        placeholder="Username"
+                    />
+                    <input
+                        value={password}
+                        onChange={handleFieldChange(setPassword)}
+                        type="password"
+                        placeholder="Password"
+                    />
+                    <input
+                        value={displayName}
+                        onChange={handleFieldChange(setDisplayName)}
+                        placeholder="Display Name"
+                    />
+                    <input
+                        value={phone}
+                        onChange={handleFieldChange(setPhone)}
+                        placeholder="phone"
+                    />
+                    <input
+                        value={address}
+                        onChange={handleFieldChange(setAddress)}
+                        placeholder="address"
+                    />
+                    <input type='file' id='profilePic' ref={profilePicRef} accept="image/*"
 
-            <form style={{ display: 'flex', flexDirection: 'column', gap: '10px' }} className="login-form"  onSubmit={handleRegister}>
-                <input
-                    value={username}
-                    onChange={handleFieldChange(setUsername)}
-                    placeholder="Username"
-                />
-                <input
-                    value={password}
-                    onChange={handleFieldChange(setPassword)}
-                    type="password"
-                    placeholder="Password"
-                />
-                <input
-                    value={name}
-                    onChange={handleFieldChange(setName)}
-                    placeholder="name"
-                />
-                <input
-                    value={phone}
-                    onChange={handleFieldChange(setPhone)}
-                    placeholder="phone"
-                />
-                <input
-                    value={address}
-                    onChange={handleFieldChange(setAddress)}
-                    placeholder="address"
-                />
+                    />
 
-                {error && <p>{error}</p>}
 
-                <button type="submit">
-                    Register
-                </button>
+                    {error && <p className='register-error'>{error}</p>}
 
-                <button type="button" onClick={() => navigate('/')} >
-                    Back to Home
-                </button>
-            </form>
+                    <button type="submit">
+                        Register
+                    </button>
+
+                    <button type="button" onClick={() => navigate('/')} >
+                        Back to Home
+                    </button>
+                </form></div>
+
 
         </div>
     );
