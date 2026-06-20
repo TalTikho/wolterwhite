@@ -11,6 +11,7 @@
     background-color: #ffffff;
     width: 100%;
     max-width: 400px;
+    max-height: fit-content;
     padding: 40px 30px;
     border-radius: 12px;
     /*Smooth, modern corners*/

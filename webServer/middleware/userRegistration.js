@@ -84,20 +84,17 @@ const validationRules = {
 
 export const userDataRegistration = (req, res, next) => {
     const userData = req.body;
-    const errors = [];
+    const errors = {};
     var missing = false;
-    var errorObject = { message: "", field: "" };
-    const setErrorUp = (message, field) => {
-        errorObject.message = message;
-        errorObject.field = field;
-    }
     let profilePic = "";
     if (req.file) {
         // Build the relative path 
         profilePic = req.file.filename;
     }
     userData.profilePic = profilePic;
+
     for (const field in validationRules) {
+
 
         //Open the object to get the actual field's object holding the rules
         const rules = validationRules[field];
@@ -109,11 +106,12 @@ export const userDataRegistration = (req, res, next) => {
         //do not run the rest of the loop and add the error if neccessary.
         if (userInput.trim() === "") {
             if (rules.required && rules.required.expect === true) {
-                setErrorUp(rules.required.message, field);
-                errors.push(errorObject);
+                if (!errors[field]) errors[field] = [];
+                errors[field].push(rules.required.message);
                 if (!missing) {
                     missing = true;
-                    errors.push("Missing required fields\n");
+                    if (!errors.general) errors.general = [];
+                    errors.general.push("Missing required fields\n");
                 }
             }
             continue;
@@ -122,43 +120,47 @@ export const userDataRegistration = (req, res, next) => {
         //loop through the rules inside that specific field
         for (const expectation in rules) {
 
+            let errorObject = { message: "", field: "" };
             //Now grab the expect value and the message
             const expectedValue = rules[expectation].expect;
             const errorMessage = rules[expectation].message;
             switch (typeof (expectedValue)) {
                 case "number":
                     if (userInput.length < expectedValue) {
-                        setErrorUp(errorMessage, field);
-                        errors.push(errorObject);
+                        if (!errors[field]) errors[field] = [];
+                        errors[field].push(errorMessage);
                     }
+
                     break;
                 case "function":
                     if (!expectedValue(userInput)) {
-                        setErrorUp(errorMessage, field);
-                        errors.push(errorObject);
+                        if (!errors[field]) errors[field] = [];
+                        errors[field].push(errorMessage);
                     }
                     break;
                 case "object":
                     if (expectedValue instanceof RegExp) {
                         if (!(expectedValue.test(userInput))) {
-                            setErrorUp(errorMessage, field);
-                            errors.push(errorObject);
+                            if (!errors[field]) errors[field] = [];
+                            errors[field].push(errorMessage);
                         }
-
                     }
-                    break;
                 default:
                     console.log("ok");
             }
+
         }
     }
+
     //if we caught any errors we return them along with the error status.
-    if (errors.length > 0) {
+    if (Object.keys(errors).length > 0) {
         return res.status(400).json({ errors: errors });
     }
 
     next()
 }
+
+
 
 
 

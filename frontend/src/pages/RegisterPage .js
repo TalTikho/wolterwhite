@@ -7,6 +7,9 @@ import { useAuthContext } from '../context/AuthContext';
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const getKey = (obj, key) => key in obj ? key : undefined;
+
+
 //curly braces in register destructure the input user form object.
 async function register(username, displayName, password, phone, address, profilePic) {
     const body = new FormData();
@@ -63,9 +66,22 @@ export const Register = () => {
             //HomeRouter should find the token and send us to HomePage and not to LandingPage
             navigate("/");
         } catch (err) {
-            setError(err.message);
+            try {
+                //Try to decode the text string back into a real Object
+                const parsedError = JSON.parse(err.message);
+
+                //If it works, save the inner 'errors' dictionary to state
+                if (parsedError && parsedError.errors) {
+                    setError(parsedError.errors);
+                } else {
+                    setError(err.message);
+                }
+            } catch (parseFail) {
+                //If it wasn't JSON (e.g. "Network Offline"), just save the normal text
+                setError(err.message);
+            }
         }
-    }
+    };
 
     return (
         <div>
@@ -76,33 +92,49 @@ export const Register = () => {
                         onChange={handleFieldChange(setUsername)}
                         placeholder="Username"
                     />
+                    {error?.username && (
+                        <p className='register-error'>{error.username[0]}</p>
+                    )}
                     <input
                         value={password}
                         onChange={handleFieldChange(setPassword)}
                         type="password"
                         placeholder="Password"
                     />
+                    {error?.password && (
+                        <p className='register-error'>{error.password[0]}</p>
+                    )}
                     <input
                         value={displayName}
                         onChange={handleFieldChange(setDisplayName)}
                         placeholder="Display Name"
                     />
+                    {error?.displayName && (
+                        <p className='register-error'>{error.displayName[0]}</p>
+                    )}
                     <input
                         value={phone}
                         onChange={handleFieldChange(setPhone)}
                         placeholder="phone"
                     />
+                    {error?.phone && (
+                        <p className='register-error'>{error.phone[0]}</p>
+                    )}
                     <input
                         value={address}
                         onChange={handleFieldChange(setAddress)}
                         placeholder="address"
                     />
+                    {error?.address && (
+                        <p className='register-error'>{error.address[0]}</p>
+                    )}
                     <input type='file' id='profilePic' ref={profilePicRef} accept="image/*"
 
                     />
-
-
-                    {error && <p className='register-error'>{error}</p>}
+                    {error?.profilePic && (
+                        <p className='register-error'>{error.profilePic[0]}</p>
+                    )}
+                    {/* {error && <p className="register-error">{error}</p>} */}
 
                     <button type="submit">
                         Register
@@ -115,5 +147,6 @@ export const Register = () => {
 
 
         </div>
+
     );
 }
