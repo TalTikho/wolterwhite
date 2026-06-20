@@ -86,6 +86,11 @@ export const userDataRegistration = (req, res, next) => {
     const userData = req.body;
     const errors = [];
     var missing = false;
+    var errorObject = { message: "", field: "" };
+    const setErrorUp = (message, field) => {
+        errorObject.message = message;
+        errorObject.field = field;
+    }
     let profilePic = "";
     if (req.file) {
         // Build the relative path 
@@ -104,7 +109,8 @@ export const userDataRegistration = (req, res, next) => {
         //do not run the rest of the loop and add the error if neccessary.
         if (userInput.trim() === "") {
             if (rules.required && rules.required.expect === true) {
-                errors.push(rules.required.message);
+                setErrorUp(rules.required.message, field);
+                errors.push(errorObject);
                 if (!missing) {
                     missing = true;
                     errors.push("Missing required fields\n");
@@ -122,18 +128,21 @@ export const userDataRegistration = (req, res, next) => {
             switch (typeof (expectedValue)) {
                 case "number":
                     if (userInput.length < expectedValue) {
-                        errors.push(errorMessage);
+                        setErrorUp(errorMessage, field);
+                        errors.push(errorObject);
                     }
                     break;
                 case "function":
                     if (!expectedValue(userInput)) {
-                        errors.push(errorMessage);
+                        setErrorUp(errorMessage, field);
+                        errors.push(errorObject);
                     }
                     break;
                 case "object":
                     if (expectedValue instanceof RegExp) {
                         if (!(expectedValue.test(userInput))) {
-                            errors.push(errorMessage);
+                            setErrorUp(errorMessage, field);
+                            errors.push(errorObject);
                         }
 
                     }
