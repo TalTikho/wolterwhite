@@ -73,6 +73,7 @@ export const Register = () => {
                 //If it works, save the inner 'errors' dictionary to state
                 if (parsedError && parsedError.errors) {
                     setError(parsedError.errors);
+                //not a fields error.
                 } else {
                     setError(err.message);
                 }
