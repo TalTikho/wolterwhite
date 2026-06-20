@@ -4,7 +4,7 @@ import '../style/Register.css'
 
 import { sendPOST } from '../services/api';
 import { useAuthContext } from '../context/AuthContext';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const getKey = (obj, key) => key in obj ? key : undefined;
@@ -45,6 +45,7 @@ export const Register = () => {
     const [phone, setPhone] = useState("");
     const [address, setAddress] = useState("");
     const profilePicRef = useRef(null);
+    const [preview, setPreview] = useState("");
 
     //Take the token setter from the Auth hook's getter.
     const { tokenToStorage } = useAuthContext();
@@ -52,6 +53,8 @@ export const Register = () => {
     //Error should rerender the page as we display the login errors to the user.
     const [error, setError] = useState(null);
     const navigate = useNavigate();
+
+
     const handleRegister = async (e) => {
         e.preventDefault();
         try {
@@ -73,7 +76,7 @@ export const Register = () => {
                 //If it works, save the inner 'errors' dictionary to state
                 if (parsedError && parsedError.errors) {
                     setError(parsedError.errors);
-                //not a fields error.
+                    //not a fields error.
                 } else {
                     setError(err.message);
                 }
@@ -130,11 +133,17 @@ export const Register = () => {
                         <p className='register-error'>{error.address[0]}</p>
                     )}
                     <input type='file' id='profilePic' ref={profilePicRef} accept="image/*"
+                        onChange={(e) => {
+                            if (e.target.files && e.target.files[0]) {
+                                setPreview(URL.createObjectURL(e.target.files[0]));
+                            }
+                        }}
 
                     />
                     {error?.profilePic && (
                         <p className='register-error'>{error.profilePic[0]}</p>
                     )}
+                    <img src={preview} alt="no image was uploaded or the connection is bad" className='prev-img'></img>
                     {/* {error && <p className="register-error">{error}</p>} */}
 
                     <button type="submit">

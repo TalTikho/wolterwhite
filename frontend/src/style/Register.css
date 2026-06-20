@@ -104,3 +104,9 @@
     font-weight: bold;
     padding: 8px 12px 8px 12px;
 }
+
+.prev-img{
+  max-width: 200px;
+  max-height: 200px;
+  background-color: powderblue;
+}
