@@ -30,7 +30,8 @@ export const registerUser = (req, res) => {
     const data = {
         displayName: newUser.displayName,
         id: newUser.id,
-        profilePic: newUser.profilePic
+        profilePic: newUser.profilePic,
+        address: newUser.address
     };
     const token = jwt.sign(data, key)
     return res.status(201).json({ token });

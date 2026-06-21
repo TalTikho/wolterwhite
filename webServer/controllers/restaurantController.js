@@ -23,6 +23,8 @@ export const createRestaurant = (req, res) => {
         !restaurantInfo.phone?.trim() ||
         !restaurantInfo.email?.trim() ||
         !restaurantInfo.address?.trim() ||
+        !restaurantInfo.addressX?.trim()||
+        !restaurantInfo.addressY?.trim()||
         !restaurantInfo.hours?.trim() ||
         !restaurantInfo.description?.trim()
     )
