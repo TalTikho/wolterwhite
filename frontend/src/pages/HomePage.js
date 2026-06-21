@@ -97,7 +97,7 @@ export const Home = () => {
           {/* States */}
           {loading && <p className="home-status">Loading restaurants...</p>}
           {error && <p className="home-status home-status--error">{error}</p>}
-          {!loading && !error && filtered.length === 0 && (
+          {!loading && !error && filtered.length === 0 && search !=="" && (
             <p className="home-status">No restaurants found for "{search}"</p>
           )}
 
