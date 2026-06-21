@@ -39,8 +39,15 @@ export const RestaurantForm = ({ existingRestaurant = null, onSuccess, onCancel 
     e.preventDefault();
     setError(null);
 
-    if (!formData.name || !formData.address) {
-      setError("Name and address are required fields.");
+    if (
+      !formData.name ||
+      !formData.phone ||
+      !formData.email ||
+      !formData.address ||
+      !formData.hours ||
+      !formData.description
+    ) {
+      setError("All fields are required. Please fill out the entire form.");
       return;
     }
 
@@ -89,23 +96,31 @@ export const RestaurantForm = ({ existingRestaurant = null, onSuccess, onCancel 
           </div>
           <div className="col-md-6">
             <label className="form-label text-muted">Phone Number</label>
-            <input type="tel" className="form-control" name="phone" value={formData.phone} onChange={handleChange} placeholder="050-1234567" />
+            <input type="tel" className="form-control" name="phone" value={formData.phone} onChange={handleChange} placeholder="050-1234567" required />
           </div>
           <div className="col-md-6">
             <label className="form-label text-muted">Email Address</label>
-            <input type="email" className="form-control" name="email" value={formData.email} onChange={handleChange} placeholder="example@mail.com" />
+            <input type="email" className="form-control" name="email" value={formData.email} onChange={handleChange} placeholder="example@mail.com" required />
           </div>
           <div className="col-md-6">
             <label className="form-label text-muted">Address</label>
             <input type="text" className="form-control" name="address" value={formData.address} onChange={handleChange} placeholder="Street Name, City" required />
           </div>
+          <div className="col-md-6">
+            <label className="form-label text-muted">Address X value</label>
+            <input type="text" className="form-control" name="name" value={formData.addressX} onChange={handleChange} placeholder="Enter X value" required />
+          </div>
+          <div className="col-md-6">
+            <label className="form-label text-muted">Address Y value</label>
+            <input type="text" className="form-control" name="name" value={formData.addressY} onChange={handleChange} placeholder="Enter Y value" required />
+          </div>
           <div className="col-md-12">
             <label className="form-label text-muted">Opening Hours</label>
-            <input type="text" className="form-control" name="hours" value={formData.hours} onChange={handleChange} placeholder="08:00 - 22:00" />
+            <input type="text" className="form-control" name="hours" value={formData.hours} onChange={handleChange} placeholder="08:00 - 22:00" required />
           </div>
           <div className="col-md-12">
             <label className="form-label text-muted">Description</label>
-            <textarea className="form-control" name="description" value={formData.description} onChange={handleChange} placeholder="A short description..." rows="3"></textarea>
+            <textarea className="form-control" name="description" value={formData.description} onChange={handleChange} placeholder="A short description..." rows="3" required></textarea>
           </div>
         </div>
 

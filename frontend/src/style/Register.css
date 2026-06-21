@@ -2,71 +2,55 @@
     min-height: 100vh;
     display: grid;
     place-items: center;
-    background-color: #f0f2f5;
-    /*A soft grey background makes the white form 'pop'*/
+    background-color: var(--bg-color);
 }
 
-/*The Form Card*/
 .register-form-container form {
-    background-color: #ffffff;
+    background-color: var(--button-bg);
     width: 100%;
     max-width: 400px;
     max-height: fit-content;
     padding: 40px 30px;
     border-radius: 12px;
-    /*Smooth, modern corners*/
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-    /*The 'elevation' effect*/
-
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
     display: grid;
     gap: 15px;
-    /*Grid handles ALL the spacing between inputs automatically*/
     box-sizing: border-box;
 }
 
-/*The Inputs*/
-.register-form-container form>input {
+.register-form-container form > input {
     width: 100%;
     padding: 14px 16px;
-    border: 1px solid #ced4da;
+    border: 1px solid var(--button-border);
     border-radius: 8px;
     font-size: 16px;
-    /*Prevents iOS from zooming in automatically*/
-    background-color: #f8f9fa;
-    color: #333;
+    background-color: var(--bg-color);
+    color: var(--text-color);
     box-sizing: border-box;
     transition: all 0.2s ease;
-    /*Smooth animations*/
 }
 
-/*The Interaction (Focus State)*/
-.register-form-container form>input:focus {
+.register-form-container form > input:focus {
     outline: none;
-    background-color: #ffffff;
-    border-color: #3B5F4A;
-    /*periodic breaking bad table green*/
-    /*A glowing ring effect to show exactly what is active*/
-    box-shadow: 0 0 0 4px rgba(59, 95, 74, 0.15);
+    background-color: var(--button-bg);
+    border-color: var(--button-border);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--button-border) 15%, transparent);
 }
 
-/*The File Input*/
-.register-form-container form>input[type="file"] {
+.register-form-container form > input[type="file"] {
     padding: 10px;
-    background-color: #ffffff;
-    border: 2px dashed #3B5F4A;
-    color: #555;
+    background-color: var(--bg-color);
+    border: 2px dashed var(--button-border);
+    color: var(--text-color);
     cursor: pointer;
 }
 
-/*The Primary Button (Register)*/
-.register-form-container form>button[type="submit"] {
+.register-form-container form > button[type="submit"] {
     width: 100%;
     padding: 14px;
     margin-top: 10px;
-    /*A little extra separation from the inputs*/
-    background-color: #3B5F4A;
-    color: #D6CA00;
-    /*Wolt's labratory hazmat yellow*/
+    background-color: var(--button-border);
+    color: #ffffff;
     border: none;
     border-radius: 8px;
     font-size: 16px;
@@ -75,17 +59,14 @@
     transition: transform 0.1s, background-color 0.2s;
 }
 
-.register-form-container form>button[type="submit"]:hover {
-    background-color: #2A4535;
-    /*Darker green on hover*/
+.register-form-container form > button[type="submit"]:hover {
     transform: translateY(-2px);
-    /*Makes the button feel tactile*/
+    filter: brightness(1.1);
 }
 
-/*The Secondary Button (Back to Home)*/
-.register-form-container form>button[type="button"] {
+.register-form-container form > button[type="button"] {
     background-color: transparent;
-    color: #666;
+    color: var(--text-color);
     border: none;
     font-size: 16px;
     cursor: pointer;
@@ -93,20 +74,21 @@
     margin-top: -5px;
 }
 
-.register-form-container form>button[type="button"]:hover {
-    color: #3B5F4A;
+.register-form-container form > button[type="button"]:hover {
+    color: var(--button-border);
 }
 
 .register-error {
     margin: 0;
     font-size: 1rem;
-    color: red;
+    color: #c0392b;
     font-weight: bold;
-    padding: 8px 12px 8px 12px;
+    padding: 8px 12px;
 }
 
-.prev-img{
-  max-width: 200px;
-  max-height: 200px;
-  background-color: powderblue;
+.prev-img {
+    max-width: 200px;
+    max-height: 200px;
+    background-color: var(--button-bg);
+    border: 1px solid var(--button-border);
 }

@@ -1,6 +1,3 @@
-/* ==========================================================================
-   App-wide Theme Pass-through Rules
-   ========================================================================== */
 .App, 
 .Home, 
 .Landing, 
@@ -10,25 +7,22 @@
     transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* ==========================================================================
-   Optional: Spin animation layout parameters
-   ========================================================================== */
 .App-logo {
-  height: 40vmin;
-  pointer-events: none;
+    height: 40vmin;
+    pointer-events: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+    .App-logo {
+        animation: App-logo-spin infinite 20s linear;
+    }
 }
 
 @keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }

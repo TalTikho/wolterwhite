@@ -1,0 +1,94 @@
+.register-form-container {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    background-color: var(--bg-color);
+}
+
+.register-form-container form {
+    background-color: var(--button-bg);
+    width: 100%;
+    max-width: 400px;
+    max-height: fit-content;
+    padding: 40px 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    display: grid;
+    gap: 15px;
+    box-sizing: border-box;
+}
+
+.register-form-container form > input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid var(--button-border);
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+.register-form-container form > input:focus {
+    outline: none;
+    background-color: var(--button-bg);
+    border-color: var(--button-border);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--button-border) 15%, transparent);
+}
+
+.register-form-container form > input[type="file"] {
+    padding: 10px;
+    background-color: var(--bg-color);
+    border: 2px dashed var(--button-border);
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+.register-form-container form > button[type="submit"] {
+    width: 100%;
+    padding: 14px;
+    margin-top: 10px;
+    background-color: var(--button-border);
+    color: #D6CA00;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.1s, background-color 0.2s;
+}
+
+.register-form-container form > button[type="submit"]:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+}
+
+.register-form-container form > button[type="button"] {
+    background-color: transparent;
+    color: var(--text-color);
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    text-decoration: underline;
+    margin-top: -5px;
+}
+
+.register-form-container form > button[type="button"]:hover {
+    color: var(--button-border);
+}
+
+.register-error {
+    margin: 0;
+    font-size: 1rem;
+    color: #c0392b;
+    font-weight: bold;
+    padding: 8px 12px;
+}
+
+.prev-img {
+    max-width: 200px;
+    max-height: 200px;
+    background-color: var(--button-bg);
+    border: 1px solid var(--button-border);
+}

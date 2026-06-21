@@ -1,26 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { sendGet } from "../services/api";
 import { RestaurantForm } from "../components/RestaurantForm";
-import { ProductForm } from "../components/ProductForm"; // <-- Added this import
+import { ProductForm } from "../components/ProductForm";
 import { useAuthContext } from "../context/AuthContext";
 
 export const AdminPage = () => {
   const { token } = useAuthContext();
   
-  // States for Restaurants
   const [restaurants, setRestaurants] = useState([]);
   const [editingRestaurant, setEditingRestaurant] = useState(null);
   const [showRestaurantForm, setShowRestaurantForm] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // States for Products (Menu Management)
   const [selectedRestaurantForMenu, setSelectedRestaurantForMenu] = useState(null);
   const [products, setProducts] = useState([]);
   const [editingProduct, setEditingProduct] = useState(null);
   const [showProductForm, setShowProductForm] = useState(false);
 
-  // --- RESTAURANT LOGIC ---
   const fetchRestaurants = async () => {
     try {
       setLoading(true);
@@ -52,7 +49,6 @@ export const AdminPage = () => {
     }
   };
 
-  // --- PRODUCT LOGIC ---
   const fetchProducts = async (restaurantId) => {
     try {
       const data = await sendGet(`/api/restaurants/${restaurantId}/products`, token);
@@ -83,7 +79,6 @@ export const AdminPage = () => {
     }
   };
 
-  // --- RENDER MENU MANAGEMENT VIEW ---
   if (selectedRestaurantForMenu) {
     const restaurantId = selectedRestaurantForMenu.id || selectedRestaurantForMenu._id;
     return (
@@ -127,8 +122,8 @@ export const AdminPage = () => {
                   <img src={p.image || "/knock.png"} alt="product" style={{width: "50px", height:"50px", objectFit:"cover", borderRadius:"5px"}}/>
                 </td>
                 <td>
-                  <strong>{p.name}</strong><br/>
-                  <small className="text-muted">{p.description}</small>
+                  <strong>{p.pname}</strong><br/>
+                  <small className="text-muted">{p.pdescription}</small>
                 </td>
                 <td>${p.price}</td>
                 <td>
@@ -145,7 +140,6 @@ export const AdminPage = () => {
     );
   }
 
-  // --- RENDER RESTAURANT MANAGEMENT VIEW (DEFAULT) ---
   return (
     <div className="container mt-5 text-white">
       <div className="d-flex justify-content-between align-items-center mb-4">
