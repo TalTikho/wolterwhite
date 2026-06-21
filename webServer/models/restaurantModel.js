@@ -22,6 +22,8 @@ export const createRestaurant = (restaurantInfo) => {
         phone: restaurantInfo.phone,
         email: restaurantInfo.email,
         address: restaurantInfo.address,
+        addressX: restaurantInfo.addressX,
+        addressY: restaurantInfo.addressY,
         hours: restaurantInfo.hours,
         description: restaurantInfo.description,
         products: []
