@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useAuthContext } from '../context/AuthContext'; // Import AuthContext to get token
+import { useAuthContext } from '../context/AuthContext';
 import { sendGet } from '../services/api';
+import { ProductCard } from '../components/ProductCard'; // <-- Added this import
 
-export const Restaurant = () => {
+export const RestaurantPage = () => {
     const { id } = useParams(); 
-    const { token } = useAuthContext(); // Get the token from AuthContext
+    const { token } = useAuthContext();
     
-    // State to store restaurant details and menu products
     const [restaurant, setRestaurant] = useState(null);
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -15,7 +15,6 @@ export const Restaurant = () => {
 
     useEffect(() => {
         const fetchRestaurantData = async () => {
-            // If there is no token, we can't fetch protected data
             if (!token) {
                 setError("You must be logged in to view this restaurant.");
                 setLoading(false);
@@ -26,7 +25,6 @@ export const Restaurant = () => {
                 setLoading(true);
                 setError(null);
                 
-                // Fetch restaurant details and products from the server
                 const restaurantData = await sendGet(`/api/restaurants/${id}`, token);
                 setRestaurant(restaurantData);
 
@@ -44,9 +42,8 @@ export const Restaurant = () => {
         if (id) {
             fetchRestaurantData();
         }
-    }, [id, token]); // Re-run if ID or Token changes
+    }, [id, token]);
 
-    // Loading state UI
     if (loading) {
         return (
             <div className="container text-center mt-5 text-light">
@@ -57,7 +54,6 @@ export const Restaurant = () => {
         );
     }
 
-    // Error state UI
     if (error) {
         return (
             <div className="container text-center mt-5">
@@ -77,19 +73,15 @@ export const Restaurant = () => {
                             <p className="lead text-muted">{restaurant.cuisine || 'Cuisine not specified'}</p>
                             
                             <div className="d-flex gap-4 fs-5 mt-3 flex-wrap">
-                                <div>
-                                    <strong>🕒 Opening Hours:</strong> {restaurant.hours || 'N/A'}
-                                </div>
-                                <div>
-                                    <strong>💰 Min Price:</strong> ${restaurant.minPrice || '0'}
-                                </div>
+                                <div><strong>🕒 Opening Hours:</strong> {restaurant.hours || 'N/A'}</div>
+                                <div><strong>💰 Min Price:</strong> ${restaurant.minPrice || '0'}</div>
                             </div>
                         </div>
                     </div>
                 </div>
             )}
 
-            {/* Menu Grid Layout */}
+            {/* Menu Grid Layout - Now using the new ProductCard component */}
             <h3 className="mb-4 fw-bold">Menu</h3>
             {products.length === 0 ? (
                 <p className="text-muted">No products available for this restaurant.</p>
@@ -97,28 +89,8 @@ export const Restaurant = () => {
                 <div className="row g-4">
                     {products.map((product) => (
                         <div key={product.id || product._id} className="col-12 col-md-6 col-lg-4">
-                            <div className="card h-100 bg-dark border-secondary text-white">
-                                {product.image && (
-                                    <img 
-                                        src={product.image} 
-                                        className="card-img-top" 
-                                        alt={product.name} 
-                                        style={{ height: '180px', objectFit: 'cover' }}
-                                    />
-                                )}
-                                <div className="card-body d-flex flex-column justify-content-between">
-                                    <div>
-                                        <h5 className="card-title fw-bold">{product.name}</h5>
-                                        <p className="card-text text-muted">{product.description}</p>
-                                    </div>
-                                    <div className="mt-3 d-flex justify-content-between align-items-center">
-                                        <span className="fs-5 fw-bold text-success">${product.price}</span>
-                                        <button className="btn btn-primary btn-sm">
-                                            Add to Order
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+                            {/* Passing restaurantId is crucial here so the C++ View logging logic works */}
+                            <ProductCard product={product} restaurantId={id} />
                         </div>
                     ))}
                 </div>
