@@ -151,7 +151,7 @@ Content-Type: application/json
 Authorization: Bearer REPLACE_WITH_VALID_TOKEN
 
 {
-    "name": "Pizza Palace",
+    "name": "helloooooooooooo",
     "phone": "03-1234567",
     "email": "pizza@palace.com",
     "address": "123 Main St, Tel Aviv",
