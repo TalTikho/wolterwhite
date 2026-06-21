@@ -331,3 +331,13 @@ body.dark-mode #theme-toggle .icon-dark {
     font-weight: 600;
     color: var(--text-color);
 }
+
+/*Smoothly transitions the lighting when the theme changes*/
+.knock-bg-img {
+    transition: filter 0.3s ease;
+}
+
+/*Dims the image by 50% when dark mode is active*/
+body.dark-mode .knock-bg-img {
+    filter: brightness(0.5) contrast(1.1); 
+}

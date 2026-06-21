@@ -11,6 +11,7 @@ export const BackG = () => {
         zIndex: 0,
         backgroundColor: "#10150c", // Fallback color
         overflow: "hidden", // Prevents the blur from creating scrollbars
+        
       }}>
 
 
@@ -18,6 +19,7 @@ export const BackG = () => {
         /* Assets in the public folder are served at the root URL '/' so we make absolute linkage here */
         src="/knock.png"
         alt="I am the one who knocks"
+        className="knock-bg-img"
         style={{
           //main artwork
           position: "absolute", top: 0, left: 0,
