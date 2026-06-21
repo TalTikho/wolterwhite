@@ -20,6 +20,19 @@ export const Navbar = () => {
     const navigate = useNavigate();
 
 
+    const [filterOpen, setFilterOpen] = useState(false);
+    const filterRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (filterRef.current && !filterRef.current.contains(event.target)) {
+                setFilterOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+    
     //We should update the screen if the user's credentials are retrieved.
     const [displayName, setDisplayName] = useState("Operator");
     const [profilePic, setProfilePic] = useState("/knock.png");
