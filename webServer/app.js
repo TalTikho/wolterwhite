@@ -9,6 +9,7 @@ import orderRoutes from "./routes/orderRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import restaurantRoutes from "./routes/restaurantRoutes.js";
 import searchRoutes from './routes/searchRoutes.js';
+import imageRoutes from './routes/imageRoutes.js';
 import 'dotenv/config';
 import dotenv from 'dotenv';
 dotenv.config({ path: './configLocal/.env' });
@@ -33,6 +34,7 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/tokens", authRoutes);
 app.use("/api/restaurants", restaurantRoutes);
 app.use('/api/search', searchRoutes);
+app.use('/api/images', imageRoutes);
 //return json when html is not found.
 app.use((req, res) => {
     res.status(404).json({ error: `Route ${req.method} ${req.originalUrl} not found` });

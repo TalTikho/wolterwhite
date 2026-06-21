@@ -1,8 +1,7 @@
 import './style/App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import React from 'react';
-import { ApiExample } from './pages/Fetch.js'
-import { Home } from './pages/HomePage.js';
+import { ApiExample } from './pages/Fetch.js';
 import { Login } from './pages/LoginPage.js';
 import { Register } from './pages/RegisterPage .js';
 import { Restaurant } from './pages/RestaurantPage .js';
@@ -13,42 +12,42 @@ import { Navbar } from './components/NavBar.js';
 import { AdminPage } from './pages/AdminPage.js';
 import { AdminRoute } from './components/AdminRoute.js';
 import { TokenProvider } from './context/AuthContext.js';
-import 'bootstrap/dist/css/bootstrap.min.css'
+import { ThemeProvider } from './context/ThemeContext.js';
+import { RestaurantFilterProvider } from './context/RestaurantFilterContext.js';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   return (
     <TokenProvider>
-      {/*BrowserRouter acts as the master wrapper that watches the URL*/}
-      <BrowserRouter>
-        {/* Replaced the old line navbar with modular themed navbar */}
-        <div style={{
-          position: "relative",
-          zIndex: 1
-        }} ><Navbar /></div>
+      <ThemeProvider>
+        <RestaurantFilterProvider>
+          <BrowserRouter>
+            {/* Navbar shows on every page */}
+            <Navbar />
 
+            {/* Main wrapper that physically forces the background to update dynamically */}
+            <div className="theme-page-wrapper">
+              <Routes>
+                <Route path="/" element={<HomeRouter />} />
+                <Route path="/example" element={<ApiExample />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/login" element={<Login />} />
+                
+                <Route path="/restaurants/:id" element={<ProtectedRoute component={<Restaurant />} />} />
+                <Route path="/orders" element={<ProtectedRoute component={<Orders />} />} />
+                
+                {/* Admin Route added from your branch */}
+                <Route 
+                  path="/admin" 
+                  element={<AdminRoute component={<AdminPage />} />} 
+                />
 
-        {/* Main wrapper that physically forces the background to update dynamically */}
-        <div className="theme-page-wrapper">
-          <Routes>
-            <Route path="/" element={<HomeRouter />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/example" element={<ApiExample />} />
-
-            <Route path="/restaurants/:id" element={<ProtectedRoute component={<Restaurant />} />} />
-            <Route path="/orders" element={<ProtectedRoute component={<Orders />} />} />
-
-
-            <Route 
-                path="/admin" 
-                element={<AdminRoute component={<AdminPage />} />} 
-              />
-
-            <Route path="*" element={<h2>404 - Page Not Found - Better Call Saul! (505) 503-4455 </h2>} />
-          </Routes>
-        </div>
-      </BrowserRouter>
+                <Route path="*" element={<h2>404 - Page Not Found - Better Call Saul! (505) 503-4455</h2>} />
+              </Routes>
+            </div>
+          </BrowserRouter>
+        </RestaurantFilterProvider>
+      </ThemeProvider>
     </TokenProvider>
   );
 }

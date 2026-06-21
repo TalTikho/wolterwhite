@@ -1,27 +1,24 @@
 import * as userModel from "../models/userModel.js";
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+import path from 'node:path'
+
+const __dirname = import.meta.dirname;
+
+dotenv.config({ path: './config/.env' });
+
+// for safety reasons the env files are in .gitignore so hardcoded 5000 is a fallback
+const key = process.env.JWT_SECRET || "BlueStuff@"
+
+
 
 /**
  * Handles user registration
  */
 export const registerUser = (req, res) => {
-
-    // Extract user data from request body
     const userData = req.body;
-
-    // Validate required fields
-    if (
-        !userData.username?.trim() ||
-        !userData.name?.trim() ||
-        !userData.phone?.trim() ||
-        !userData.address?.trim() ||
-        !userData.password?.trim()
-    ) {
-        return res.status(400).json({
-            error: "Missing required fields"
-        });
-    }
     //Make sure the username is unique.
-    if (userModel.users.some(user=>user.username == userData.username)) {
+    if (userModel.users.some(user => user.username == userData.username)) {
         return res.status(409).json({ error: 'User with the same username already exists' });
     }
     // Create the user using the model layer
@@ -29,11 +26,14 @@ export const registerUser = (req, res) => {
     // Create userResponse without returning the password
     const { password, ...userResponse } = newUser;
 
-    // Return created user
-    return res
-        .status(201)
-        .location(`/api/users/${newUser.id}`)
-        .json(userResponse);
+    // Return the user token on success
+    const data = {
+        displayName: newUser.displayName,
+        id: newUser.id,
+        profilePic: newUser.profilePic
+    };
+    const token = jwt.sign(data, key)
+    return res.status(201).json({ token });
 };
 
 /**
@@ -59,3 +59,14 @@ export const getUser = (req, res) => {
         .status(200)
         .json(user);
 };
+
+
+export const getImage = (req, res) => {
+    const filename =  req.params.filename;
+    const imageURL = path.join(__dirname, '../uploads', filename);
+    res.setHeader('Content-Type', 'image/png');
+    //help api.js findout this is an image.
+    res.sendFile(imageURL);
+
+
+}
