@@ -1,13 +1,15 @@
-import React, { useContext, useState, useRef, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { ThemeContext } from "../context/ThemeContext";
-import { useAuthContext } from "../context/AuthContext";
-import { sendGet } from "../services/api";
-import { useRestaurantFilter } from "../context/RestaurantFilterContext";
+import React, { useContext, useState, useRef, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { ThemeContext } from '../context/ThemeContext';
+import { useAuthContext } from '../context/AuthContext';
+import { useRestaurantFilter } from '../context/RestaurantFilterContext';
+import { sendGet } from '../services/api';
+
+
 
 export const Navbar = () => {
   const { toggleTheme } = useContext(ThemeContext);
-  const { token, logOut } = useAuthContext();
+  const { token, user, logOut } = useAuthContext();
   const {
     search,
     setSearch,
@@ -24,6 +26,7 @@ export const Navbar = () => {
 
   // Filter popup open/close state, plus a ref so we can detect clicks
   // landing outside the popup and close it.
+
   const [filterOpen, setFilterOpen] = useState(false);
   const filterRef = useRef(null);
 
@@ -37,11 +40,9 @@ export const Navbar = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
   //We should update the screen if the user's credentials are retrieved.
   const [displayName, setDisplayName] = useState("Operator");
   const [profilePic, setProfilePic] = useState("/knock.png");
-
   useEffect(() => {
     //helper method to make an async call inside useEffect.
     const setParams = async () => {
@@ -72,23 +73,21 @@ export const Navbar = () => {
       }
     };
   }, [token]);
-
   const handleLogout = () => {
     logOut();
     navigate("/login");
     window.location.reload();
   };
 
+
   return (
     <nav className="navbar-container">
       {/* Brand */}
-      <div className="navbar-brand" onClick={() => navigate("/")}>
+      <div className="navbar-brand" onClick={() => navigate('/')}>
         <span className="navbar-logo-square">Wo</span>
         <span className="navbar-title">LTerWhite Delivery</span>
       </div>
-
       {/* Center: search bar — only relevant once logged in */}
-
       <div className="navbar-search-wrapper">
         <input
           type="text"
@@ -97,7 +96,6 @@ export const Navbar = () => {
           onChange={(e) => setSearch(e.target.value)}
           className="navbar-search-input"
         />
-
         {/* Filter button + popup. Filters by address, search scope
                         (restaurant/product/both), and the "near me" radius —
                         all grouped together since they're all ways of
@@ -112,7 +110,6 @@ export const Navbar = () => {
           >
             Filter
           </button>
-
           {filterOpen && (
             <div className="navbar-filter-popup">
               <label className="navbar-filter-label" htmlFor="filter-address">
@@ -126,7 +123,6 @@ export const Navbar = () => {
                 onChange={(e) => updateFilter("address", e.target.value)}
                 className="navbar-filter-input"
               />
-
               <hr className="navbar-filter-divider" />
               <span className="navbar-filter-label">
                 The search bar above matches
@@ -163,7 +159,6 @@ export const Navbar = () => {
                   Product only
                 </label>
               </div>
-
               {/* Wolt-style "near me" radius toggle — on by default.
                                 Styled like the radio rows above so it reads as
                                 part of the same filter group instead of a
@@ -176,7 +171,6 @@ export const Navbar = () => {
                 />
                 Only within {nearMeRadiusKm}km
               </label>
-
               <button
                 type="button"
                 onClick={clearFilters}
@@ -187,7 +181,6 @@ export const Navbar = () => {
             </div>
           )}
         </div>
-
         {/* Toggles the restaurant grid on/off without touching the data itself */}
         <button
           type="button"
@@ -197,7 +190,6 @@ export const Navbar = () => {
           {cardsVisible ? "Clear" : "Show"}
         </button>
       </div>
-
       {/* Right-side controls */}
       <div className="navbar-controls">
         <button

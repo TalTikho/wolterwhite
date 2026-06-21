@@ -27,7 +27,8 @@ export const login = (req, res) => {
         displayName: user.displayName,
         id: user.id,
         profilePic: user.profilePic,
-        address: user.address
+        address: user.address,
+        username: newUser.username
     };
     const token = jwt.sign(data, key)
     return res.status(201).json({ token });

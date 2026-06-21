@@ -56,7 +56,7 @@
 .register-form-container form>input[type="file"] {
     padding: 10px;
     background-color: var(--button-bg);
-    color: #4af407;
+    color: #3B5F4A;
     border: 2px dashed #3B5F4A;
     cursor: pointer;
 }
@@ -111,5 +111,5 @@
 .prev-img {
     max-width: 200px;
     max-height: 200px;
-    background-color: #4af407;
+    background-color: #3B5F4A;
 }
