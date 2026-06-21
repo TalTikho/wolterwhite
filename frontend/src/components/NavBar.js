@@ -1,12 +1,22 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState, useRef, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ThemeContext } from '../context/ThemeContext';
 import { useAuthContext } from '../context/AuthContext';
 import { sendGet } from '../services/api';
+import { useRestaurantFilter } from '../context/RestaurantFilterContext';
 
 export const Navbar = () => {
     const { toggleTheme } = useContext(ThemeContext);
     const { token, logOut } = useAuthContext();
+    const {
+        search,
+        setSearch,
+        filters,
+        updateFilter,
+        clearFilters,
+        cardsVisible,
+        toggleCardsVisible,
+    } = useRestaurantFilter();
     const navigate = useNavigate();
 
 
@@ -55,9 +65,70 @@ export const Navbar = () => {
         <nav className="navbar-container">
             {/* Brand */}
             <div className="navbar-brand" onClick={() => navigate('/')}>
-                <span className="navbar-logo-square">WoLTerWhite Delivery</span>
-                <span className="navbar-title"></span>
+                <span className="navbar-logo-square">Wo</span>
+                <span className="navbar-title">LTerWhite Delivery</span>
             </div>
+
+            {/* Center: search bar — only relevant once logged in */}
+
+                <div className="navbar-search-wrapper">
+                    <input
+                        type="text"
+                        placeholder="🔍 Search restaurants..."
+                        value={search}
+                        onChange={e => setSearch(e.target.value)}
+                        className="navbar-search-input"
+                    />
+
+                    {/* Filter button + popup. Filters by address today; later this
+                        popup can grow extra fields (e.g. a distance filter once we
+                        have x/y coordinates) — just add another input bound to
+                        updateFilter('newKey', value). */}
+                    <div className="navbar-filter" ref={filterRef}>
+                        <button
+                            type="button"
+                            onClick={() => setFilterOpen(prev => !prev)}
+                            className="navbar-btn navbar-btn-outline"
+                            aria-haspopup="true"
+                            aria-expanded={filterOpen}
+                        >
+                            Filter
+                        </button>
+
+                        {filterOpen && (
+                            <div className="navbar-filter-popup">
+                                <label className="navbar-filter-label" htmlFor="filter-address">
+                                    Address contains
+                                </label>
+                                <input
+                                    id="filter-address"
+                                    type="text"
+                                    placeholder="e.g. Tel Aviv"
+                                    value={filters.address}
+                                    onChange={e => updateFilter('address', e.target.value)}
+                                    className="navbar-filter-input"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={clearFilters}
+                                    className="navbar-btn navbar-btn-ghost navbar-filter-clear"
+                                >
+                                    Clear filter
+                                </button>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Toggles the restaurant grid on/off without touching the data itself */}
+                    <button
+                        type="button"
+                        onClick={toggleCardsVisible}
+                        className="navbar-btn navbar-btn-outline"
+                    >
+                        {cardsVisible ? 'Clear' : 'Show'}
+                    </button>
+                </div>
+            
 
             {/* Right-side controls */}
             <div className="navbar-controls">
