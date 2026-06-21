@@ -10,6 +10,8 @@ import { Orders } from './pages/OrdersPage .js';
 import { HomeRouter } from './components/HomeRouter.js';
 import { ProtectedRoute } from './components/LoginRouter.js';
 import { Navbar } from './components/NavBar.js';
+import { AdminPage } from './pages/AdminPage.js';
+import { AdminRoute } from './components/AdminRoute.js';
 import { TokenProvider } from './context/AuthContext.js';
 import 'bootstrap/dist/css/bootstrap.min.css'
 
@@ -30,11 +32,19 @@ function App() {
           <Routes>
             <Route path="/" element={<HomeRouter />} />
             <Route path="/home" element={<Home />} />
-            <Route path="/example" element={<ApiExample />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/example" element={<ApiExample />} />
+
             <Route path="/restaurants/:id" element={<ProtectedRoute component={<Restaurant />} />} />
             <Route path="/orders" element={<ProtectedRoute component={<Orders />} />} />
-            <Route path="/login" element={<Login />} />
+
+
+            <Route 
+                path="/admin" 
+                element={<AdminRoute component={<AdminPage />} />} 
+              />
+
             <Route path="*" element={<h2>404 - Page Not Found - Better Call Saul! (505) 503-4455 </h2>} />
           </Routes>
         </div>

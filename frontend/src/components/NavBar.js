@@ -5,7 +5,7 @@ import { useAuthContext } from '../context/AuthContext';
 
 export const Navbar = () => {
     const { toggleTheme } = useContext(ThemeContext);
-    const { token, logOut } = useAuthContext();
+    const { token, user, logOut } = useAuthContext(); // Assuming user is available here
     const navigate = useNavigate();
 
     let displayName = "Operator";
@@ -24,41 +24,45 @@ export const Navbar = () => {
     const handleLogout = () => {
         logOut();
         navigate('/login');
-        window.location.reload();
+        // Removed window.location.reload() for a smoother SPA experience
     };
 
     return (
         <nav className="navbar-container">
-            {/* Brand */}
             <div className="navbar-brand" onClick={() => navigate('/')}>
                 <span className="navbar-logo-square">WoLTerWhite Delivery</span>
-                <span className="navbar-title"></span>
             </div>
 
-            {/* Right-side controls */}
             <div className="navbar-controls">
                 <button onClick={toggleTheme} id="theme-toggle" aria-label="Toggle theme">
-                    <img src="/WolterWhiteLightTheme.png" alt="Walter White" className="icon-light" />
-                    <img src="/GusFringDarkTheme.png" alt="Gus Fring" className="icon-dark" />
+                    <img src="/WolterWhiteLightTheme.png" alt="Light" className="icon-light" />
+                    <img src="/GusFringDarkTheme.png" alt="Dark" className="icon-dark" />
                 </button>
 
-                {token ? (
-                    <div className="navbar-profile-section">
-                        <Link to="/orders" className="navbar-btn navbar-btn-outline">Orders</Link>
-                        <div className="navbar-user-info">
-                            <img src={profilePic} alt="Avatar" className="navbar-avatar" />
-                            <span className="navbar-username">{displayName}</span>
-                        </div>
-                        <button onClick={handleLogout} className="navbar-btn navbar-btn-danger">
-                            Log Out
-                        </button>
-                    </div>
-                ) : (
-                    <div className="navbar-profile-section">
-                        <Link to="/login" className="navbar-btn navbar-btn-outline">Login</Link>
-                        <Link to="/register" className="navbar-btn navbar-btn-ghost">Register</Link>
-                    </div>
-                )}
+                <div className="navbar-profile-section">
+                    {token ? (
+                        <>
+                            {/* Role-based rendering: Only show Admin if user has the correct role */}
+                            {user?.role === 'admin' && (
+                                <Link to="/admin" className="navbar-btn navbar-btn-outline">Admin</Link>
+                            )}
+                            <Link to="/orders" className="navbar-btn navbar-btn-outline">Orders</Link>
+                            
+                            <div className="navbar-user-info">
+                                <img src={profilePic} alt="Avatar" className="navbar-avatar" />
+                                <span className="navbar-username">{displayName}</span>
+                            </div>
+                            <button onClick={handleLogout} className="navbar-btn navbar-btn-danger">
+                                Log Out
+                            </button>
+                        </>
+                    ) : (
+                        <>
+                            <Link to="/login" className="navbar-btn navbar-btn-outline">Login</Link>
+                            <Link to="/register" className="navbar-btn navbar-btn-ghost">Register</Link>
+                        </>
+                    )}
+                </div>
             </div>
         </nav>
     );
