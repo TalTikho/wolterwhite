@@ -181,6 +181,33 @@ body.dark-mode .navbar-logo-square {
     margin-top: 2px;
 }
 
+.navbar-filter-scope {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.navbar-filter-divider {
+    width: 100%;
+    border: none;
+    border-top: 1px solid color-mix(in srgb, var(--button-border) 30%, transparent);
+    margin: 4px 0;
+}
+
+.navbar-filter-scope-option {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.82rem;
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+.navbar-filter-scope-option input[type="radio"] {
+    accent-color: var(--button-border);
+    cursor: pointer;
+}
+
 /* ==========================================================================
    3. Navbar Buttons — unified style
    ========================================================================== */
