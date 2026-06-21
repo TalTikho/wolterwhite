@@ -40,6 +40,11 @@ const validationRules = {
         required: {
             expect: true,
             message: "You must enter an address\n"
+        },
+        pattern: {
+            //regex for all pairs of numbers for coordinates.
+            expect: /^\(-?\d+(\.\d+)?,\s*-?\d+(\.\d+)?\)$/,
+            message: "Enter (x,y) coordiantes as any pair of (x, y) numbers."
         }
     },
     password: {
