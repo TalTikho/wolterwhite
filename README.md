@@ -1,6 +1,6 @@
 # 📘 WOLTerWhite 📘
 
-This is the updated README for the **WOLTerWhite** TCP client-server project.
+WOLTerWhite is an Advanced Programming course project. It seamlessly connects a modern React web dashboard to a high-performance C++ algorithmic recommendation engine via an intermediate Node.js/Express REST API gateway.
 
 ---
 
@@ -12,432 +12,209 @@ This is the updated README for the **WOLTerWhite** TCP client-server project.
 
 ---
 
-## 🔗 Links
-
-- 🗺️ [UML Diagram](https://tinyurl.com/UMLinkMe)
-
-![Running](./media/UML.png)
-
----
-
-## 🌿 Branch Strategy (finished exercises go this way)
+## 🌿 Project Evolution & Milestones
 
 | Branch | Exercise | Description |
 | -------- | ---------- | ------------- |
-| `finished-ex1` | Exercise 1 | CLI recommendation system |
-| `finished-ex2` | Exercise 2 | TCP client-server system |
-| `finished-ex3` | Exercise 3 | web server (current) |
+| `finished-ex1` | Exercise 1 - Algorithmic Core | CLI recommendation system |
+| `finished-ex2` | Exercise 2 - Networking Foundation | TCP client-server system (CPP & Python) |
+| `finished-ex3` | Exercise 3 - API Gateway Layer | Node.js / Express web routing layer using an MVC architecture |
+| `finished-ex4` | Exercise 4 - Frontend Web Application | Dynamic React UI with Context State Engines & Token Auth |
 
-> ⚠️ **NOTE**: Do not modify `finished-ex1` or `finished-ex2` or `finished-ex3` branches after submission
+> ⚠️ **NOTE**: Do not modify `finished-ex1 / finished-ex2 / finished-ex3 / finished-ex4` branches after submission
 > to preserve grace days.
 
 ---
 
-## 🏗️ Project Overview
+## 🏗️ System Design & Structural Topology
 
-WOLTerWhite is a TCP-based client-server recommendation system.
+1. **Dynamic React Frontend** (`/frontend`):
 
-The project is divided into three main components:
+    Built as an interactive, web dashboard that handles content rendering conditionally based on user authentication vectors.
 
-- **Exercise 1** — CLI product recommendation system in C++
-- **Exercise 2** — TCP client-server architecture (C++ server + Python client)
-- **Exercise 3** — RESTful web server in Node.js/Express (MVC)
-  that connects to the Exercise 2 C++ server for recommendations
+    - Global State Architecture: Leverages a unified React Context framework (`AuthContext, ThemeContext, RestaurantFilterContext, CardContext`) to avoid prop-drilling. State triggers propagate changes across the dashboard instantly.
 
-| Service | Technology | Role |
-| --------- | ------------ | ------ |
-| 🖥️ C++ TCP Server | C++17 | Business logic, recommendations, data persistence |
-| 🌐 Node.js Web Server | Node.js + Express | REST API, MVC architecture |
-| 🐍 Python Client | Python 3 (Exercise 2) | Interactive console client for the C++ server |
+    - Live Synchronization (Polling Engines): Features automated background data polling intervals to synchronize new catalog additions to the viewport without requiring manual page reloads.
 
----
+    - Theme Controls: Integrates localized theme switching states mapped directly to custom CSS properties (Variables).
 
-## ⚙️ Tech Stack
+2. **Node.js REST API Gateway** (`/webServer`)
 
-| Layer | Technology |
-| ------- | ------------ |
-| Web Server | Node.js + Express |
-| TCP Server | C++17 |
-| Client | Python 3 |
-| Build System | CMake |
-| Containerization | Docker + Docker Compose |
-| Communication | TCP Sockets + HTTP REST |
+    Acts as the central router and data orchestrator, abstracting backend persistence mechanisms behind structured endpoints.
 
----
+    - Architectural Pattern: Model-View-Controller (MVC).
 
-## ✨ Features
+    - Communication Pipelines: Instantiates and maintains a persistent TCP socket connection (`cppClient.js`) targeting the background C++ runtime.
 
-### Web Server (Exercise 3)
+    - In-Memory Store: Serves fast, isolated structural collections resetting dynamically across container deployment lifecycles for clean integration testing.
 
-- Full RESTful API (MVC architecture)
-- User registration and login
-- Restaurant management (CRUD)
-- Product/menu management (CRUD)
-- Order management (CRUD)
-- Search across restaurants and products
-- Connects to C++ server for product view tracking and recommendations
-- In-memory data storage (resets on restart)
+3. **High-Performance C++ Core** (`/src`)
 
-### C++ TCP Server (Exercise 2)
+    A native operational engine optimized for tracking data histories and serving product recommendations.
 
-- POST command — create new user
-- PATCH command — add products to existing user
-- DELETE command — remove products from user
-- GET command — recommend products based on similar users
-- HELP command — display all supported commands
-- Persistent TCP connection
-- File-based data persistence
+    - Persistent I/O Store: Commits analytics rows directly to disk within the filesystem volume (`data/`).
+
+    - Command Dispatch Processor: Runs custom request parsers supporting `POST, PATCH, and DELETE` commands to process analytical vectors.
 
 ---
 
-## 📂 Project Structure
+## 📂 Project Directory Structure
 
-```text
+```PlainText
 .
-├── src/
-│   ├── client/
-│   ├── include/
-│   ├── source/
-│   │   ├── commands/
-│   │   ├── server/
-│   │   ├── storage/
-│   │   ├── ui/
-│   │   ├── App.cpp
-│   │   └── main.cpp
+├── src/                  # 🖥️ Native C++ Engine Architecture
+│   ├── client/           # Legacy client hooks
+│   ├── include/          # Header Declarations
+│   └── source/           # Core Algorithmic implementations
 │
-├── data/
+├── webServer/            # 🌐 Node.js / Express REST Engine (MVC)
+│   ├── controllers/      # Logic Handlers (Auth, Restaurants, Orders)
+│   ├── models/           # Structural In-Memory Entity Schemas
+│   ├── routes/           # Express REST Endpoints
+│   └── cppClient.js      # Persistent TCP Socket Manager
 │
-├── tests/
-├── webServer/                  
-│   ├── controllers/            
-│   │   ├── authController.js
-│   │   ├── orderController.js
-│   │   ├── productController.js
-│   │   ├── restaurantController.js
-│   │   ├── searchController.js
-│   │   └── userController.js
-│   ├── models/                 
-│   │   ├── orderModel.js
-│   │   ├── productModel.js
-│   │   ├── restaurantModel.js
-│   │   └── userModel.js
-│   ├── routes/                 
-│   │   ├── authRoutes.js
-│   │   ├── orderRoutes.js
-│   │   ├── productRoutes.js
-│   │   ├── restaurantRoutes.js
-│   │   ├── searchRoutes.js
-│   │   └── userRoutes.js
-│   ├── views/                  
-│   ├── cppClient.js            
-│   ├── app.js                  
+├── frontend/             # 🎨 React Web Application
+│   ├── public/           # Visual Media Components & Logos
+│   ├── src/
+│   │   ├── components/   # Reusable Viewports (Navbar, Cards, BG)
+│   │   ├── context/      # Global State Engines (Auth, Filters)
+│   │   ├── hooks/        # Custom Function Librarie (useSound)
+│   │   ├── pages/        # Primary App Components (Home, Login)
+│   │   └── services/           
 │   └── package.json
 │
-├── docker-compose.yml
-├── Dockerfile
-├── Dockerfile.client
-├── CMakeLists.txt
-├── .gitignore
+├── data/                 # 💾  C++ Output Volume
+├── docker-compose.yml    # Microservice Orchestration
+├── CMakeLists.txt        # C++ Build Configuration
 └── README.md
-````
+```
 
 ---
 
-## 🛠️ How To Run
+## 🛠️ Deployment & Execution Quickstart
 
-### 🐳 Docker Setup
+### Option A: Fully Containerized Stack (Production Test)
 
-#### 1️⃣ Make sure that you have **Docker Desktop** on your machine, and clone the repository. Then
+Ensure Docker Desktop is active, clone the codebase, and boot the multi-tier container configuration:
 
 ```bash
 git clone https://github.com/TalTikho/wolterwhite
 cd wolterwhite
+docker-compose up --build
 ```
 
-> ⚠️ **NOTE**: Please make sure **Docker Desktop** is running.
+Once initialized, access your live local instances:
+
+- Frontend Site Application: `http://localhost:3000`
+- Backend API Gateway: `http://localhost:5000`
+
+### Option B: Optimized Hybrid Layout (Recommended for Frontend Devs)
+
+After clonning the repository, To enable instantaneous Hot Module Replacement (HMR) and immediate viewport compilation without rebuilding full containers on every layout modification open **TWO** terminals:
+
+1. Spin up your backend infrastructure via Docker:
+
+    ```bash
+    # (Terminal I)
+    docker compose up --build wolterwhite-server wolterwhite-web
+    ```
+
+2. Configure your localized environmental target: Create a .env file within your `frontend/` subdirectory:
+
+    ```bash
+    REACT_APP_API_BASE_URL=http://localhost:5000/api
+    ```
+
+3. Install dependencies and launch the local React compiler engine:
+
+    ```bash
+    # Move into the frontend folder (Terminal II)
+    cd frontend
+
+    # Install the required modules listed in package.json
+    npm install
+
+    # Run the app in development mode at http://localhost:3000
+    npm start
+    ```
+
+> ⚠️ **NOTE**: To  shut down the docker/web, in each terminal press `ctrl c` until you are back to the regular wsl line. Then `docker-compose down`
 
 ---
 
-#### 2️⃣ Build and Start the System
+### 📝 Technical Implementation Details
 
-```bash
-docker-compose up --build 
-```
+- Authentication Protocol: JSON Web Tokens (JWT) handled via cryptographically encoded base64 payloads parsed client-side inside standard Context layers.
 
-This starts three containers:
+- Audio Layer: Integrates highly contextual layout interactions leveraging internal event hooks (`useSound()`) to fire custom media files based on runtime statuses.
 
-| Container | Service | Port |
-| ----------- | --------- | ------ |
-| `wolterwhite_server_container` | C++ TCP server | 5555 |
-| `wolterwhite_web_container` | Node.js backend server | 5000 |
-| `wolterwhite_client_container` | Python client | — |
-| `wolterwhite-front` | React.js frontend server | 3000 |
+- Docker Port Mapping: Dev servers map runtime boundaries utilizing `ALLOWED_HOSTS=all` parameters to let external routing structures cross-communicate inside development configurations safely.
 
+- Design Principles: Strict alignment with **SOLID** principles and isolated, decoupled module design patterns.
 
 ---
 
-#### 3️⃣ Use the React site
+### ⏯️ Examples
 
-After building everything with 
-```bash
-docker-compose up --build 
-```
-just command:
- ```bash
-docker-compose up 
-```
-and navigate to [WolterWhite](http://localhost:3000)
- and 
-start your journey.
+#### Home Page after login as Admin
 
+![homePage](./media/homePageLoginAdmin.png)
 
----
+#### Admin Page
 
-#### 3️⃣ Use the Web Server API
+![adminPage](./media/adminPageDarkMode.png)
 
-The REST API is available at `http://localhost:5000`.
+#### Creating new restaurant
 
-Example using curl:
+![newRestaurant](./media/newRestaurantLightMode.png)
 
-```bash
-# Get all restaurants
-curl -i http://localhost:5000/api/restaurants
+#### Restaurant was created
 
-# Register a new user
-curl -i -X POST http://localhost:5000/api/users 
-  -H "Content-Type: application/json" 
-  -d '{"username":"john","name":"John Smith","phone":"050-1234567","address":"Tel Aviv","password":"1234"}'
+![showingRestaurant](./media/showingRestaurants.png)
 
-# Login
-curl -i -X POST http://localhost:5000/api/tokens 
-  -H "Content-Type: application/json" 
-  -d '{"username":"john","password":"1234"}'
-```
+#### Creating new Product
 
----
+![newProduct](./media/newProductDarkMode.png)
 
-#### 5️⃣ Stop Everything
+#### Optional filtering
 
-```bash
-docker-compose down
-```
+![optionalFiltering](./media/optionalFiltering.png)
 
-This shuts down all running containers.
+#### Home page With the Restaurants
 
----
+![homeWithRestaurants](./media/homePageWithRestaurantsDarkMode.png)
 
-#### 5️⃣ Starting and Closing
-![Running](./media/Running.png)
+#### Restaurant Page
 
-![Running](./media/!Running.png)
+![restaurant](./media/restaurantPageLightMode.png)
 
----
+#### Order Page
 
-## 📡 REST API Reference
+![orderPage](./media/orderPageLightMode.png)
 
-All `/api/` endpoints return JSON.
-Protected endpoints require authentication.
+#### Order ordered Page
+
+![orderOrderedPage](./media/orderedOrdersLightMode.png)
+
+#### Restaurant as Quick View
+
+![quickView](./media/restaurantQuickViewLightMode.png)
+
+#### Regular User Login
+
+![regularUserLogin](./media/loginRegularUserLightMode.png)
+
+#### Regular User Home Page
+
+![regularUserLogin](./media/regularUserHomePage.png)
+
+#### Starting and Closing
+
+![docker-compose_up_--build](./media/docker-compose_up_--build.png)
+![docker-compose_down](./media/docker-compose_down.png)
 
 ---
 
-## 📜 Supported Commands
-
-### 👤 Users
-
-| Method | Endpoint | Auth | Description |
-| -------- | ---------- | ------ | ------------- |
-| POST | `/api/users` | ❌ | Register new user |
-| GET | `/api/users/:id` | ✅ | Get user details |
-
-### Register — `POST /api/users`
-
-```bash
-curl -i -X POST http://localhost:3000/api/users 
-  -H "Content-Type: application/json" 
-  -d '{
-    "username": "john",
-    "name": "John Smith",
-    "phone": "050-1234567",
-    "address": "Tel Aviv",
-    "password": "1234"
-  }'
-
-```
-
----
-
-## 🔐 Authentication
-
-| Method | Endpoint | Auth | Description |
-| -------- | ---------- | ------ | ------------- |
-| POST | `/api/tokens` | ❌ | Login, returns token |
-
-### Login — `POST /api/tokens`
-
-```bash
-curl -i -X POST http://localhost:3000/api/tokens 
-  -H "Content-Type: application/json" 
-  -d '{"username":"john","password":"1234"}'
-```
-
-```json
-{ "token": "abc1sdfsfds23" }
-```
-
-> ⚠️ **NOTE**: Use the returned `token` as the token in subsequent requests.
-
----
-
-## 🍽️ Restaurants
-
-| Method | Endpoint | Auth | Description |
-| -------- | ---------- | ------ | ------------- |
-| GET | `/api/restaurants` | ❌ | Get all restaurants |
-| POST | `/api/restaurants` | ❌ | Create restaurant |
-| GET | `/api/restaurants/:id` | ❌ | Get restaurant by ID |
-| PATCH | `/api/restaurants/:id` | ❌ | Update restaurant |
-| DELETE | `/api/restaurants/:id` | ❌ | Delete restaurant |
-
-### Create Restaurant — `POST /api/restaurants`
-
-```bash
-curl -i -X POST http://localhost:3000/api/restaurants
-  -H "Content-Type: application/json"
-  -d '{"name":"Pizza Palace","address":"Dizengoff 1","cuisine":"Italian"}'
-```
-
----
-
-## 🍕 Products (Menu)
-
-| Method | Endpoint | Auth | Description |
-| -------- | ---------- | ------ | ------------ |
-| GET | `/api/restaurants/:id/products` | ❌ | Get all products |
-| POST | `/api/restaurants/:id/products` | ❌ | Add product to menu |
-| GET | `/api/restaurants/:id/products/:pId` | ✅ | Get product + record view |
-| PATCH | `/api/restaurants/:id/products/:pId` | ❌ | Update product |
-| DELETE | `/api/restaurants/:id/products/:pId` | ❌ | Delete product |
-
-> ⚠️ **NOTE**: `GET /api/restaurants/:id/products/:pId` records the product
-> view in the C++ recommendation server when `x-user-id` is provided.
-
----
-
-## 📦 Orders
-
-All order endpoints require authentication (`x-user-id` header).
-
-| Method | Endpoint | Auth | Description |
-| -------- | ---------- | ------ | ------------- |
-| POST | `/api/orders` | ✅ | Create new order |
-| GET | `/api/orders` | ✅ | Get user's orders |
-| GET | `/api/orders/:id` | ✅ | Get order details |
-| PATCH | `/api/orders/:id` | ✅ | Update order |
-| DELETE | `/api/orders/:id` | ✅ | Delete order |
-
-### Create Order — `POST /api/orders`
-
-```bash
-curl -i -X POST http://localhost:3000/api/orders 
-  -H "Content-Type: application/json" 
-  -H "x-user-id: abc123" 
-  -d '{
-    "restaurantId": "rest-id-here",
-    "products": ["prod-id-1", "prod-id-2"]
-  }'
-```
-
----
-
-## 🔍 Search
-
-| Method | Endpoint | Auth | Description |
-| -------- | ---------- | ------ | ------------- |
-| GET | `/api/search/:query` | ❌ | Search restaurants + products |
-
-### Search — `GET /api/search/pizza`
-
-```bash
-curl -i http://localhost:3000/api/search/pizza
-```
-
-```json
-{
-  "restaurants": [{ "id": "...", "name": "Pizza Palace" }],
-  "products":    [{ "id": "...", "name": "Pepperoni Pizza" }]
-}
-```
-
----
-
-## 📜 C++ TCP Server Commands (ex2 server)
-
-Used indirectly via cppClient.js 
-
-| Command | Description | Response |
-| --------- | ------------- | ---------- |
-| `POST [userid] [pid1] [pid2]...` | Create a userID row + adds viewed products' ids | `201 Created` |
-| `PATCH [userid] [pid1] [pid2]...` | Adds viewed products' ids to existing user | `204 No Content` |
-| `DELETE [userid] [pid1] [pid2]...` | Removes viewed products' ids from user | `204 No Content` |
-
-### Error Responses
-
-| Response | Meaning |
-| ---------- | --------- |
-| `400 Bad Request` | Invalid or malformed command |
-| `404 Not Found` | Valid command but data doesn't exist |
-
----
-
-## 🔗 Web Server ↔ C++ Server Connection
-
-- The Node.js web server connects to the C++ TCP server on startup
-using a **persistent TCP socket** via `cppClient.js`
-
----
-
-## ⚠️ Error Handling
-
-### Web Server (HTTP)
-
-| Status | Meaning |
-| -------- | --------- |
-| 200 OK | Success with body |
-| 201 Created | Resource created + Location header |
-| 204 No Content | Success without body |
-| 400 Bad Request | Missing or invalid fields |
-| 401 Unauthorized | Missing x-user-id header |
-| 403 Forbidden | Authenticated but accessing another user's resource |
-| 404 Not Found | Resource not found |
-| 409 Conflict | Conflict with existing data, for instance name conflict|
-
-### C++ TCP Server
-
-| Response | Meaning |
-| ---------- | --------- |
-| `400 Bad Request` | Invalid command format |
-| `404 Not Found` | Logically invalid request |
-
----
-
-## 🧪 Testing 
-
-Run the tests found in [`test.http`](./webServer/test.http)
-
-
-## 📝 Implementation Notes
-
-- The Node.js web server stores all data **in-memory** - restarting
-  the web server clears all users, restaurants, products and orders
-- The C++ server stores data in the `data/` directory  - persists
-  across restarts
-- The Python client is intentionally lightweight ("dumb client") -
-  it sends whatever the user types directly to the C++ server (ex2)
-- The TCP connection from the web server to the C++ server is
-  persistent - opened once on startup and reused for all requests
-- `node_modules/` is excluded from the repository via `.gitignore`
-- The system follows SOLID principles and loose coupling throughout
-
-## 📄 License
+### 📄 License
 
 - This project was developed as part of an advanced systems programming assignment
