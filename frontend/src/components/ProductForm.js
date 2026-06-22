@@ -4,21 +4,20 @@ import { useAuthContext } from "../context/AuthContext";
 export const ProductForm = ({ restaurantId, existingProduct = null, onSuccess, onCancel }) => {
   const { token } = useAuthContext();
   const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    price: "",
-    image: ""
+    pname: "",
+    pdescription: "",
+    price: ""
   });
+  
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     if (existingProduct) {
       setFormData({
-        name: existingProduct.name || "",
-        description: existingProduct.description || "",
-        price: existingProduct.price || "",
-        image: existingProduct.image || ""
+        pname: existingProduct.pname || existingProduct.name || "",
+        pdescription: existingProduct.pdescription || existingProduct.description || "",
+        price: existingProduct.price || ""
       });
     }
   }, [existingProduct]);
@@ -32,7 +31,7 @@ export const ProductForm = ({ restaurantId, existingProduct = null, onSuccess, o
     e.preventDefault();
     setError(null);
 
-    if (!formData.name || !formData.price) {
+    if (!formData.pname || !formData.price) {
       setError("Name and Price are required fields.");
       return;
     }
@@ -40,7 +39,7 @@ export const ProductForm = ({ restaurantId, existingProduct = null, onSuccess, o
     try {
       setLoading(true);
       const isEdit = !!existingProduct;
-      const productId = existingProduct ? (existingProduct.id || existingProduct._id) : "";
+      const productId = existingProduct ? (existingProduct.pId || existingProduct.id || existingProduct._id) : "";
       
       const url = isEdit 
         ? `/api/restaurants/${restaurantId}/products/${productId}` 
@@ -50,13 +49,10 @@ export const ProductForm = ({ restaurantId, existingProduct = null, onSuccess, o
       const response = await fetch(url, {
         method: method,
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          ...formData,
-          price: parseFloat(formData.price) // Ensure price is sent as a number
-        }),
+        body: JSON.stringify(formData),
       });
 
       if (!response.ok) throw new Error("Failed to save product.");
@@ -82,19 +78,15 @@ export const ProductForm = ({ restaurantId, existingProduct = null, onSuccess, o
         <div className="row g-3">
           <div className="col-md-6">
             <label className="form-label text-muted">Product Name</label>
-            <input type="text" className="form-control" name="name" value={formData.name} onChange={handleChange} required />
+            <input type="text" className="form-control" name="pname" value={formData.pname} onChange={handleChange} required />
           </div>
           <div className="col-md-6">
             <label className="form-label text-muted">Price ($)</label>
             <input type="number" step="0.01" className="form-control" name="price" value={formData.price} onChange={handleChange} required />
           </div>
           <div className="col-md-12">
-            <label className="form-label text-muted">Image URL (Optional)</label>
-            <input type="text" className="form-control" name="image" value={formData.image} onChange={handleChange} placeholder="https://..." />
-          </div>
-          <div className="col-md-12">
             <label className="form-label text-muted">Description</label>
-            <textarea className="form-control" name="description" value={formData.description} onChange={handleChange} rows="2"></textarea>
+            <textarea className="form-control" name="pdescription" value={formData.pdescription} onChange={handleChange} rows="2"></textarea>
           </div>
         </div>
 

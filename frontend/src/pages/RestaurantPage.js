@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuthContext } from '../context/AuthContext';
 import { sendGet } from '../services/api';
-import { ProductCard } from '../components/ProductCard'; // <-- Added this import
+import { ProductCard } from '../components/ProductCard';
 
 export const RestaurantPage = () => {
     const { id } = useParams(); 
@@ -64,7 +64,6 @@ export const RestaurantPage = () => {
 
     return (
         <div className="container mt-4 text-light">
-            {/* Restaurant Header Section */}
             {restaurant && (
                 <div className="card bg-dark mb-4 p-4 border-secondary text-white">
                     <div className="row align-items-center">
@@ -75,13 +74,21 @@ export const RestaurantPage = () => {
                             <div className="d-flex gap-4 fs-5 mt-3 flex-wrap">
                                 <div><strong>🕒 Opening Hours:</strong> {restaurant.hours || 'N/A'}</div>
                                 <div><strong>💰 Min Price:</strong> ${restaurant.minPrice || '0'}</div>
+                                <div>
+                                    <strong>📍 Location Coordinates:</strong> ({restaurant.addressX ?? 'N/A'}, {restaurant.addressY ?? 'N/A'})
+                                </div>
                             </div>
+                            
+                            {restaurant.description && (
+                                <div className="mt-3 text-secondary">
+                                    <p>{restaurant.description}</p>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
             )}
 
-            {/* Menu Grid Layout - Now using the new ProductCard component */}
             <h3 className="mb-4 fw-bold">Menu</h3>
             {products.length === 0 ? (
                 <p className="text-muted">No products available for this restaurant.</p>
@@ -89,7 +96,6 @@ export const RestaurantPage = () => {
                 <div className="row g-4">
                     {products.map((product) => (
                         <div key={product.id || product._id} className="col-12 col-md-6 col-lg-4">
-                            {/* Passing restaurantId is crucial here so the C++ View logging logic works */}
                             <ProductCard product={product} restaurantId={id} />
                         </div>
                     ))}

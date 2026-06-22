@@ -10,6 +10,8 @@ export const RestaurantForm = ({ existingRestaurant = null, onSuccess, onCancel 
     phone: "",
     email: "",
     address: "",
+    addressX: "", 
+    addressY: "", 
     hours: "",        
     description: ""   
   });
@@ -24,6 +26,8 @@ export const RestaurantForm = ({ existingRestaurant = null, onSuccess, onCancel 
         phone: existingRestaurant.phone || "",
         email: existingRestaurant.email || "",
         address: existingRestaurant.address || "",
+        addressX: existingRestaurant.addressX || "", 
+        addressY: existingRestaurant.addressY || "", 
         hours: existingRestaurant.hours || "",
         description: existingRestaurant.description || ""
       });
@@ -53,21 +57,22 @@ export const RestaurantForm = ({ existingRestaurant = null, onSuccess, onCancel 
       const response = await fetch(url, {
         method: method,
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}` 
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
         },
         body: JSON.stringify(formData),
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to ${isEdit ? "update" : "create"} restaurant.`);
+        const errorText = await response.text();
+        throw new Error(errorText || `Failed to ${isEdit ? "update" : "create"} restaurant.`);
       }
 
       onSuccess();
       
     } catch (err) {
       console.error("Form submission error:", err);
-      setError("Failed to process request. Please check your data.");
+      setError(err.message || "Failed to process request. Please check your data.");
     } finally {
       setLoading(false);
     }
@@ -85,27 +90,37 @@ export const RestaurantForm = ({ existingRestaurant = null, onSuccess, onCancel 
         <div className="row g-3">
           <div className="col-md-6">
             <label className="form-label text-muted">Restaurant Name</label>
-            <input type="text" className="form-control" name="name" value={formData.name} onChange={handleChange} placeholder="Enter name" required />
+            <input type="text" className="form-control" name="name" value={formData.name} onChange={handleChange} required />
           </div>
           <div className="col-md-6">
             <label className="form-label text-muted">Phone Number</label>
-            <input type="tel" className="form-control" name="phone" value={formData.phone} onChange={handleChange} placeholder="050-1234567" />
+            <input type="tel" className="form-control" name="phone" value={formData.phone} onChange={handleChange} />
           </div>
           <div className="col-md-6">
             <label className="form-label text-muted">Email Address</label>
-            <input type="email" className="form-control" name="email" value={formData.email} onChange={handleChange} placeholder="example@mail.com" />
+            <input type="email" className="form-control" name="email" value={formData.email} onChange={handleChange} />
           </div>
           <div className="col-md-6">
-            <label className="form-label text-muted">Address</label>
-            <input type="text" className="form-control" name="address" value={formData.address} onChange={handleChange} placeholder="Street Name, City" required />
+            <label className="form-label text-muted">Address (Text)</label>
+            <input type="text" className="form-control" name="address" value={formData.address} onChange={handleChange} required />
           </div>
+          
+          <div className="col-md-6">
+            <label className="form-label text-muted">Address X (Latitude)</label>
+            <input type="number" step="any" className="form-control" name="addressX" value={formData.addressX} onChange={handleChange} />
+          </div>
+          <div className="col-md-6">
+            <label className="form-label text-muted">Address Y (Longitude)</label>
+            <input type="number" step="any" className="form-control" name="addressY" value={formData.addressY} onChange={handleChange} />
+          </div>
+
           <div className="col-md-12">
             <label className="form-label text-muted">Opening Hours</label>
-            <input type="text" className="form-control" name="hours" value={formData.hours} onChange={handleChange} placeholder="08:00 - 22:00" />
+            <input type="text" className="form-control" name="hours" value={formData.hours} onChange={handleChange} />
           </div>
           <div className="col-md-12">
             <label className="form-label text-muted">Description</label>
-            <textarea className="form-control" name="description" value={formData.description} onChange={handleChange} placeholder="A short description..." rows="3"></textarea>
+            <textarea className="form-control" name="description" value={formData.description} onChange={handleChange} rows="3"></textarea>
           </div>
         </div>
 

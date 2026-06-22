@@ -2,10 +2,9 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../style/RestaurantCard.css";
 
-// Added onQuickView to the component props
 export const RestaurantCard = ({ restaurant, onQuickView }) => {
   const navigate = useNavigate();
-  const { id, name, cuisine, address, rating, image } = restaurant;
+  const { id, name, cuisine, address, rating } = restaurant;
 
   return (
     <div
@@ -14,7 +13,7 @@ export const RestaurantCard = ({ restaurant, onQuickView }) => {
     >
       <div className="restaurant-card__image-wrapper">
         <img
-          src={image || "/knock.png"}
+          src={"/knock.png"}
           alt={name}
           className="restaurant-card__image"
         />
@@ -35,10 +34,6 @@ export const RestaurantCard = ({ restaurant, onQuickView }) => {
           </span>
         </div>
 
-        {/* Quick View Button. 
-          e.stopPropagation() is critical here to prevent the parent div's onClick 
-          from triggering and navigating away to the full restaurant page.
-        */}
         {onQuickView && (
           <button 
             className="btn btn-outline-light btn-sm mt-3 w-100"

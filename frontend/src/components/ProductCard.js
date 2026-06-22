@@ -1,17 +1,15 @@
 import React from "react";
 import { sendGet } from "../services/api";
 import { useAuthContext } from "../context/AuthContext";
-import "../style/RestaurantCard.css"; // Reuse the same CSS!
+import "../style/RestaurantCard.css";
 
 export const ProductCard = ({ product, restaurantId }) => {
   const { token } = useAuthContext();
 
-  // Task 14.1.2: Record view via GET request to trigger C++ recommendation server
   const handleProductClick = async () => {
     try {
       if (token) {
-        await sendGet(`/api/restaurants/${restaurantId}/products/${product.id || product._id}`, token);
-        console.log("Product view recorded successfully!");
+        await sendGet(`/api/restaurants/${restaurantId}/products/${product.pId || product.id || product._id}`, token);
       }
     } catch (err) {
       console.error("Failed to record product view", err);
@@ -20,19 +18,11 @@ export const ProductCard = ({ product, restaurantId }) => {
 
   return (
     <div className="restaurant-card" onClick={handleProductClick}>
-      <div className="restaurant-card__image-wrapper">
-        <img
-          src={product.image || "/knock.png"}
-          alt={product.name}
-          className="restaurant-card__image"
-        />
-      </div>
-
       <div className="restaurant-card__body d-flex flex-column justify-content-between">
         <div>
-          <h3 className="restaurant-card__name">{product.name}</h3>
+          <h3 className="restaurant-card__name">{product.pname || product.name}</h3>
           <p className="restaurant-card__address mt-2" style={{ fontSize: "0.9rem" }}>
-            {product.description || "No description available."}
+            {product.pdescription || product.description || "No description available."}
           </p>
         </div>
 
@@ -41,8 +31,8 @@ export const ProductCard = ({ product, restaurantId }) => {
           <button
             className="btn btn-primary btn-sm mt-3 w-100 fw-bold"
             onClick={(e) => {
-              e.stopPropagation(); // Prevents the card's onClick from firing when clicking the button
-              alert(`Added ${product.name} to order! (Cart feature coming soon)`);
+              e.stopPropagation(); 
+              alert(`Added ${product.pname || product.name} to order!`);
             }}
           >
             Add to Order
