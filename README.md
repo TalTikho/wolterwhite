@@ -30,9 +30,9 @@ WOLTerWhite is an Advanced Programming course project. It seamlessly connects a 
 
 1. **Dynamic React Frontend** (`/frontend`):
 
-    Built as an interactive, single-page web dashboard that handles content rendering conditionally based on user authentication vectors.
+    Built as an interactive, web dashboard that handles content rendering conditionally based on user authentication vectors.
 
-    - Global State Architecture: Leverages a unified React Context framework (`AuthContext, ThemeContext, RestaurantFilterContext`) to avoid prop-drilling. State triggers propagate changes across the dashboard instantly.
+    - Global State Architecture: Leverages a unified React Context framework (`AuthContext, ThemeContext, RestaurantFilterContext, CardContext`) to avoid prop-drilling. State triggers propagate changes across the dashboard instantly.
 
     - Live Synchronization (Polling Engines): Features automated background data polling intervals to synchronize new catalog additions to the viewport without requiring manual page reloads.
 
@@ -100,7 +100,7 @@ Ensure Docker Desktop is active, clone the codebase, and boot the multi-tier con
 ```bash
 git clone https://github.com/TalTikho/wolterwhite
 cd wolterwhite
-docker compose up --build
+docker-compose up --build
 ```
 
 Once initialized, access your live local instances:
@@ -156,10 +156,59 @@ After clonning the repository, To enable instantaneous Hot Module Replacement (H
 
 ### ⏯️ Examples
 
-#### 5️⃣ Starting and Closing
+#### Home Page after login as Admin
 
-![register](./media/register.png)
+![homePage](./media/homePageLoginAdmin.png)
 
+#### Admin Page
+
+![adminPage](./media/adminPageDarkMode.png)
+
+#### Creating new restaurant
+
+![newRestaurant](./media/newRestaurantLightMode.png)
+
+#### Restaurant was created
+
+![showingRestaurant](./media/showingRestaurants.png)
+
+#### Creating new Product
+
+![newProduct](./media/newProductDarkMode.png)
+
+#### Optional filtering
+
+![optionalFiltering](./media/optionalFiltering.png)
+
+#### Home page With the Restaurants
+
+![homeWithRestaurants](./media/homePageWithRestaurantsDarkMode.png)
+
+#### Restaurant Page
+
+![restaurant](./media/restaurantPageLightMode.png)
+
+#### Order Page
+
+![orderPage](./media/orderPageLightMode.png)
+
+#### Order ordered Page
+
+![orderOrderedPage](./media/orderedOrdersLightMode.png)
+
+#### Restaurant as Quick View
+
+![quickView](./media/restaurantQuickViewLightMode.png)
+
+#### Regular User Login
+
+![regularUserLogin](./media/loginRegularUserLightMode.png)
+
+#### Regular User Home Page
+
+![regularUserLogin](./media/regularUserHomePage.png)
+
+#### Starting and Closing
 
 ![docker-compose_up_--build](./media/docker-compose_up_--build.png)
 ![docker-compose_down](./media/docker-compose_down.png)
