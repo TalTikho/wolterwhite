@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { isLoggedIn } from '../middleware/validationMiddleware.js';
-import  { getImage }  from '../controllers/userController.js';
+import { getImage } from '../controllers/userController.js';
 
 const router = Router();
 
-router.get('/:filename', isLoggedIn, getImage);
+// Removed isLoggedIn so HTML <img> tags can fetch images freely
+router.get('/:filename', getImage);
 
 export default router;

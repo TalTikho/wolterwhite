@@ -2,19 +2,20 @@
    Card Container
    ========================================================================== */
 .restaurant-card {
-    background: var(--button-bg);
+    background: var(--button-bg); /* משתנה שמשתנה אוטומטית לפי המצב */
     border: 1.5px solid var(--button-border);
     border-radius: 10px;
     overflow: hidden;
     cursor: pointer;
     display: flex;
     flex-direction: column;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border 0.2s ease;
 }
 
 .restaurant-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    /* צל שמתאים לשני המצבים */
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
 /* ==========================================================================
@@ -24,7 +25,7 @@
     width: 100%;
     height: 160px;
     overflow: hidden;
-    background: #222;
+    background: #ccc; /* רקע נייטרלי לתמונות שלא נטענו */
 }
 
 .restaurant-card__image {
@@ -54,46 +55,35 @@
     text-overflow: ellipsis;
 }
 
-.restaurant-card__cuisine {
-    display: inline-block;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #fff;
-    background: var(--button-border);
-    border-radius: 4px;
-    padding: 2px 8px;
-    align-self: flex-start;
-}
-
 .restaurant-card__address {
     margin: 0;
     font-size: 0.8rem;
     color: var(--text-color);
-    opacity: 0.6;
+    opacity: 0.7;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 /* ==========================================================================
-   Rating
+   Quick View Button
    ========================================================================== */
-.restaurant-card__rating {
-    margin-top: auto;
-    padding-top: 8px;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.restaurant-card__stars {
-    color: #f4c430;
-    font-size: 0.9rem;
-    letter-spacing: 1px;
-}
-
-.restaurant-card__rating-value {
-    font-size: 0.8rem;
+/* כפתור מותאם אישית שמשתמש בטקסט וצבעים של המערכת במקום Bootstrap */
+.btn-quick-view {
+    margin-top: 10px;
+    width: 100%;
+    padding: 8px;
+    background: transparent;
+    border: 1px solid var(--button-border);
     color: var(--text-color);
-    opacity: 0.7;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-quick-view:hover {
+    background: var(--button-border);
+    color: #ffffff;
 }

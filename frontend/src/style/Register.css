@@ -1,75 +1,88 @@
+/* ==========================================================================
+   1. Register Page Layout & Containers
+   ========================================================================== */
 .register-form-container {
     min-height: 100vh;
     display: grid;
     place-items: center;
     background-color: var(--bg-color);
-    ;
-    /*App's background from themes.css to allow darkmode*/
 }
 
-/*The Form Card*/
 .register-form-container form {
     background-color: var(--button-bg);
-    /*App's button background to allow darkmode*/
     color: var(--text-color);
-    /*insure text is viewable*/
     width: 100%;
     max-width: 400px;
     max-height: fit-content;
     padding: 40px 30px;
     border-radius: 12px;
-    /*Smooth, modern corners*/
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-    /*The 'elevation' effect*/
-
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     display: grid;
     gap: 15px;
-    /*Grid handles ALL the spacing between inputs automatically*/
     box-sizing: border-box;
 }
 
-/*The Inputs*/
-.register-form-container form>input {
+body.dark-mode .register-form-container form {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================================================
+   2. Input Fields Styling
+   ========================================================================== */
+.register-form-container form > input {
     width: 100%;
     padding: 14px 16px;
-    border: 1px solid var(--button-border);
+    border: 1.5px solid var(--button-border);
     border-radius: 8px;
     font-size: 16px;
     background-color: var(--bg-color);
     color: var(--text-color);
     box-sizing: border-box;
     transition: all 0.2s ease;
-    /*Smooth animations*/
 }
 
-/*The Interaction (Focus State)*/
-.register-form-container form>input:focus {
+.register-form-container form > input:focus {
     outline: none;
-    background-color: #ffffff;
-    border-color: #3B5F4A;
-    /*periodic breaking bad table green*/
-    /*A glowing ring effect to show exactly what is active*/
-    box-shadow: 0 0 0 4px rgba(59, 95, 74, 0.15);
+    background-color: var(--button-bg);
+    border-color: var(--button-border);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--button-border) 20%, transparent);
 }
 
-/*The File Input*/
-.register-form-container form>input[type="file"] {
+/* ==========================================================================
+   3. File Upload Styling (Fixes Dark Mode White Bug)
+   ========================================================================== */
+.register-form-container form > input[type="file"] {
     padding: 10px;
-    background-color: var(--button-bg);
-    color: #3B5F4A;
-    border: 2px dashed #3B5F4A;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border: 2px dashed var(--button-border);
+    border-radius: 8px;
     cursor: pointer;
 }
 
-/*The Primary Button (Register)*/
-.register-form-container form>button[type="submit"] {
+.register-form-container form > input[type="file"]::file-selector-button {
+    background-color: var(--button-bg);
+    color: var(--text-color);
+    border: 1px solid var(--button-border);
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.register-form-container form > input[type="file"]::file-selector-button:hover {
+    background-color: color-mix(in srgb, var(--button-border) 15%, var(--button-bg));
+}
+
+/* ==========================================================================
+   4. Action Buttons Styling
+   ========================================================================== */
+.register-form-container form > button[type="submit"] {
     width: 100%;
     padding: 14px;
     margin-top: 10px;
-    /*A little extra separation from the inputs*/
-    background-color: #3B5F4A;
-    color: #D6CA00;
-    /*Wolt's labratory hazmat yellow*/
+    background-color: var(--button-border);
+    color: #ffffff;
     border: none;
     border-radius: 8px;
     font-size: 16px;
@@ -78,38 +91,44 @@
     transition: transform 0.1s, background-color 0.2s;
 }
 
-.register-form-container form>button[type="submit"]:hover {
-    background-color: #2A4535;
-    /*Darker green on hover*/
+.register-form-container form > button[type="submit"]:hover {
+    background-color: color-mix(in srgb, black 15%, var(--button-border));
     transform: translateY(-2px);
-    /*Makes the button feel tactile*/
 }
 
-/*The Secondary Button (Back to Home)*/
-.register-form-container form>button[type="button"] {
+.register-form-container form > button[type="button"] {
     background-color: transparent;
-    color: #666;
+    color: var(--text-color);
+    opacity: 0.7;
     border: none;
     font-size: 16px;
     cursor: pointer;
     text-decoration: underline;
     margin-top: -5px;
+    transition: opacity 0.2s;
 }
 
-.register-form-container form>button[type="button"]:hover {
-    color: #3B5F4A;
+.register-form-container form > button[type="button"]:hover {
+    opacity: 1;
+    color: var(--button-border);
 }
 
+/* ==========================================================================
+   5. Utility Classes (Errors & Image Preview)
+   ========================================================================== */
 .register-error {
     margin: 0;
-    font-size: 1rem;
-    color: red;
+    font-size: 0.9rem;
+    color: #e53e3e;
     font-weight: bold;
-    padding: 8px 12px 8px 12px;
+    padding: 0px 4px;
 }
 
 .prev-img {
-    max-width: 200px;
-    max-height: 200px;
-    background-color: #3B5F4A;
+    max-width: 120px;
+    max-height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto;
+    border: 2px solid var(--button-border);
 }

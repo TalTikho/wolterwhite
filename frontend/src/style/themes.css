@@ -6,6 +6,9 @@
     --text-color: #1a1a1a;
     --button-bg: #ffffff;
     --button-border: #3b7a57;
+    --btn-outline-text: #3b7a57;
+    --btn-outline-hover-bg: #3b7a57;
+    --btn-outline-hover-text: #ffffff;
 
     --nav-btn-radius: 6px;
     --nav-btn-font-size: 0.8rem;
@@ -19,6 +22,9 @@ body.dark-mode {
     --text-color: #e0e0e0 !important;
     --button-bg: #1f1f1f !important;
     --button-border: #1a365d !important;
+    --btn-outline-text: #1a365d;
+    --btn-outline-hover-bg: #1a365d;
+    --btn-outline-hover-text: #ffffff;
 }
 
 body, .theme-page-wrapper, .Home, .Landing {
@@ -227,37 +233,23 @@ body.dark-mode .navbar-logo-square {
     line-height: 1;
 }
 
-/* Outline green — Login, Orders */
-.navbar-btn-outline {
-    color: #3b7a57;
-    border-color: #3b7a57;
+.navbar-btn-outline, .navbar-btn-ghost {
+    color: var(--btn-outline-text);
+    border-color: var(--btn-outline-text);
     background-color: transparent;
 }
-.navbar-btn-outline:hover {
-    background-color: #3b7a57;
-    color: #ffffff;
+.navbar-btn-outline:hover, .navbar-btn-ghost:hover {
+    background-color: var(--btn-outline-hover-bg);
+    color: var(--btn-outline-hover-text);
 }
 
-/* Outline muted — Register */
-.navbar-btn-ghost {
-    color: var(--text-color);
-    border-color: #aaa;
-    background-color: transparent;
-}
-.navbar-btn-ghost:hover {
-    border-color: var(--text-color);
-    background-color: var(--text-color);
-    color: var(--button-bg);
-}
-
-/* Danger — Log Out */
 .navbar-btn-danger {
-    color: #c0392b;
-    border-color: #c0392b;
+    color: #e53e3e;
+    border-color: #e53e3e;
     background-color: transparent;
 }
 .navbar-btn-danger:hover {
-    background-color: #c0392b;
+    background-color: #e53e3e;
     color: #ffffff;
 }
 
@@ -332,12 +324,10 @@ body.dark-mode #theme-toggle .icon-dark {
     color: var(--text-color);
 }
 
-/*Smoothly transitions the lighting when the theme changes*/
 .knock-bg-img {
     transition: filter 0.3s ease;
 }
 
-/*Dims the image by 50% when dark mode is active*/
 body.dark-mode .knock-bg-img {
     filter: brightness(0.5) contrast(1.1); 
 }
