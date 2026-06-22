@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import { sendGet } from "../services/api";
 import { useAuthContext } from "../context/AuthContext";
+import { CartContext } from "../context/CartContext";
 import "../style/RestaurantCard.css";
 
 export const ProductCard = ({ product, restaurantId }) => {
   const { token } = useAuthContext();
+  const { addToCart } = useContext(CartContext);
 
   const handleProductClick = async () => {
     try {
@@ -31,8 +33,13 @@ export const ProductCard = ({ product, restaurantId }) => {
           <button
             className="btn btn-primary btn-sm mt-3 w-100 fw-bold"
             onClick={(e) => {
-              e.stopPropagation(); 
-              alert(`Added ${product.pname || product.name} to order!`);
+              e.stopPropagation();
+              const status = addToCart(restaurantId, product);
+              if (status === 'swapped') {
+                alert("Cart cleared! New product added from this restaurant.");
+              } else {
+                alert(`${product.pname || product.name} added to your order!`);
+              }
             }}
           >
             Add to Order
