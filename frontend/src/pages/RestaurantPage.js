@@ -80,11 +80,9 @@ export const RestaurantPage = () => {
                         )}
                         <div className={restaurant.image ? "col-md-9" : "col-md-12"}>
                             <h1 className="display-4 fw-bold">{restaurant.name}</h1>
-                            <p className="lead text-muted">{restaurant.cuisine || 'Cuisine not specified'}</p>
                             
                             <div className="d-flex gap-4 fs-5 mt-3 flex-wrap">
                                 <div><strong>🕒 Opening Hours:</strong> {restaurant.hours || 'N/A'}</div>
-                                <div><strong>💰 Min Order Price:</strong> ${restaurant.minPrice || '0'}</div>
                                 <div>
                                     <strong>📍 Location Coordinates:</strong> ({restaurant.addressX ?? 'N/A'}, {restaurant.addressY ?? 'N/A'})
                                 </div>

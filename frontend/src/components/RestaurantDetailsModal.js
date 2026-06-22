@@ -57,22 +57,17 @@ export const RestaurantDetailsModal = ({ isOpen, onClose, restaurant }) => {
                             />
                         )}
                         <div className="p-3">
-                            <p className="lead text-muted">{restaurant.cuisine || 'Cuisine not specified'}</p>
-                            <hr className="border-secondary" />
                             
                             <div className="my-3 fs-5">
                                 <div className="mb-2">
                                     <strong>🕒 Opening Hours:</strong> {restaurant.hours || 'N/A'}
-                                </div>
-                                <div className="mb-2">
-                                    <strong>💰 Min Order Price:</strong> ${restaurant.minPrice || '0'}
                                 </div>
                             </div>
 
                             {restaurant.description && (
                                 <div className="mt-4">
                                     <h6 className="fw-bold">About Restaurant:</h6>
-                                    <p className="text-muted">{restaurant.description}</p>
+                                    <p className=".custom-text-secondary">{restaurant.description}</p>
                                 </div>
                             )}
                         </div>

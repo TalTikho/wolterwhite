@@ -207,7 +207,7 @@ export const AdminPage = () => {
             <thead>
               <tr>
                 <th>Name</th>
-                <th>Cuisine</th>
+                <th></th>
                 <th>Actions</th>
               </tr>
             </thead>

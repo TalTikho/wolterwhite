@@ -118,3 +118,7 @@
 .custom-btn-secondary:hover {
     background-color: #204030;
 }
+
+.custom-text-secondary {
+    color: #ffcc00;
+}
