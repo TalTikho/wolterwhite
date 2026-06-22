@@ -120,3 +120,36 @@ body.dark-mode .home-status--error {
     margin-top: 2rem;
     /* Just a normal gap between the top of the page and the restaurants */
 }
+
+
+/* ==========================================================================
+   Admin Dashboard Button — Adaptive Theme Style
+   ========================================================================== */
+.admin-dashboard-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 32px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    border: none;
+    
+    background-color: var(--button-border); 
+    color: #ffffff;
+    
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: transform 0.1s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-dashboard-btn:hover {
+    background-color: color-mix(in srgb, black 15%, var(--button-border));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
+.admin-dashboard-btn:active {
+    transform: translateY(0);
+}

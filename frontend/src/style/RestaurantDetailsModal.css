@@ -1,0 +1,120 @@
+.custom-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.custom-modal-container {
+    background-color: #1a1a1a;
+    border: 1px solid #2d5a43;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+    color: #ffffff;
+    font-family: sans-serif;
+}
+
+.custom-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #2d5a43;
+    background-color: #121212;
+}
+.custom-modal-title {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.custom-modal-close {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 1.6rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+}
+
+.custom-modal-close:hover {
+    color: #ffcc00;
+}
+
+.custom-modal-body {
+    padding: 0;
+}
+
+.custom-modal-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+}
+
+.custom-modal-content-padding {
+    padding: 20px;
+}
+
+.custom-modal-info {
+    font-size: 1.05rem;
+}
+
+.info-item {
+    margin-bottom: 5px;
+    color: #e0e0e0;
+}
+
+.custom-modal-description {
+    margin-top: 15px;
+    border-top: 1px solid #2d5a43;
+    padding-top: 12px;
+}
+
+.custom-modal-description h6 {
+    margin: 0 0 6px 0;
+    font-size: 0.95rem;
+    font-weight: bold;
+    color: #ffcc00;
+}
+
+.custom-modal-description p {
+    margin: 0;
+    color: #b0b0b0;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.custom-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 12px 20px;
+    border-top: 1px solid #2d5a43;
+    background-color: #121212;
+}
+
+.custom-btn-secondary {
+    background-color: #2d5a43;
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.custom-btn-secondary:hover {
+    background-color: #204030;
+}

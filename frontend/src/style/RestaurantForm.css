@@ -1,0 +1,187 @@
+.restaurant-form-card {
+    background-color: var(--button-bg);
+    color: var(--text-color);
+    border: 1.5px solid var(--button-border);
+    border-radius: 12px;
+    padding: 30px;
+    margin-top: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+body.dark-mode .restaurant-form-card {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.restaurant-form-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-top: 0;
+    margin-bottom: 24px;
+}
+
+.restaurant-grid-form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+@media (max-width: 768px) {
+    .restaurant-grid-form {
+        grid-template-columns: 1fr;
+    }
+}
+
+.form-field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.field-full-width {
+    grid-column: span 2;
+}
+
+@media (max-width: 768px) {
+    .field-full-width {
+        grid-column: span 1;
+    }
+}
+
+.form-field-label {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-color);
+    opacity: 0.8;
+}
+
+.form-field-input {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 0.95rem;
+    border-radius: 8px;
+    border: 1.5px solid var(--button-border);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-field-input::placeholder {
+    color: var(--text-color);
+    opacity: 0.4;
+}
+
+.form-field-input:focus {
+    background-color: var(--button-bg);
+    border-color: var(--button-border);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--button-border) 15%, transparent);
+}
+
+.form-field-textarea {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 0.95rem;
+    border-radius: 8px;
+    border: 1.5px solid var(--button-border);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    box-sizing: border-box;
+    outline: none;
+    resize: vertical;
+    font-family: inherit;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-field-textarea::placeholder {
+    color: var(--text-color);
+    opacity: 0.4;
+}
+
+.form-field-textarea:focus {
+    background-color: var(--button-bg);
+    border-color: var(--button-border);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--button-border) 15%, transparent);
+}
+
+.form-field-file {
+    padding: 10px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border: 2px dashed var(--button-border);
+    border-radius: 8px;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.form-field-file::file-selector-button {
+    background-color: var(--button-bg);
+    color: var(--text-color);
+    border: 1px solid var(--button-border);
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.form-field-file::file-selector-button:hover {
+    background-color: color-mix(in srgb, var(--button-border) 15%, var(--button-bg));
+}
+
+.form-actions-wrapper {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.form-submit-btn {
+    padding: 12px 28px;
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    border: none;
+    background-color: var(--button-border);
+    color: #ffffff;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.form-submit-btn:hover:not(:disabled) {
+    background-color: color-mix(in srgb, black 15%, var(--button-border));
+    transform: translateY(-1px);
+}
+
+.form-submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.form-cancel-btn {
+    padding: 12px 28px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: transparent;
+    color: var(--text-color);
+    border: 1px solid var(--button-border);
+    transition: background-color 0.2s;
+}
+
+.form-cancel-btn:hover {
+    background-color: color-mix(in srgb, var(--button-border) 10%, transparent);
+}
+
+.restaurant-form-error {
+    background-color: rgba(229, 62, 62, 0.12);
+    color: #e53e3e;
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 1px solid #e53e3e;
+    margin-bottom: 24px;
+    font-weight: 600;
+    font-size: 0.95rem;
+}

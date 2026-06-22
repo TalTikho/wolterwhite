@@ -121,7 +121,7 @@ export const Home = () => {
         <div className="home-content">
           {isAdmin && (
             <div className="d-flex justify-content-center mb-4">
-              <button className="btn btn-warning btn-lg fw-bold px-5 py-3 shadow" onClick={() => navigate("/admin")}>
+              <button className="admin-dashboard-btn" onClick={() => navigate("/admin")}>
                 ⚙️ Open Admin Dashboard
               </button>
             </div>

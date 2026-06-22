@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuthContext } from "../context/AuthContext";
 import "../style/index.css";
+import "../style/RestaurantForm.css";
 
 export const RestaurantForm = ({ existingRestaurant = null, onSuccess, onCancel }) => {
   const { token } = useAuthContext();
@@ -98,65 +99,68 @@ export const RestaurantForm = ({ existingRestaurant = null, onSuccess, onCancel 
   };
 
   return (
-    <div className="card bg-dark text-white border-secondary p-4 mt-3">
-      <h3 className="mb-4 fw-bold text-success">
+    <div className="restaurant-form-card">
+      <h3 className="restaurant-form-title">
         {existingRestaurant ? "Edit Restaurant" : "Add New Restaurant"}
       </h3>
       
-      {error && <div className="alert alert-danger">{error}</div>}
+      {error && <div className="restaurant-form-error">{error}</div>}
 
-      <form onSubmit={handleSubmit}>
-        <div className="row g-3">
-          <div className="col-md-6">
-            <label className="form-label text-muted">Restaurant Name</label>
-            <input type="text" className="form-control" name="name" value={formData.name} onChange={handleChange} required />
-          </div>
-          <div className="col-md-6">
-            <label className="form-label text-muted">Phone Number</label>
-            <input type="tel" className="form-control" name="phone" value={formData.phone} onChange={handleChange} />
-          </div>
-          <div className="col-md-6">
-            <label className="form-label text-muted">Email Address</label>
-            <input type="email" className="form-control" name="email" value={formData.email} onChange={handleChange} />
-          </div>
-          <div className="col-md-6">
-            <label className="form-label text-muted">Address (Text)</label>
-            <input type="text" className="form-control" name="address" value={formData.address} onChange={handleChange} required />
-          </div>
-          
-          <div className="col-md-6">
-            <label className="form-label text-muted">Address X (Latitude)</label>
-            <input type="number" step="any" className="form-control" name="addressX" value={formData.addressX} onChange={handleChange} />
-          </div>
-          <div className="col-md-6">
-            <label className="form-label text-muted">Address Y (Longitude)</label>
-            <input type="number" step="any" className="form-control" name="addressY" value={formData.addressY} onChange={handleChange} />
-          </div>
-
-          <div className="col-md-12">
-            <label className="form-label text-muted">Restaurant Image</label>
-            <input type="file" className="form-control" accept="image/*" onChange={handleFileChange} />
-          </div>
-
-          <div className="col-md-12">
-            <label className="form-label text-muted">Opening Hours</label>
-            <input type="text" className="form-control" name="hours" value={formData.hours} onChange={handleChange} />
-          </div>
-          <div className="col-md-12">
-            <label className="form-label text-muted">Description</label>
-            <textarea className="form-control" name="description" value={formData.description} onChange={handleChange} rows="3"></textarea>
-          </div>
+      <form onSubmit={handleSubmit} className="restaurant-grid-form">
+        <div className="form-field-group">
+          <label className="form-field-label">Restaurant Name *</label>
+          <input type="text" className="form-field-input" name="name" value={formData.name} onChange={handleChange} placeholder="e.g. Los Pollos Hermanos" required />
+        </div>
+        
+        <div className="form-field-group">
+          <label className="form-field-label">Phone Number</label>
+          <input type="tel" className="form-field-input" name="phone" value={formData.phone} onChange={handleChange} placeholder="e.g. 505-142-5678" />
+        </div>
+        
+        <div className="form-field-group">
+          <label className="form-field-label">Email Address</label>
+          <input type="email" className="form-field-input" name="email" value={formData.email} onChange={handleChange} placeholder="e.g. info@lospollos.com" />
+        </div>
+        
+        <div className="form-field-group">
+          <label className="form-field-label">Address (Text) *</label>
+          <input type="text" className="form-field-input" name="address" value={formData.address} onChange={handleChange} placeholder="e.g. 12000 Candelaria Rd NE, Albuquerque" required />
+        </div>
+        
+        <div className="form-field-group">
+          <label className="form-field-label">Address X (Latitude)</label>
+          <input type="number" step="any" className="form-field-input" name="addressX" value={formData.addressX} onChange={handleChange} placeholder="e.g. 35.118" />
+        </div>
+        
+        <div className="form-field-group">
+          <label className="form-field-label">Address Y (Longitude)</label>
+          <input type="number" step="any" className="form-field-input" name="addressY" value={formData.addressY} onChange={handleChange} placeholder="e.g. -106.601" />
         </div>
 
-        <div className="mt-4 d-flex gap-2">
-            <button type="submit" className="btn btn-success" disabled={loading}>
-                {loading ? "Saving..." : (existingRestaurant ? "Update Changes" : "Create Restaurant")}
+        <div className="form-field-group field-full-width">
+          <label className="form-field-label">Restaurant Image</label>
+          <input type="file" className="form-field-file" accept="image/*" onChange={handleFileChange} />
+        </div>
+
+        <div className="form-field-group field-full-width">
+          <label className="form-field-label">Opening Hours</label>
+          <input type="text" className="form-field-input" name="hours" value={formData.hours} onChange={handleChange} placeholder="e.g. Mon-Sat: 08:00 - 22:00" />
+        </div>
+        
+        <div className="form-field-group field-full-width">
+          <label className="form-field-label">Description</label>
+          <textarea className="form-field-textarea" name="description" value={formData.description} onChange={handleChange} placeholder="Describe your restaurant, specialties, or flavor profiles..." rows="3"></textarea>
+        </div>
+
+        <div className="form-actions-wrapper field-full-width">
+          <button type="submit" className="form-submit-btn" disabled={loading}>
+            {loading ? "Saving..." : (existingRestaurant ? "Update Changes" : "Create Restaurant")}
+          </button>
+          {onCancel && (
+            <button type="button" className="form-cancel-btn" onClick={onCancel}>
+              Cancel
             </button>
-            {onCancel && (
-                <button type="button" className="btn btn-outline-secondary" onClick={onCancel}>
-                    Cancel
-                </button>
-            )}
+          )}
         </div>
       </form>
     </div>
