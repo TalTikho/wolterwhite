@@ -116,10 +116,15 @@ export const AdminPage = () => {
             </tr>
           </thead>
           <tbody>
-            {products.length > 0 ? products.map((p) => (
-              <tr key={p.id || p._id} className="align-middle">
+            {products.length > 0 ? products.map((p, index) => (
+              <tr key={p.id || p._id || p.pId || index} className="align-middle">
                 <td>
-                  <img src={p.image || "/knock.png"} alt="product" style={{width: "50px", height:"50px", objectFit:"cover", borderRadius:"5px"}}/>
+                  <img 
+                    src={p.image ? `http://localhost:5000/api/images/${p.image}` : "/knock.png"} 
+                    alt="product" 
+                    style={{width: "50px", height:"50px", objectFit:"cover", borderRadius:"5px"}}
+                    onError={(e) => { e.target.src = '/knock.png'; }}
+                  />
                 </td>
                 <td>
                   <strong>{p.pname}</strong><br/>
@@ -171,8 +176,8 @@ export const AdminPage = () => {
             </tr>
           </thead>
           <tbody>
-            {restaurants.length > 0 ? restaurants.map((r) => (
-              <tr key={r.id || r._id} className="align-middle">
+            {restaurants.length > 0 ? restaurants.map((r, index) => (
+              <tr key={r.id || r._id || index} className="align-middle">
                 <td>{r.name}</td>
                 <td>{r.cuisine}</td>
                 <td>

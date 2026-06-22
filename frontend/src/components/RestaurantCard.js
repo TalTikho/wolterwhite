@@ -4,7 +4,12 @@ import "../style/RestaurantCard.css";
 
 export const RestaurantCard = ({ restaurant, onQuickView }) => {
   const navigate = useNavigate();
-  const { id, name, cuisine, address, rating } = restaurant;
+  const { id, name, cuisine, address, rating, image } = restaurant;
+
+  // Fixed path: Changed from /uploads/ to /api/images/
+  const imageUrl = image 
+    ? `http://localhost:5000/api/images/${image}` 
+    : "/knock.png";
 
   return (
     <div
@@ -13,9 +18,10 @@ export const RestaurantCard = ({ restaurant, onQuickView }) => {
     >
       <div className="restaurant-card__image-wrapper">
         <img
-          src={"/knock.png"}
+          src={imageUrl}
           alt={name}
           className="restaurant-card__image"
+          onError={(e) => { e.target.src = '/knock.png'; }}
         />
       </div>
 

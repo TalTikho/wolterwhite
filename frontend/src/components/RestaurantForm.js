@@ -15,7 +15,7 @@ export const RestaurantForm = ({ existingRestaurant = null, onSuccess, onCancel 
     hours: "",        
     description: ""   
   });
-
+  const [imageFile, setImageFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -39,6 +39,12 @@ export const RestaurantForm = ({ existingRestaurant = null, onSuccess, onCancel 
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setImageFile(e.target.files[0]);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -54,13 +60,26 @@ export const RestaurantForm = ({ existingRestaurant = null, onSuccess, onCancel 
       const url = isEdit ? `/api/restaurants/${existingRestaurant.id}` : `/api/restaurants`;
       const method = isEdit ? "PATCH" : "POST";
 
+      const data = new FormData();
+      data.append("name", formData.name);
+      data.append("phone", formData.phone);
+      data.append("email", formData.email);
+      data.append("address", formData.address);
+      data.append("addressX", formData.addressX);
+      data.append("addressY", formData.addressY);
+      data.append("hours", formData.hours);
+      data.append("description", formData.description);
+
+      if (imageFile) {
+        data.append("image", imageFile);
+      }
+
       const response = await fetch(url, {
         method: method,
         headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
+          "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify(formData),
+        body: data,
       });
 
       if (!response.ok) {
@@ -112,6 +131,11 @@ export const RestaurantForm = ({ existingRestaurant = null, onSuccess, onCancel 
           <div className="col-md-6">
             <label className="form-label text-muted">Address Y (Longitude)</label>
             <input type="number" step="any" className="form-control" name="addressY" value={formData.addressY} onChange={handleChange} />
+          </div>
+
+          <div className="col-md-12">
+            <label className="form-label text-muted">Restaurant Image</label>
+            <input type="file" className="form-control" accept="image/*" onChange={handleFileChange} />
           </div>
 
           <div className="col-md-12">

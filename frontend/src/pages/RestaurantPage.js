@@ -67,13 +67,24 @@ export const RestaurantPage = () => {
             {restaurant && (
                 <div className="card bg-dark mb-4 p-4 border-secondary text-white">
                     <div className="row align-items-center">
-                        <div className="col-md-9">
+                        {restaurant.image && (
+                            <div className="col-md-3 mb-3 mb-md-0">
+                                <img 
+                                    src={`http://localhost:5000/api/images/${restaurant.image}`}
+                                    alt={restaurant.name}
+                                    className="img-fluid rounded border border-secondary"
+                                    style={{ maxHeight: "180px", objectFit: "cover", width: "100%" }}
+                                    onError={(e) => { e.target.style.display = 'none'; }}
+                                />
+                            </div>
+                        )}
+                        <div className={restaurant.image ? "col-md-9" : "col-md-12"}>
                             <h1 className="display-4 fw-bold">{restaurant.name}</h1>
                             <p className="lead text-muted">{restaurant.cuisine || 'Cuisine not specified'}</p>
                             
                             <div className="d-flex gap-4 fs-5 mt-3 flex-wrap">
                                 <div><strong>🕒 Opening Hours:</strong> {restaurant.hours || 'N/A'}</div>
-                                <div><strong>💰 Min Price:</strong> ${restaurant.minPrice || '0'}</div>
+                                <div><strong>💰 Min Order Price:</strong> ${restaurant.minPrice || '0'}</div>
                                 <div>
                                     <strong>📍 Location Coordinates:</strong> ({restaurant.addressX ?? 'N/A'}, {restaurant.addressY ?? 'N/A'})
                                 </div>
@@ -94,8 +105,8 @@ export const RestaurantPage = () => {
                 <p className="text-muted">No products available for this restaurant.</p>
             ) : (
                 <div className="row g-4">
-                    {products.map((product) => (
-                        <div key={product.id || product._id} className="col-12 col-md-6 col-lg-4">
+                    {products.map((product, index) => (
+                        <div key={product.id || product._id || product.pId || index} className="col-12 col-md-6 col-lg-4">
                             <ProductCard product={product} restaurantId={id} />
                         </div>
                     ))}

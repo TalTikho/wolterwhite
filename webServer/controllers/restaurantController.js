@@ -1,16 +1,20 @@
 import * as restaurantModel from '../models/restaurantModel.js';
-import { sendAndReceive } from '../cppClient.js'
-import { getAllusers } from '../models/userModel.js'
+import { sendAndReceive } from '../cppClient.js';
+import { getAllusers } from '../models/userModel.js';
 
 const users = getAllusers();
 
 export const getAllRestaurants = (req, res) => {
-    const restaurants = restaurantModel.getAllRestaurants()
+    const restaurants = restaurantModel.getAllRestaurants();
     res.status(200).json(restaurants);
-}
+};
 
 export const createRestaurant = (req, res) => {
     const restaurantInfo = req.body;
+
+    if (req.file) {
+        restaurantInfo.image = req.file.filename;
+    }
 
     const isValidNumber = (val) => val !== undefined && val !== null && val !== '' && !isNaN(Number(val));
 
@@ -38,10 +42,10 @@ export const createRestaurant = (req, res) => {
     }
     
     res.status(201).location(`/api/restaurants/${newRestaurant.id}`).json(newRestaurant);
-}
+};
 
 export const getRestaurantById = (req, res) => {
-    const restaurant = restaurantModel.getRestaurantById(req.params.id)
+    const restaurant = restaurantModel.getRestaurantById(req.params.id);
     if (!restaurant) {
         return res.status(404).json({ error: 'Restaurant not found' });
     }
@@ -50,6 +54,10 @@ export const getRestaurantById = (req, res) => {
 
 export const editRestaurantInfo = (req, res) => {
     const restaurantNew = req.body;
+
+    if (req.file) {
+        restaurantNew.image = req.file.filename;
+    }
 
     const hasValidX = restaurantNew.addressX !== undefined && restaurantNew.addressX !== null && restaurantNew.addressX !== '' && !isNaN(Number(restaurantNew.addressX));
     const hasValidY = restaurantNew.addressY !== undefined && restaurantNew.addressY !== null && restaurantNew.addressY !== '' && !isNaN(Number(restaurantNew.addressY));
@@ -61,6 +69,7 @@ export const editRestaurantInfo = (req, res) => {
         !restaurantNew.address?.trim() &&
         !restaurantNew.hours?.trim() &&
         !restaurantNew.description?.trim() &&
+        !restaurantNew.image &&
         !hasValidX &&
         !hasValidY
     ) {
@@ -96,9 +105,9 @@ export const DeleteRestaurant = async (req, res) => {
 
     for (const user of users) {
         for (const product of products) {
-            const serverReply = await sendAndReceive(`delete ${user.id} ${product.pId}`)
+            const serverReply = await sendAndReceive(`delete ${user.id} ${product.pId}`);
             console.log("Reply:", serverReply);
-        };
+        }
     }
 
     restaurantModel.DeleteRestaurant(restaurantId);

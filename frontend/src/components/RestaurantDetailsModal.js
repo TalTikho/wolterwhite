@@ -20,6 +20,10 @@ export const RestaurantDetailsModal = ({ isOpen, onClose, restaurant }) => {
 
     if (!isOpen || !restaurant) return null;
 
+    const imageUrl = restaurant.image 
+        ? `http://localhost:5000/uploads/${restaurant.image}` 
+        : null;
+
     return (
         <div 
             className="modal fade show d-block" 
@@ -42,25 +46,36 @@ export const RestaurantDetailsModal = ({ isOpen, onClose, restaurant }) => {
                         ></button>
                     </div>
 
-                    <div className="modal-body">
-                        <p className="lead text-muted">{restaurant.cuisine || 'Cuisine not specified'}</p>
-                        <hr className="border-secondary" />
-                        
-                        <div className="my-3 fs-5">
-                            <div className="mb-2">
-                                <strong>🕒 Opening Hours:</strong> {restaurant.hours || 'N/A'}
-                            </div>
-                            <div className="mb-2">
-                                <strong>💰 Min Order Price:</strong> ${restaurant.minPrice || '0'}
-                            </div>
-                        </div>
-
-                        {restaurant.description && (
-                            <div className="mt-4">
-                                <h6 className="fw-bold">About Restaurant:</h6>
-                                <p className="text-muted">{restaurant.description}</p>
-                            </div>
+                    <div className="modal-body p-0">
+                        {imageUrl && (
+                            <img 
+                                src={imageUrl} 
+                                alt={restaurant.name} 
+                                className="w-100" 
+                                style={{ height: "200px", objectFit: "cover" }}
+                                onError={(e) => { e.target.style.display = 'none'; }}
+                            />
                         )}
+                        <div className="p-3">
+                            <p className="lead text-muted">{restaurant.cuisine || 'Cuisine not specified'}</p>
+                            <hr className="border-secondary" />
+                            
+                            <div className="my-3 fs-5">
+                                <div className="mb-2">
+                                    <strong>🕒 Opening Hours:</strong> {restaurant.hours || 'N/A'}
+                                </div>
+                                <div className="mb-2">
+                                    <strong>💰 Min Order Price:</strong> ${restaurant.minPrice || '0'}
+                                </div>
+                            </div>
+
+                            {restaurant.description && (
+                                <div className="mt-4">
+                                    <h6 className="fw-bold">About Restaurant:</h6>
+                                    <p className="text-muted">{restaurant.description}</p>
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     <div className="modal-footer border-secondary">

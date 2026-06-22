@@ -8,7 +8,7 @@ export const ProductForm = ({ restaurantId, existingProduct = null, onSuccess, o
     pdescription: "",
     price: ""
   });
-  
+  const [imageFile, setImageFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -25,6 +25,12 @@ export const ProductForm = ({ restaurantId, existingProduct = null, onSuccess, o
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setImageFile(e.target.files[0]);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -46,13 +52,21 @@ export const ProductForm = ({ restaurantId, existingProduct = null, onSuccess, o
         : `/api/restaurants/${restaurantId}/products`;
       const method = isEdit ? "PATCH" : "POST";
 
+      const data = new FormData();
+      data.append("pname", formData.pname);
+      data.append("pdescription", formData.pdescription);
+      data.append("price", formData.price);
+      
+      if (imageFile) {
+        data.append("image", imageFile);
+      }
+
       const response = await fetch(url, {
         method: method,
         headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
+          "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify(formData),
+        body: data,
       });
 
       if (!response.ok) throw new Error("Failed to save product.");
@@ -83,6 +97,10 @@ export const ProductForm = ({ restaurantId, existingProduct = null, onSuccess, o
           <div className="col-md-6">
             <label className="form-label text-muted">Price ($)</label>
             <input type="number" step="0.01" className="form-control" name="price" value={formData.price} onChange={handleChange} required />
+          </div>
+          <div className="col-md-12">
+            <label className="form-label text-muted">Product Image</label>
+            <input type="file" className="form-control" accept="image/*" onChange={handleFileChange} />
           </div>
           <div className="col-md-12">
             <label className="form-label text-muted">Description</label>

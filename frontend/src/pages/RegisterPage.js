@@ -122,7 +122,8 @@ export const Register = () => {
                     {error?.profilePic && (
                         <p className='register-error'>{error.profilePic[0]}</p>
                     )}
-                    <img src={preview} alt="Profile Preview" className='prev-img'></img>
+                    
+                    {preview && <img src={preview} alt="Profile Preview" className='prev-img' />}
 
                     <button type="submit">
                         Register

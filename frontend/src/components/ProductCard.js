@@ -18,8 +18,24 @@ export const ProductCard = ({ product, restaurantId }) => {
     }
   };
 
+  // Fixed path: Changed from /uploads/ to /api/images/
+  const imageUrl = product.image 
+    ? `http://localhost:5000/api/images/${product.image}` 
+    : "/knock.png";
+
   return (
     <div className="restaurant-card" onClick={handleProductClick}>
+      {/* Added Image Wrapper for Product */}
+      <div className="restaurant-card__image-wrapper" style={{ height: "150px" }}>
+        <img
+          src={imageUrl}
+          alt={product.pname || product.name}
+          className="restaurant-card__image"
+          style={{ objectFit: "cover", height: "100%", width: "100%" }}
+          onError={(e) => { e.target.src = '/knock.png'; }}
+        />
+      </div>
+
       <div className="restaurant-card__body d-flex flex-column justify-content-between">
         <div>
           <h3 className="restaurant-card__name">{product.pname || product.name}</h3>
