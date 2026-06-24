@@ -11,12 +11,6 @@ export const getProductById = (productID, restaurant) => {
   return restaurant.products.find((product) => product.pId === productID);
 };
 
-// Anything that mutates restaurant.products needs an explicit save() —
-// pushing/splicing the embedded array only changes it in memory until the
-// parent restaurant document is persisted. This is the one behavior change
-// from the in-memory version: there, mutating the array *was* the
-// persistence step, since it was the same object reference in RAM.
-
 export const addProdToRest = async (restaurant, productInfo) => {
   if (
     restaurant.products.some(
@@ -43,13 +37,8 @@ export const addProdToRest = async (restaurant, productInfo) => {
 export const editProduct = async (productpId, productInfo, restaurant) => {
   const editedProduct = getProductById(productpId, restaurant);
 
-  // Fixes a pre-existing bug carried over from the in-memory version:
-  // if productpId doesn't match anything, editedProduct is undefined,
-  // and Object.assign(undefined, ...) throws rather than failing
-  // gracefully. Returning null here matches the "not found" convention
-  // used elsewhere (e.g. createRestaurant on a duplicate name).
   if (!editedProduct) {
-    return null;
+    return null; // not found
   }
 
   if (productInfo.pname) {
@@ -60,7 +49,7 @@ export const editProduct = async (productpId, productInfo, restaurant) => {
     );
 
     if (isDouble) {
-      return null;
+      return undefined; // duplicate name — distinct from null (not found)
     }
   }
 

@@ -3,8 +3,6 @@ import { getAllusers } from "../services/userModel.js";
 import { sendAndReceive } from "../cppClient.js";
 import crypto from "crypto";
 
-const users = getAllusers();
-
 export const getRestaurantProds = async (req, res) => {
   try {
     const restaurant = req.currentRestaurant;
@@ -110,13 +108,16 @@ export const editProduct = async (req, res) => {
       });
     }
 
-    const Editedproduct = await productModel.editProduct(
+    const editedProduct = await productModel.editProduct(
       product.pId,
       productInfo,
       restaurant,
     );
 
-    if (!Editedproduct) {
+    if (editedProduct === null) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+    if (editedProduct === undefined) {
       return res.status(409).json({ error: "Product already exists" });
     }
     return res.status(204).end();
@@ -134,10 +135,11 @@ export const deleteProduct = async (req, res) => {
       restaurant,
       productPId,
     );
-    if (deletedProduct == -1) {
+    if (deletedProduct === -1) {
       return res.status(404).json({ error: "Product not found" });
     }
 
+    const users = await getAllusers();
     for (const user of users) {
       const serverReply = await sendAndReceive(`delete ${user.id} ${productPId}`);
       console.log("Reply:", serverReply);
