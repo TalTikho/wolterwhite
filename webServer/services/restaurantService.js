@@ -1,17 +1,15 @@
 import Restaurant from "../models/restaurantModel.js";
 
-// Escapes regex-special characters so a name like "Mom & Pop's" can't break
-// the case-insensitive duplicate check below.
 const escapeRegex = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
+// All restaurant reads populate products so callers always receive
+// full product objects rather than bare ObjectIds.
+
 export const getAllRestaurants = async () => {
-  return Restaurant.find();
+  return Restaurant.find().populate("products");
 };
 
 export const createRestaurant = async (restaurantInfo) => {
-  // Case-insensitive duplicate-name check — mirrors the original
-  // .toLowerCase() comparison rather than relying on a unique index,
-  // since Mongo's default unique index is case-sensitive.
   const existing = await Restaurant.findOne({
     name: { $regex: `^${escapeRegex(restaurantInfo.name)}$`, $options: "i" },
   });
@@ -37,10 +35,9 @@ export const createRestaurant = async (restaurantInfo) => {
 
 export const getRestaurantById = async (id) => {
   try {
-    return await Restaurant.findById(id);
-  } catch (error) {
-    // Malformed id (not a valid ObjectId) — treat as "not found"
-    // rather than letting Mongoose throw a CastError.
+    return await Restaurant.findById(id).populate("products");
+  } catch {
+    // Malformed ObjectId — treat as not found
     return null;
   }
 };
@@ -67,6 +64,8 @@ export const editRestaurantInfo = async (restaurantId, restaurantNew) => {
 };
 
 export const DeleteRestaurant = async (restaurantId) => {
+  // Products are left in the Product collection (orphaned) per spec —
+  // only the restaurant document and its references are removed.
   const result = await Restaurant.findByIdAndDelete(restaurantId);
   return result ? 0 : -1;
 };

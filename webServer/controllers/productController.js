@@ -1,4 +1,4 @@
-import * as productModel from "../services/productService.js";
+import * as productService from "../services/productService.js";
 import { getAllusers } from "../services/userModel.js";
 import { sendAndReceive } from "../cppClient.js";
 import crypto from "crypto";
@@ -6,14 +6,14 @@ import crypto from "crypto";
 export const getRestaurantProds = async (req, res) => {
   try {
     const restaurant = req.currentRestaurant;
-    const products = productModel.getRestaurantProds(restaurant);
+    const products = productService.getRestaurantProds(restaurant);
     const userID = req.userId || "guest_" + crypto.randomUUID().toString();
 
     for (const product of products) {
-      const serverReply = await sendAndReceive(`patch ${userID} ${product.pId}`);
+      const serverReply = await sendAndReceive(`patch ${userID} ${product._id}`);
       console.log("Reply:", serverReply);
       if (serverReply.includes("400") || serverReply.includes("404")) {
-        await sendAndReceive(`post ${userID} ${product.pId}`).then((reply) =>
+        await sendAndReceive(`post ${userID} ${product._id}`).then((reply) =>
           console.log("Reply:", reply),
         );
       }
@@ -43,19 +43,17 @@ export const addProdToRest = async (req, res) => {
       productInfo.price === undefined ||
       productInfo.price === null
     ) {
-      return res.status(400).json({
-        error: "All fields must be filled",
-      });
+      return res.status(400).json({ error: "All fields must be filled" });
     }
 
-    const newProd = await productModel.addProdToRest(restaurant, productInfo);
+    const newProd = await productService.addProdToRest(restaurant, productInfo);
 
     if (!newProd) {
       return res.status(409).json({ error: "Product already exists" });
     }
     return res
       .status(201)
-      .location(`/api/restaurants/${restaurant.id}/products/${newProd.pId}`)
+      .location(`/api/restaurants/${restaurant.id}/products/${newProd._id}`)
       .json(newProd);
   } catch (error) {
     console.error("Error in addProdToRest controller:", error);
@@ -69,17 +67,17 @@ export const getProductById = async (req, res) => {
     const userID = req.userId || "guest_" + crypto.randomUUID().toString();
     const restaurant = req.currentRestaurant;
 
-    const serverReply = await sendAndReceive(`patch ${userID} ${product.pId}`);
+    const serverReply = await sendAndReceive(`patch ${userID} ${product._id}`);
     console.log("Reply:", serverReply);
 
     if (serverReply.includes("400") || serverReply.includes("404")) {
-      await sendAndReceive(`post ${userID} ${product.pId}`).then((reply) =>
+      await sendAndReceive(`post ${userID} ${product._id}`).then((reply) =>
         console.log("Reply:", reply),
       );
     }
     return res
       .status(200)
-      .location(`/api/restaurants/${restaurant.id}/products/${product.pId}`)
+      .location(`/api/restaurants/${restaurant.id}/products/${product._id}`)
       .json(product);
   } catch (error) {
     console.error("Error in getProductById controller:", error);
@@ -103,13 +101,11 @@ export const editProduct = async (req, res) => {
       (productInfo.price === undefined || productInfo.price === null) &&
       !productInfo.image
     ) {
-      return res.status(400).json({
-        error: "At least one field must be filled",
-      });
+      return res.status(400).json({ error: "At least one field must be filled" });
     }
 
-    const editedProduct = await productModel.editProduct(
-      product.pId,
+    const editedProduct = await productService.editProduct(
+      product._id.toString(),
       productInfo,
       restaurant,
     );
@@ -130,18 +126,16 @@ export const editProduct = async (req, res) => {
 export const deleteProduct = async (req, res) => {
   try {
     const restaurant = req.currentRestaurant;
-    const productPId = req.currentProduct.pId;
-    const deletedProduct = await productModel.deleteProduct(
-      restaurant,
-      productPId,
-    );
-    if (deletedProduct === -1) {
+    const productId = req.currentProduct._id.toString();
+
+    const result = await productService.deleteProduct(restaurant, productId);
+    if (result === -1) {
       return res.status(404).json({ error: "Product not found" });
     }
 
     const users = await getAllusers();
     for (const user of users) {
-      const serverReply = await sendAndReceive(`delete ${user.id} ${productPId}`);
+      const serverReply = await sendAndReceive(`delete ${user.id} ${productId}`);
       console.log("Reply:", serverReply);
     }
 

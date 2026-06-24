@@ -1,16 +1,22 @@
 import mongoose from "mongoose";
 
-// Products live embedded inside each restaurant's `products` array (no
-// separate top-level collection) — this just defines the shape of each
-// embedded item. `_id: false` avoids Mongoose auto-generating a second id
-// field on top of the existing pId.
-export const productModel = new mongoose.Schema(
+// Products now live in their own top-level collection so they can be
+// updated independently via findByIdAndUpdate without needing to pull
+// and re-save the entire parent restaurant document.
+const productSchema = new mongoose.Schema(
   {
-    pId: { type: String, required: true },
     pname: { type: String, required: true },
     pdescription: { type: String },
     price: { type: Number },
     image: { type: String, default: "" },
   },
-  { _id: false },
+  {
+    // Makes the `.id` virtual (string version of `_id`) appear in
+    // res.json(...) output, matching what controllers expect.
+    toJSON: { virtuals: true },
+  },
 );
+
+const Product = mongoose.model("Product", productSchema);
+
+export default Product;

@@ -1,43 +1,50 @@
-import crypto from "crypto";
+import Product from "../models/productModel.js";
 
-// Pure reads — no DB call needed, the restaurant document is already
-// in memory by the time these are called, so these stay synchronous.
+// All reads now go directly to the Product collection via its _id.
+// The restaurant document is only touched when adding/removing the
+// ObjectId reference in its products array.
 
 export const getRestaurantProds = (restaurant) => {
+  // restaurant.products is already populated by the restaurant service
+  // before this is called, so no extra DB hit needed here.
   return restaurant.products;
 };
 
-export const getProductById = (productID, restaurant) => {
-  return restaurant.products.find((product) => product.pId === productID);
+export const getProductById = async (productId) => {
+  try {
+    return await Product.findById(productId);
+  } catch {
+    // Malformed ObjectId — treat as not found
+    return null;
+  }
 };
 
 export const addProdToRest = async (restaurant, productInfo) => {
-  if (
-    restaurant.products.some(
-      (product) =>
-        product.pname.toLowerCase() === productInfo.pname.toLowerCase(),
-    )
-  ) {
+  // Duplicate-name check across the already-populated products array
+  const isDuplicate = restaurant.products.some(
+    (product) =>
+      product.pname.toLowerCase() === productInfo.pname.toLowerCase(),
+  );
+  if (isDuplicate) {
     return null;
   }
-  const pId = crypto.randomUUID().toString();
-  const newProduct = {
-    pId: pId,
+
+  const newProduct = await Product.create({
     pname: productInfo.pname,
     pdescription: productInfo.pdescription,
     price: productInfo.price,
     image: productInfo.image || "",
-  };
+  });
 
-  restaurant.products.push(newProduct);
+  restaurant.products.push(newProduct._id);
   await restaurant.save();
+
   return newProduct;
 };
 
-export const editProduct = async (productpId, productInfo, restaurant) => {
-  const editedProduct = getProductById(productpId, restaurant);
-
-  if (!editedProduct) {
+export const editProduct = async (productId, productInfo, restaurant) => {
+  const existing = await getProductById(productId);
+  if (!existing) {
     return null; // not found
   }
 
@@ -45,27 +52,35 @@ export const editProduct = async (productpId, productInfo, restaurant) => {
     const isDouble = restaurant.products.some(
       (product) =>
         product.pname.toLowerCase() === productInfo.pname.toLowerCase() &&
-        product.pId !== productpId,
+        product._id.toString() !== productId,
     );
-
     if (isDouble) {
-      return undefined; // duplicate name — distinct from null (not found)
+      return undefined; // duplicate name
     }
   }
 
-  Object.assign(editedProduct, productInfo);
-  await restaurant.save();
-  return editedProduct;
+  // findByIdAndUpdate hits the Product document directly — no need to
+  // touch the restaurant document at all.
+  const updated = await Product.findByIdAndUpdate(
+    productId,
+    { $set: productInfo },
+    { new: true },
+  );
+
+  return updated;
 };
 
-export const deleteProduct = async (restaurant, productPId) => {
-  const index = restaurant.products.findIndex(
-    (product) => product.pId === productPId,
-  );
-  if (index !== -1) {
-    restaurant.products.splice(index, 1);
-    await restaurant.save();
-    return 0;
+export const deleteProduct = async (restaurant, productId) => {
+  const product = await getProductById(productId);
+  if (!product) {
+    return -1;
   }
-  return -1;
+
+  await Product.findByIdAndDelete(productId);
+
+  // Remove the ObjectId reference from the restaurant's products array
+  restaurant.products.pull(productId);
+  await restaurant.save();
+
+  return 0;
 };
