@@ -3,7 +3,9 @@
 // Imports
 //====================================================================================================
 import * as orderModel from '../models/orderModel.js';
-import { users } from '../models/userModel.js';
+import { getAllusers } from '../services/userService.js';
+
+
 //====================================================================================================
 // Methods
 //====================================================================================================
@@ -13,6 +15,7 @@ import { users } from '../models/userModel.js';
  * Required body:   { restaurantId, products }
  * Returns:         201 Created + Location header
  */
+const users = getAllusers();
 export const createOrder = (req, res) => {
     // req.userId already set by auth middleware func if succeful login was made — no extra check needed
     const orderData = req.body;
@@ -82,7 +85,7 @@ export const getOrderById = (req, res) => {
  */
 export const updateOrder = (req, res) => {
     // req.userId already set by auth middleware func if succeful login was made — no extra check needed
-    const order = orderModel.findOrderById(req.params.id);
+    const order = await orderModel.findOrderById(req.params.id);
 
     if (!order) {
         return res.status(404).json({
@@ -109,7 +112,7 @@ export const updateOrder = (req, res) => {
  */
 export const deleteOrder = (req, res) => {
     // req.userId already set by auth middleware func if succeful login was made — no extra check needed
-    const order = orderModel.findOrderById(req.params.id);
+    const order = await orderModel.findOrderById(req.params.id);
 
     if (!order) {
         return res.status(404).json({

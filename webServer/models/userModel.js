@@ -1,57 +1,55 @@
-import { randomUUID } from 'crypto';
-import fs from 'fs';
+import mongoose from 'mongoose';
+import { validationRules } from '../middleware/userRegistration.js';
 
+const Schema = mongoose.Schema;
 
-// In-memory array used to store users temporarily
-// NOTE: Data will be lost whenever the server restarts
-export const users = [];
-
-export const getAllusers = () => users;
 
 /**
- * Creates and stores a new user
- * 
- * @param {Object} userData - User data from request body
- * @returns {Object} Newly created user
+ * Creates and stores a new user in database.
+ * middleware gatekeeps invalid input and users with
+ * direct access to the db are already authorized (mostly the devs)
+ * so here we do another less thorough validation to prevent those with direct access to
+ * ruin data.
+ * We do not repeat as the logic in the imported middleware in still used here as is.
+ * There are checks like 'unique' that are here and not in the middleware for separation of responsibility. 
+ * 'type' check is easier in MOngoDB.
  */
-export const createUser = (userData) => {
+const userSchema = new Schema({
+    username: {
+        type: String,
 
-    // Create a unique ID using the current timestamp
-    const uniqueId = randomUUID().toString();
+        required: true,
+        unique: true, 
+        minLength: validationRules.username.minLength.expect,
+        match: validationRules.username.numbers_and_letters.expect
+    },
+    displayName: {
+        type: String,
+        required: true,
+        minLength: validationRules.displayName.minLength.expect
+    },
+    phone: {
+        type: String,
+        required: true,
+        match: validationRules.phone.pattern.expect
 
-    // Create the user object
-    const newUser = {
-        id: uniqueId,
-        username: userData.username,
-        displayName: userData.displayName,
-        phone: userData.phone,
-        address: userData.address,
-        password: userData.password,
-        profilePic: userData.profilePic
+    },
+    address: {
+        type: String,
+        required: true, 
+        match: validationRules.address.pattern.expect
+    },
+    password: {
+        type: String,
+        required: true, 
+        minLength: validationRules.password.minLength.expect
+    },
+    profilePic: {
+        type: String,
+        required: true
     }
 
-    // Store the user in the in-memory array
-    users.push(newUser);
+});
 
-    return newUser;
-};
 
-/**
- * Gets a user by their unique ID
- * * @param {string} userId - The unique ID of the user
- * @returns {Object|undefined} The user object if found, otherwise undefined
- */
-export const getUserById = (userId) => {
-
-    const matchingUser = users.find(user => user.id === userId);
-
-    return matchingUser;
-};
-
-/**
- * Authenticates user by checking name and password
- * @returns {Object|undefined} The user object if found, otherwise undefined
- */
-export const authenticateUser = (username, password) => {
-    return users.find((user) => user.username === username && user.password === password);
-};
+export const User = mongoose.model('User', userSchema);

@@ -57,7 +57,8 @@ export const Login = () => {
             const newToken = await login(usr, pwd);
             successLog('/IAmTheCook.wav');
             tokenToStorage(newToken);
-            navigate("/");
+            //avoid race condition
+            setTimeout(() => navigate("/"), 500);
         } catch (err) {
             setError(err.message);
             failLog('/WhoTheHellAreYou.wav');

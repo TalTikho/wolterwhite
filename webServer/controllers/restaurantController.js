@@ -1,6 +1,7 @@
 import * as restaurantModel from '../models/restaurantModel.js';
 import { sendAndReceive } from '../cppClient.js';
-import { getAllusers } from '../models/userModel.js';
+import { getAllusers } from '../services/userService.js';
+
 
 const users = getAllusers();
 

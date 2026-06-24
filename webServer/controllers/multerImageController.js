@@ -10,8 +10,7 @@ const storageConfig = multer.diskStorage({
     // under the project directory
     destination: path.join(__dirname, "../uploads"),
     filename: (req, file, cb) => {
-        // file name is prepended with current time
-        // in milliseconds to handle duplicate file names
+        // file name is prepended with UUId time to handle duplicate file names
         cb(null, randomUUID().toString());
     },
 });
