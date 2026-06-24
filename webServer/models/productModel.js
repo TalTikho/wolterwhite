@@ -1,51 +1,16 @@
-import crypto from 'crypto';
+import mongoose from "mongoose";
 
-export const getRestaurantProds = (restaurant) => { 
-    return restaurant.products; 
-};
-
-export const addProdToRest = (restaurant, productInfo) => {
-    if (restaurant.products.some(product => product.pname.toLowerCase() === productInfo.pname.toLowerCase())) {
-        return null;
-    }
-    const pId = crypto.randomUUID().toString();
-    const newProduct = {
-        pId: pId,
-        pname: productInfo.pname,
-        pdescription: productInfo.pdescription,
-        price: productInfo.price,
-        image: productInfo.image || ""
-    };
-
-    restaurant.products.push(newProduct);
-    return newProduct;
-};
-
-export const getProductById = (productID, restaurant) => {
-    return restaurant.products.find(product => product.pId === productID);
-};
-
-export const editProduct = (productpId, productInfo, restaurant) => {
-    const editedProduct = getProductById(productpId, restaurant);
-
-    if (productInfo.pname) {
-        const isDouble = restaurant.products.some(product => product.pname.toLowerCase() === productInfo.pname.toLowerCase()
-            && product.pId !== productpId);
-
-        if (isDouble) {
-            return null;
-        }
-    }
-    
-    Object.assign(editedProduct, productInfo);
-    return editedProduct;
-};
-
-export const deleteProduct = (restaurant, productPId) => {
-    const index = restaurant.products.findIndex(product => product.pId === productPId);
-    if (index !== -1) {
-        restaurant.products.splice(index, 1);
-        return 0;
-    }
-    return -1;
-};
+// Products live embedded inside each restaurant's `products` array (no
+// separate top-level collection) — this just defines the shape of each
+// embedded item. `_id: false` avoids Mongoose auto-generating a second id
+// field on top of the existing pId.
+export const productModel = new mongoose.Schema(
+  {
+    pId: { type: String, required: true },
+    pname: { type: String, required: true },
+    pdescription: { type: String },
+    price: { type: Number },
+    image: { type: String, default: "" },
+  },
+  { _id: false },
+);
