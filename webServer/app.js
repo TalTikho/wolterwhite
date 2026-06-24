@@ -1,6 +1,7 @@
 //====================================================================================================
 // Imports
 //====================================================================================================
+import { connectDB } from "./configLocal/DB.js";
 import express from "express";
 import cors from "cors";
 import expressCors from "express-cors";
@@ -15,7 +16,7 @@ import dotenv from 'dotenv';
 dotenv.config({ path: './configLocal/.env' });
 
 //====================================================================================================
-
+connectDB();
 // Create an Express application instance
 const app = express();
 

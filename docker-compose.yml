@@ -11,6 +11,16 @@ services:
       - ./data:/usr/src/wolterwhite/build/data
     restart: unless-stopped
 
+  # ─── MONGO SERVICE ───
+  wolterwhite-mongo:
+    image: mongo:7
+    container_name: wolterwhite_mongo_container
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    restart: unless-stopped
+
   wolterwhite-web:
       build:
         context: ./webServer
@@ -21,6 +31,10 @@ services:
       environment:
       - SERVER_HOST=wolterwhite-server 
       - SERVER_PORT=5555 
+      - MONGO_URI=mongodb://wolterwhite-mongo:27017/wolterwhite
+      depends_on:
+        - wolterwhite-server
+        - wolterwhite-mongo
       restart: unless-stopped
   wolterwhite-front:
       build:
@@ -48,3 +62,6 @@ services:
     depends_on:
       - wolterwhite-server
     command: tail -f /dev/null
+
+volumes:
+  mongo-data:
