@@ -1,5 +1,5 @@
 import * as productService from "../services/productService.js";
-import { getAllusers } from "../services/userModel.js";
+import { getAllusers } from "../services/userService.js";
 import { sendAndReceive } from "../cppClient.js";
 import crypto from "crypto";
 
