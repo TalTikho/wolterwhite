@@ -41,13 +41,13 @@ export const verifyRestaurant = async (req, res, next) => {
 // Check if a product exists for delete, patch and getById.
 // Stays synchronous — getProductById in productService.js doesn't touch
 // the DB, it just reads restaurant.products, which is already in memory.
-export const verifyProduct = (req, res, next) => {
-    const restaurant = req.currentRestaurant;
-    const product = getProductById(req.params.pId, restaurant);
-    if (!product) {
-        return res.status(404).json({ error: 'Product not found' });
-    }
-    req.currentProduct = product;
-
-    next()
-}
+// Now async — getProductById queries the Product collection directly
+// by _id instead of searching the in-memory embedded array.
+export const verifyProduct = async (req, res, next) => {
+  const product = await getProductById(req.params.pId);
+  if (!product) {
+    return res.status(404).json({ error: "Product not found" });
+  }
+  req.currentProduct = product;
+  next();
+};
