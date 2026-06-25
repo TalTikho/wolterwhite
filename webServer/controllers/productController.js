@@ -1,9 +1,11 @@
 import * as productModel from '../models/productModel.js';
-import { getAllusers } from '../models/userModel.js';
 import { sendAndReceive } from '../cppClient.js';
 import crypto from 'crypto';
+import { getAllusers } from '../services/userService.js';
+
 
 const users = getAllusers();
+
 
 export const getRestaurantProds = async (req, res) => {
     const restaurant = req.currentRestaurant;

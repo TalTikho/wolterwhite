@@ -1,4 +1,4 @@
-import * as userModel from "../models/userModel.js";
+import * as userService from '../services/userService.js';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import path from 'node:path'
@@ -15,56 +15,77 @@ const key = process.env.JWT_SECRET || "BlueStuff@"
 /**
  * Handles user registration
  */
-export const registerUser = (req, res) => {
+export const registerUser = async (req, res) => {
     const userData = req.body;
-    //Make sure the username is unique.
-    if (userModel.users.some(user => user.username == userData.username)) {
-        return res.status(409).json({ error: 'User with the same username already exists' });
+    try {
+        const newUser = await userService.createUser(userData);
+        // Return the user token on success
+        const data = {
+            displayName: newUser.displayName,
+            id: newUser.id,
+            profilePic: newUser.profilePic,
+            address: newUser.address,
+            username: newUser.username
+        };
+        //delete the token after 1h.
+        const token = jwt.sign(data, key, { expiresIn: '1h' });
+        return await res.status(201).json({ token });
     }
-    // Create the user using the model layer
-    const newUser = userModel.createUser(userData);
-    // Create userResponse without returning the password
-    const { password, ...userResponse } = newUser;
+    catch (err) {
+        //catch double username error. The ids are unique due to mongo.
+        if (err.code === 11000 && err.keyValue?.username) {
+            return res.status(409).json({
+                error: "This username is already taken."
+            });
+        }
+        console.error("Server Error:", err); //Keeping this for logging.
+        return res.status(500).json({
+            error: "An unexpected error occurred. Please try again."
+        });
 
-    // Return the user token on success
-    const data = {
-        displayName: newUser.displayName,
-        id: newUser.id,
-        profilePic: newUser.profilePic,
-        address: newUser.address,
-        username: newUser.username
-    };
-    const token = jwt.sign(data, key)
-    return res.status(201).json({ token });
-};
+    }
+
+}
 
 /**
  * Handles fetching a single user by ID
  */
-export const getUser = (req, res) => {
+export const getUser = async (req, res) => {
 
-    // Get the ID from the URL parameters
-    const userId = req.params.id;
+    try {
+        // Get the ID from the URL parameters
+        const userId = req.params.id;
 
-    // Call the service to find the user
-    const user = userModel.getUserById(userId);
+        // Call the service to find the user
+        const user = await userService.getUserById(userId);
 
-    // If user is not found, return 404
-    if (!user) {
+        // If user is not found, return 404
+        if (!user) {
+            return res
+                .status(404)
+                .json({ error: "User not found" });
+        }
+
+        // Return the user with 200 OK
         return res
-            .status(404)
-            .json({ error: "User not found" });
+            .status(200)
+            .json(user);
+    }
+    catch (err) {
+
+        console.error("Server Error:", err); //Keeping this for logging.
+        return res.status(500).json({
+            error: "An unexpected error occurred. Please try again."
+        });
+
     }
 
-    // Return the user with 200 OK
-    return res
-        .status(200)
-        .json(user);
+
 };
 
-
+//multer is synchronous
 export const getImage = (req, res) => {
-    const filename =  req.params.filename;
+    const filename = req.params.filename;
     const imageURL = path.join(__dirname, '../uploads', filename);
     res.setHeader('Content-Type', 'image/png');
     //help api.js findout this is an image.
