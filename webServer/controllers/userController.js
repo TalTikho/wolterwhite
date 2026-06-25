@@ -1,5 +1,4 @@
 import * as userService from '../services/userService.js';
-import { formatter } from '../services/mongoErrorFormatter.js';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import path from 'node:path'

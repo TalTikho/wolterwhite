@@ -2,8 +2,7 @@
 //====================================================================================================
 // Imports
 //====================================================================================================
-import * as orderModel from '../models/orderModel.js';
-import { getAllusers } from '../services/userService.js';
+import * as orderService from '../services/orderService.js';
 
 
 //====================================================================================================
@@ -15,8 +14,7 @@ import { getAllusers } from '../services/userService.js';
  * Required body:   { restaurantId, products }
  * Returns:         201 Created + Location header
  */
-const users = getAllusers();
-export const createOrder = (req, res) => {
+export const createOrder = async (req, res) => {
     // req.userId already set by auth middleware func if succeful login was made — no extra check needed
     const orderData = req.body;
     // Validate required fields
@@ -35,13 +33,20 @@ export const createOrder = (req, res) => {
             error: 'products must be a non-empty array'
         });
     }
+    try {
 
-    const newOrder = orderModel.createOrder(req.userId, orderData);
+        const newOrder = await orderService.createOrder(req.userId, orderData);
+        return res
+            .status(201)
+            .location(`/api/orders/${newOrder.id}`)
+            .json(newOrder);
 
-    return res
-        .status(201)
-        .location(`/api/orders/${newOrder.id}`)
-        .json(newOrder);
+    }
+    catch (err) {
+    return res.status(500).json({ error: err.message });
+};
+
+
 };
 
 /**
@@ -49,9 +54,9 @@ export const createOrder = (req, res) => {
  *
  * Returns:         200 OK + array of orders
  */
-export const getOrders = (req, res) => {
+export const getOrders = async (req, res) => {
     // req.userId already set by auth middleware func if succeful login was made — no extra check needed
-    const userOrders = orderModel.getOrdersByUser(req.userId);
+    const userOrders = await orderService.getOrdersByUser(req.userId);
     return res.status(200).json(userOrders);
 };
 
@@ -62,9 +67,9 @@ export const getOrders = (req, res) => {
  *                  404 if order not found
  *                  403 if order belongs to different user
  */
-export const getOrderById = (req, res) => {
+export const getOrderById = async (req, res) => {
     // req.userId already set by auth middleware func if succeful login was made — no extra check needed
-    const order = orderModel.findOrderById(req.params.id);
+    const order = await orderService.findOrderById(req.params.id);
 
     // Order not found
     if (!order) {
@@ -83,9 +88,9 @@ export const getOrderById = (req, res) => {
  *                  404 if order not found
  *                  403 if order belongs to different user
  */
-export const updateOrder = (req, res) => {
+export const updateOrder = async (req, res) => {
     // req.userId already set by auth middleware func if succeful login was made — no extra check needed
-    const order = await orderModel.findOrderById(req.params.id);
+    const order = await orderService.findOrderById(req.params.id);
 
     if (!order) {
         return res.status(404).json({
@@ -99,7 +104,7 @@ export const updateOrder = (req, res) => {
         });
     }
 
-    orderModel.updateOrder(req.params.id, req.body);
+    orderService.updateOrder(req.params.id, req.body);
     return res.status(204).send();
 };
 
@@ -110,9 +115,9 @@ export const updateOrder = (req, res) => {
  *                  404 if order not found
  *                  403 if order belongs to different user
  */
-export const deleteOrder = (req, res) => {
+export const deleteOrder = async (req, res) => {
     // req.userId already set by auth middleware func if succeful login was made — no extra check needed
-    const order = await orderModel.findOrderById(req.params.id);
+    const order = await orderService.findOrderById(req.params.id);
 
     if (!order) {
         return res.status(404).json({
@@ -126,6 +131,6 @@ export const deleteOrder = (req, res) => {
         });
     }
 
-    orderModel.deleteOrder(req.params.id);
+    orderService.deleteOrder(req.params.id);
     return res.status(204).send();
 };

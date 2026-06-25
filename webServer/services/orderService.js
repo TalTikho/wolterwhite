@@ -1,14 +1,13 @@
 import { userDataRegistration } from '../middleware/userRegistration.js';
-import { createOrder, Order } from '../models/orderModel.js';
+import { Order } from '../models/orderModel.js';
 
 export const createOrder = async (userId, orderData) => {
     //status and id are already set by default
-    const newOrder = {
-        userId: userId, // Who placed the order
-        restaurantId: orderData.restaurantId, // Which restaurant
-        //products, status and date already have defaults.
-    };
-
+    const newOrder = new Order({
+        userId: userId,
+        restaurantId: orderData.restaurantId,
+        products: orderData.products || []
+    });
     return await newOrder.save();
 }
 
@@ -19,21 +18,15 @@ export const findOrderById = async (id) => { return await Order.findById(id); };
 
 //Updates an existing order
 export const updateOrder = async (orderId, updateData) => {
-    const order = await findOrderById(orderId);
-    if (!order) {
-        return null;
-    }
-    order = {
-        ...order,
-        ...updateData,
-        // Protecting these fields
-        id: order.id,
-        userId: order.userId,
-        createdAt: order.createdAt
-    };
-
-    await order.save();
-    return order;
+    //The controller checks for the null case (not found) so we immediately try to update.
+    
+    // Protecting these fields
+    const { _id, userId, createdAt, ...safeData} = updateData;
+    return await Order.findByIdAndUpdate(
+        orderId,
+        safeData, //removed protected fields
+        {new : true} //return new order.
+    );
 
 
 }
