@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
-import { getProductById } from '../models/productModel.js';
-import { getRestaurantById } from '../models/restaurantModel.js';
+import { getProductById } from '../services/productService.js';
+import { getRestaurantById } from '../services/restaurantService.js';
 // for safety reasons the env files are in .gitignore so hardcoded 5000 is a fallback
 const key = process.env.JWT_SECRET || "BlueStuff@"
 export const isLoggedIn = (req, res, next) => {
@@ -23,9 +23,12 @@ export const isLoggedIn = (req, res, next) => {
 // This check if a restaurant is "real" is relevant for each of the product methods
 // as products are a restaurant's products and not standalone objects.
 // It is a middleware function saving us from redundant code checking validity in each method in this file.
-export const verifyRestaurant = (req, res, next) => {
+export const verifyRestaurant = async (req, res, next) => {
     // Use the restaurant object obtainted by id from the url to get its products.
-    const restaurant = getRestaurantById(req.params.id);
+    // getRestaurantById is async now (Mongoose), so this middleware needs
+    // to be async too — without the await, `restaurant` would be a pending
+    // Promise (always truthy) instead of the actual document or null.
+    const restaurant = await getRestaurantById(req.params.id);
     // No restaurant so the request is logical but the parameter (id) is wrong.
     if (!restaurant)
         return res.status(404).json({ error: 'Restaurant not found' });
@@ -36,14 +39,15 @@ export const verifyRestaurant = (req, res, next) => {
 }
 
 // Check if a product exists for delete, patch and getById.
-export const verifyProduct = (req, res, next) => {
-    const restaurant = req.currentRestaurant;
-    const product = getProductById(req.params.pId, restaurant);
-    if (!product) {
-        return res.status(404).json({ error: 'Product not found' });
-    }
-    req.currentProduct = product;
-
-    next()
-
-}
+// Stays synchronous — getProductById in productService.js doesn't touch
+// the DB, it just reads restaurant.products, which is already in memory.
+// Now async — getProductById queries the Product collection directly
+// by _id instead of searching the in-memory embedded array.
+export const verifyProduct = async (req, res, next) => {
+  const product = await getProductById(req.params.pId);
+  if (!product) {
+    return res.status(404).json({ error: "Product not found" });
+  }
+  req.currentProduct = product;
+  next();
+};

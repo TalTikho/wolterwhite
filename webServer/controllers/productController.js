@@ -1,107 +1,149 @@
-import * as productModel from '../models/productModel.js';
-import { sendAndReceive } from '../cppClient.js';
-import crypto from 'crypto';
-import { getAllusers } from '../services/userService.js';
+import * as productService from "../services/productService.js";
+import { getAllusers } from "../services/userService.js";
+import { sendAndReceive } from "../cppClient.js";
+import crypto from "crypto";
 
-
-const users = getAllusers();
 
 
 export const getRestaurantProds = async (req, res) => {
+  try {
     const restaurant = req.currentRestaurant;
-    const products = productModel.getRestaurantProds(restaurant);
-    const userID = req.userId || 'guest_' + crypto.randomUUID().toString();
+    const products = productService.getRestaurantProds(restaurant);
+    const userID = req.userId || "guest_" + crypto.randomUUID().toString();
 
     for (const product of products) {
-        const serverReply = await sendAndReceive(`patch ${userID} ${product.pId}`);
-        console.log("Reply:", serverReply);
-        if (serverReply.includes("400") || serverReply.includes("404")) {
-            await sendAndReceive(`post ${userID} ${product.pId}`).then(reply => console.log("Reply:", reply));
-        }
+      const serverReply = await sendAndReceive(`patch ${userID} ${product._id}`);
+      console.log("Reply:", serverReply);
+      if (serverReply.includes("400") || serverReply.includes("404")) {
+        await sendAndReceive(`post ${userID} ${product._id}`).then((reply) =>
+          console.log("Reply:", reply),
+        );
+      }
     }
-    res.status(200).location(`/api/restaurants/${req.params.id}/products`).json(products);
+    return res
+      .status(200)
+      .location(`/api/restaurants/${req.params.id}/products`)
+      .json(products);
+  } catch (error) {
+    console.error("Error in getRestaurantProds controller:", error);
+    return res.status(500).json({ error: "An unexpected server error occurred." });
+  }
 };
 
-export const addProdToRest = (req, res) => {
+export const addProdToRest = async (req, res) => {
+  try {
     const restaurant = req.currentRestaurant;
     const productInfo = req.body;
 
     if (req.file) {
-        productInfo.image = req.file.filename;
+      productInfo.image = req.file.filename;
     }
 
     if (
-        !productInfo.pname?.trim() ||
-        !productInfo.pdescription?.trim() ||
-        productInfo.price === undefined || productInfo.price === null
+      !productInfo.pname?.trim() ||
+      !productInfo.pdescription?.trim() ||
+      productInfo.price === undefined ||
+      productInfo.price === null
     ) {
-        return res.status(400).json({
-            error: "All fields must be filled"
-        });
+      return res.status(400).json({ error: "All fields must be filled" });
     }
-        
-    const newProd = productModel.addProdToRest(restaurant, productInfo);
+
+    const newProd = await productService.addProdToRest(restaurant, productInfo);
 
     if (!newProd) {
-        return res.status(409).json({ error: 'Product already exists' });
+      return res.status(409).json({ error: "Product already exists" });
     }
-    res.status(201).location(`/api/restaurants/${restaurant.id}/products/${newProd.pId}`).json(newProd);
+    return res
+      .status(201)
+      .location(`/api/restaurants/${restaurant.id}/products/${newProd._id}`)
+      .json(newProd);
+  } catch (error) {
+    console.error("Error in addProdToRest controller:", error);
+    return res.status(500).json({ error: "An unexpected server error occurred." });
+  }
 };
 
 export const getProductById = async (req, res) => {
+  try {
     const product = req.currentProduct;
-    const userID = req.userId || 'guest_' + crypto.randomUUID().toString();
+    const userID = req.userId || "guest_" + crypto.randomUUID().toString();
     const restaurant = req.currentRestaurant;
-    
-    const serverReply = await sendAndReceive(`patch ${userID} ${product.pId}`);
+
+    const serverReply = await sendAndReceive(`patch ${userID} ${product._id}`);
     console.log("Reply:", serverReply);
-    
+
     if (serverReply.includes("400") || serverReply.includes("404")) {
-        await sendAndReceive(`post ${userID} ${product.pId}`).then(reply => console.log("Reply:", reply));
+      await sendAndReceive(`post ${userID} ${product._id}`).then((reply) =>
+        console.log("Reply:", reply),
+      );
     }
-    res.status(200).location(`/api/restaurants/${restaurant.id}/products/${product.pId}`).json(product);
+    return res
+      .status(200)
+      .location(`/api/restaurants/${restaurant.id}/products/${product._id}`)
+      .json(product);
+  } catch (error) {
+    console.error("Error in getProductById controller:", error);
+    return res.status(500).json({ error: "An unexpected server error occurred." });
+  }
 };
 
-export const editProduct = (req, res) => {
+export const editProduct = async (req, res) => {
+  try {
     const restaurant = req.currentRestaurant;
     const product = req.currentProduct;
     const productInfo = req.body;
 
     if (req.file) {
-        productInfo.image = req.file.filename;
+      productInfo.image = req.file.filename;
     }
 
     if (
-        !productInfo.pname?.trim() &&
-        !productInfo.pdescription?.trim() &&
-        (productInfo.price === undefined || productInfo.price === null) &&
-        !productInfo.image
+      !productInfo.pname?.trim() &&
+      !productInfo.pdescription?.trim() &&
+      (productInfo.price === undefined || productInfo.price === null) &&
+      !productInfo.image
     ) {
-        return res.status(400).json({
-            error: "At least one field must be filled"
-        });
+      return res.status(400).json({ error: "At least one field must be filled" });
     }
-    
-    const Editedproduct = productModel.editProduct(product.pId, productInfo, restaurant);
 
-    if (!Editedproduct) {
-        return res.status(409).json({ error: 'Product already exists' });
+    const editedProduct = await productService.editProduct(
+      product._id.toString(),
+      productInfo,
+      restaurant,
+    );
+
+    if (editedProduct === null) {
+      return res.status(404).json({ error: "Product not found" });
     }
-    res.status(204).end();
+    if (editedProduct === undefined) {
+      return res.status(409).json({ error: "Product already exists" });
+    }
+    return res.status(204).end();
+  } catch (error) {
+    console.error("Error in editProduct controller:", error);
+    return res.status(500).json({ error: "An unexpected server error occurred." });
+  }
 };
 
 export const deleteProduct = async (req, res) => {
+  try {
     const restaurant = req.currentRestaurant;
-    const productPId = req.currentProduct.pId;
-    const deletedProduct = productModel.deleteProduct(restaurant, productPId);
-    if (deletedProduct == -1) {
-        return res.status(404).json({ error: 'Product not found' });
+    const productId = req.currentProduct._id.toString();
+
+    const result = await productService.deleteProduct(restaurant, productId);
+    if (result === -1) {
+      return res.status(404).json({ error: "Product not found" });
     }
 
+    const users = await getAllusers();
     for (const user of users) {
-        const serverReply = await sendAndReceive(`delete ${user.id} ${productPId}`);
-        console.log("Reply:", serverReply);
+      const serverReply = await sendAndReceive(`delete ${user.id} ${productId}`);
+      console.log("Reply:", serverReply);
     }
 
-    res.status(204).end();
+    return res.status(204).end();
+  } catch (error) {
+    console.error("Error in deleteProduct controller:", error);
+    return res.status(500).json({ error: "An unexpected server error occurred." });
+  }
 };
