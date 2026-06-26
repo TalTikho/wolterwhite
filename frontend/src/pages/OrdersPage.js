@@ -9,6 +9,8 @@ export const Orders = () => {
     const { token } = useAuthContext();
     const [pastOrders, setPastOrders] = useState([]);
 
+
+
     const totalAmount = cart.items.reduce((sum, item) => sum + (parseFloat(item.price) || 0), 0);
 
     useEffect(() => {
@@ -30,21 +32,25 @@ export const Orders = () => {
                 restaurantId: cart.restaurantId,
                 products: productIds
             }, token);
-            
+
             alert("Order placed successfully!");
             clearCart();
-            window.location.reload(); 
+            window.location.reload();
         } catch (err) {
             alert("Failed to place order.");
         }
     };
+    const getOrderId = (order) => order.id ?? order._id ?? order.orderId ?? 'N/A';
+    // get order id from mongo.
 
     return (
+        
         <div className="orders-page-container">
             <h3 className="orders-section-title">Active Cart</h3>
             {cart.items.length > 0 ? (
                 <div className="orders-card-custom active-cart-card">
                     {cart.items.map((item, idx) => (
+                        
                         <div key={idx} className="cart-item-row">
                             <span className="cart-item-text">
                                 {item.pname || item.name} - <strong className="cart-item-price">${item.price}</strong>
@@ -54,9 +60,9 @@ export const Orders = () => {
                             </button>
                         </div>
                     ))}
-                    
+
                     <hr className="orders-divider" />
-                    
+
                     <div className="cart-total-row">
                         <span>Total:</span>
                         <span>${totalAmount.toFixed(2)}</span>
@@ -71,9 +77,9 @@ export const Orders = () => {
             <h3 className="orders-section-title">My Orders</h3>
             {pastOrders.length > 0 ? (
                 pastOrders.map(order => (
-                    <div key={order.id} className="orders-card-custom past-order-card">
+                    <div key={getOrderId(order)} className="orders-card-custom past-order-card">
                         <p className="past-order-text">
-                            <span>Order ID:</span> <span className="order-id-highlight">{order.id}</span>
+                            <span>Order ID:</span> <span className="order-id-highlight">{getOrderId(order)}</span>
                         </p>
                         <p className="past-order-text">
                             <span>Status:</span> <span className={`order-status-badge status-${order.status?.toLowerCase()}`}>{order.status}</span>
