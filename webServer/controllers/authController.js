@@ -1,4 +1,4 @@
-import * as userModel from "../models/userModel.js";
+import { authenticateUser } from '../services/userService.js';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 dotenv.config({ path: './config/.env' });
@@ -8,12 +8,12 @@ const key = process.env.JWT_SECRET || "BlueStuff@"
 /**
  * Handles login request
  */
-export const login = (req, res) => {
+export const login = async (req, res) => {
     // Destructuring
     const { username, password } = req.body;
 
     // Call service to authenticate
-    const user = userModel.authenticateUser(username, password);
+    const user = await authenticateUser(username, password);
 
     // If user not found (authentication failed), return 401 Unauthorized
     if (!user) {
@@ -30,6 +30,6 @@ export const login = (req, res) => {
         address: user.address,
         username: user.username
     };
-    const token = jwt.sign(data, key)
+    const token = jwt.sign(data, key, { expiresIn: '1h' });
     return res.status(201).json({ token });
 };

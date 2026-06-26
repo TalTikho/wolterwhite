@@ -2,6 +2,7 @@ import * as restaurantService from "../services/restaurantService.js";
 import { sendAndReceive } from "../cppClient.js";
 import { getAllusers } from "../services/userService.js";
 
+
 export const getAllRestaurants = async (req, res) => {
   try {
     const restaurants = await restaurantService.getAllRestaurants();

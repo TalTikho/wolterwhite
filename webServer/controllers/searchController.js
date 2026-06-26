@@ -5,8 +5,8 @@
 //====================================================================================================
 // Imports
 //====================================================================================================
-import * as restaurantModel from '../models/restaurantModel.js';
-import * as productModel from '../models/productModel.js';
+import * as restaurantService from '../services/restaurantService.js';
+import * as productService from '../services/productService.js';
 
 //====================================================================================================
 //Search
@@ -20,7 +20,7 @@ import * as productModel from '../models/productModel.js';
  *
  * Does not require authentication — anyone can search
  */
-export const search = (req, res) => {
+export const search = async (req, res) => {
     const { query } = req.params;
 
     // Empty query — return everything or empty
@@ -43,7 +43,7 @@ export const search = (req, res) => {
         });
     }
 
-    const Allrest = restaurantModel.getAllRestaurants();
+    const Allrest = await restaurantService.getAllRestaurants();
     // Search restaurants
     // Match if name OR description contains the query
     const matchingRestaurants = Allrest
@@ -73,7 +73,7 @@ export const search = (req, res) => {
         }
         
         // Fetch products for the current restaurant
-        const products = productModel.getRestaurantProds(rest);
+        const products = productService.getRestaurantProds(rest);
         
         // Check if products exist, then filter the 'products' array directly 
         if (products && Array.isArray(products)) {

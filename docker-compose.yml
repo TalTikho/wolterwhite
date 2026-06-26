@@ -35,6 +35,8 @@ services:
       depends_on:
         - wolterwhite-server
         - wolterwhite-mongo
+      volumes:
+        - uploads-data:/app/uploads
       restart: unless-stopped
   wolterwhite-front:
       build:
@@ -65,3 +67,4 @@ services:
 
 volumes:
   mongo-data:
+  uploads-data:

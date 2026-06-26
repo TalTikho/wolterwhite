@@ -1,45 +1,45 @@
 const unique_chars = ['@', '!', '#', '$', '%', '^', '&', '*'];
 
 //Validation dictionary
-const validationRules = {
+export const validationRules = {
     username: {
         required: {
             expect: true,
-            message: "You must choose a username\n"
+            message: "You must choose a username"
         }, minLength: {
             expect: 4,
-            message: "username must be at least 4 characters long\n"
+            message: "username must be at least 4 characters long"
         },
         numbers_and_letters: {
             //regex for all letters and digits.
             expect: /^(?=.*[a-zA-Z])(?=.*[0-9])/,
-            message: "username must have numbers and letters\n"
+            message: "username must have numbers and letters"
         },
     },
     displayName: {
         required: {
             expect: true,
-            message: "You must choose a displayName\n"
+            message: "You must choose a displayName"
         }, minLength: {
             expect: 4,
-            message: "displayName must be at least 4 characters long\n"
+            message: "displayName must be at least 4 characters long"
         }
     },
     phone: {
         required: {
             expect: true,
-            message: "You must enter a phone number\n"
+            message: "You must enter a phone number"
         },
         pattern: {
             //regex for a specific (the one specified in the message) phone number.
             expect: /^\d{3}-\d{3}-\d{4}$/,
-            message: "Enter a phone number in the XXX-XXX-XXXX format where X is an integer\n"
+            message: "Enter a phone number in the XXX-XXX-XXXX format where X is an integer"
         }
     },
     address: {
         required: {
             expect: true,
-            message: "You must enter an address\n"
+            message: "You must enter an address"
         },
         pattern: {
             //regex for all pairs of numbers for coordinates.
@@ -50,55 +50,66 @@ const validationRules = {
     password: {
         required: {
             expect: true,
-            message: "You must enter a password\n"
+            message: "You must enter a password"
         },
         minLength: {
             expect: 8,
-            message: "password must be at least 8 characters long\n"
+            message: "password must be at least 8 characters long"
         },
         numbers_and_letters: {
             expect: /^(?=.*[a-zA-Z])(?=.*[0-9])/,
-            message: "password must have numbers and letters\n"
+            message: "password must have numbers and letters"
         },
         unique_chars: {
             //If password contains at least one unique character it is ok.
             //unique is what is in the list in the top of the file.
             expect: (text) => ['@', '!', '#', '$', '%', '^', '&', '*'].some(char => text.includes(char)),
-            message: "password must have at least one unique_char\n"
+            message: "password must have at least one unique_char"
         },
         upper_lower: {
             //IF the text is different than its conversions to lower and upper it
             //means at least one letter is different cased than the others.
             expect: (text) => text.toLowerCase() !== text && text.toUpperCase() !== text,
-            message: "password must have at least one upper and one lower case char\n"
+            message: "password must have at least one upper and one lower case char"
         },
     },
     profilePic: {
         required: {
             expect: true,
-            message: "You must have a profilePic\n"
+            message: "You must have a profilePic"
         },
         must_upload_picture: {
             //A picture has a name.
             expect: (text) => text.trim() !== "",
-            message: "profilePic must exist.\n"
+            message: "profilePic must exist."
         },
     }
 }
 
 
 export const userDataRegistration = (req, res, next) => {
+    console.log("req.file:", req.file);
     const userData = req.body;
     const errors = {};
     var missing = false;
     let profilePic = "";
     if (req.file) {
-        // Build the relative path 
+        // Build the relative path  to the pic.
         profilePic = req.file.filename;
     }
     userData.profilePic = profilePic;
-
+    console.log("req.body:", req.body);
+    //Attackers cannot inject invalid users by writing directly to the DB
+    //mongo already handles this by checking types so this just gives a clean error.
+    for (const field in userData) {
+        if (typeof userData[field] === 'object' && userData[field] !== null) {
+            return res.status(400).json({
+                errors: { general: ["Invalid input detected, a field cannot be an object\n"] }
+            });
+        }
+    }
     for (const field in validationRules) {
+
 
 
         //Open the object to get the actual field's object holding the rules
@@ -150,6 +161,7 @@ export const userDataRegistration = (req, res, next) => {
                             errors[field].push(errorMessage);
                         }
                     }
+                    break;
                 default:
                     console.log("ok");
             }

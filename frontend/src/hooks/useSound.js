@@ -16,9 +16,7 @@ export function useSound () {
     }
     //pause method
     const pause = () =>{
-        audioRef.current.pause().catch(error=>{
-            console.error("No path provided");
-        });
+        audioRef.current.pause();
     };
     //clear after leaving the using component.
     useEffect(()=>{
