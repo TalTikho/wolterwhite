@@ -10,7 +10,7 @@ export function useSound() {
             audioRef.current.src = "";
         }
         const audio = new Audio(soundPath);
-        //return a promise se we finish playing the sound.
+        //return a promise so we finish playing the sound.
         audioRef.current = audio;
         audio.currentTime = offset;
         return new Promise((resolve) => {
