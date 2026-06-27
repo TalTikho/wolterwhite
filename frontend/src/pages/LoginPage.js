@@ -13,7 +13,9 @@ async function login(username, password) {
 
 export const Login = () => {
     const { tokenToStorage } = useAuthContext();
-    const { pause, playSound: successLog, playSound: failLog } = useSound();
+    const { playSound: successLog } = useSound();
+    const { playSound: failLog } = useSound();
+    const { pause } = useSound();
     const [username, setUsername] = useState("");
     const passwordRef = useRef("");
     const [error, setError] = useState(null);
@@ -55,10 +57,10 @@ export const Login = () => {
         try {
             setError(null);
             const newToken = await login(usr, pwd);
-            successLog('/IAmTheCook.wav');
+            await successLog('/IAmTheCook.wav', 0.4);
             tokenToStorage(newToken);
             //avoid race condition
-            setTimeout(() => navigate("/"), 500);
+            navigate("/");
         } catch (err) {
             setError(err.message);
             failLog('/WhoTheHellAreYou.wav');
