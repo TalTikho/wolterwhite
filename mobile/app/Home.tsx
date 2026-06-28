@@ -169,14 +169,14 @@ export const Home = () => {
       {cardsVisible && (
         <View style={styles.content}>
           {isAdmin && (
-            <TouchableOpacity style={styles.adminBtn} onPress={() => router.push('/admin')}>
+            <TouchableOpacity style={styles.adminBtn} onPress={() => router.push('/')}>
               <Text style={styles.adminBtnText}>⚙️ Open Admin Dashboard</Text>
             </TouchableOpacity>
           )}
           {loading && <Text style={styles.status}>Loading restaurants...</Text>}
           {error && <Text style={[styles.status, styles.statusError]}>{error}</Text>}
           {!loading && !error && filtered.length === 0 && search !== '' && (
-            <Text style={styles.status}>No restaurants found for "{search}"</Text>
+            <Text style={styles.status}>No restaurants found for {`"${search}"`}</Text>
           )}
           {!loading && !error && (
             <FlatList

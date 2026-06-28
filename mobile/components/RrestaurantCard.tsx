@@ -32,10 +32,10 @@ export const RestaurantCard = ({ restaurant, onQuickView }: Props) => {
   return (
     <TouchableOpacity
       style={styles.card}
-      onPress={() => router.push(`/restaurants/${id}`)}
+      onPress={() => router.push(`//${id}`)}
     >
       <Image
-        source={imageUrl ? { uri: imageUrl } : require('../assets/knock.png')}
+        source={imageUrl ? { uri: imageUrl } : require('../assets/images/knock.png')}
         style={styles.image}
         resizeMode="cover"
       />

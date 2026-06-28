@@ -51,7 +51,7 @@ export const Navbar = () => {
 
   const handleLogout = async () => {
     await logOut();
-    router.replace('/login');
+    router.replace('/');
   };
 
   const SearchScopeOption = ({ value, label }: { value: string; label: string }) => {
@@ -118,7 +118,7 @@ export const Navbar = () => {
               </Link>
               <View style={styles.userInfo}>
                 <Image
-                  source={profilePic ? { uri: profilePic } : require('../assets/knock.png')}
+                  source={profilePic ? { uri: profilePic } : require('../assets/images/knock.png')}
                   style={styles.avatar}
                 />
                 <Text style={styles.username}>{displayName}</Text>
@@ -129,10 +129,10 @@ export const Navbar = () => {
             </View>
           ) : (
             <View style={styles.profileSection}>
-              <Link href="/login" style={styles.outlineBtn}>
+              <Link href="/" style={styles.outlineBtn}>
                 <Text style={styles.outlineBtnText}>Login</Text>
               </Link>
-              <Link href="/register" style={styles.ghostBtn}>
+              <Link href="/" style={styles.ghostBtn}>
                 <Text style={styles.ghostBtnText}>Register</Text>
               </Link>
             </View>
