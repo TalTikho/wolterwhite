@@ -29,6 +29,13 @@ export default function RootLayout() {
                   title: 'My Orders 📦',
                 }}
               />
+              <Drawer.Screen
+                name="login"
+                options={{
+                  drawerItemStyle: { display: 'none' }, // hide from menu
+                  title: 'Login',
+                }}
+              />
             </Drawer>
           </GestureHandlerRootView>
         </RestaurantFilterProvider>

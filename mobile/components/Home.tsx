@@ -13,7 +13,7 @@ import { useAuthContext } from '@/context/AuthContext';
 import { useRestaurantFilter } from '@/context/RestaurantFilterContext';
 import { useTheme } from '@/context/ThemeContext';
 import { Colors } from '@/constants/theme';
-import { RestaurantCard } from '@/components/RrestaurantCard'
+import { RestaurantCard } from '@/components/RrestaurantCard';
 import { RestaurantDetailsModal } from '@/components/RestaurantDetailModal';
 import { sendGet } from '@/services/api';
 import { homeStyles } from '@/styles/homeStyles';
@@ -55,8 +55,17 @@ export const Home = () => {
   const colors = isDarkMode ? Colors.dark : Colors.light;
   const styles = homeStyles(colors);
 
-  const payload = JSON.parse(atob(token!.split('.')[1]));
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!token) {
+      // router.replace typing is strict; cast to any to allow dynamic path
+      router.replace('/login' as unknown as any);
+    }
+  }, [token]);
+
+  const payload = token ? JSON.parse(atob(token.split('.')[1])) : null;
   const userCoords: UserCoords = (() => {
+    if (!payload) return null;
     const x = toNumber(payload.x);
     const y = toNumber(payload.y);
     if (x !== null && y !== null) return { x, y };
@@ -114,6 +123,7 @@ export const Home = () => {
   }, [token]);
 
   useEffect(() => {
+    if (!token) return;
     const fetchRestaurants = async () => {
       try {
         const data = await sendGet('/api/restaurants', token);
@@ -127,7 +137,9 @@ export const Home = () => {
     fetchRestaurants();
     const intervalId = setInterval(fetchRestaurants, 1000);
     return () => clearInterval(intervalId);
-  }, []);
+  }, [token]);
+
+  if (!token) return null;
 
   const filtered = restaurants.filter((r) => {
     const searchLower = search.toLowerCase();
