@@ -13,7 +13,7 @@ import { useAuthContext } from '@/context/AuthContext';
 import { useRestaurantFilter } from '@/context/RestaurantFilterContext';
 import { useTheme } from '@/context/ThemeContext';
 import { Colors } from '@/constants/theme';
-import { RestaurantCard } from '@/components/RrestaurantCard';
+import { RestaurantCard } from '@/components/RrestaurantCard'
 import { RestaurantDetailsModal } from '@/components/RestaurantDetailModal';
 import { sendGet } from '@/services/api';
 import { homeStyles } from '@/styles/homeStyles';
@@ -47,25 +47,16 @@ const toNumber = (value: any): number | null => {
   return Number.isNaN(n) ? null : n;
 };
 
-export const Home = () => {
-  const { token } = useAuthContext();
+// token is guaranteed non-null by index.tsx before this renders
+export const Home = ({ token }: { token: string }) => {
   const router = useRouter();
   const { isDarkMode } = useTheme();
   const { search, filters, cardsVisible, nearMeOnly, nearMeRadiusKm } = useRestaurantFilter();
   const colors = isDarkMode ? Colors.dark : Colors.light;
   const styles = homeStyles(colors);
 
-  // Redirect to login if not authenticated
-  useEffect(() => {
-    if (!token) {
-      // router.replace typing is strict; cast to any to allow dynamic path
-      router.replace('/login' as unknown as any);
-    }
-  }, [token]);
-
-  const payload = token ? JSON.parse(atob(token.split('.')[1])) : null;
+  const payload = JSON.parse(atob(token.split('.')[1]));
   const userCoords: UserCoords = (() => {
-    if (!payload) return null;
     const x = toNumber(payload.x);
     const y = toNumber(payload.y);
     if (x !== null && y !== null) return { x, y };
@@ -111,19 +102,16 @@ export const Home = () => {
   }, [welcome]);
 
   useEffect(() => {
-    if (token) {
-      try {
-        const p = JSON.parse(atob(token.split('.')[1]));
-        setDisplayName(p?.displayName || 'User');
-        setIsAdmin(p?.username?.toLowerCase() === 'admin1');
-      } catch (e) {
-        console.error('Error parsing token payload:', e);
-      }
+    try {
+      const p = JSON.parse(atob(token.split('.')[1]));
+      setDisplayName(p?.displayName || 'User');
+      setIsAdmin(p?.username?.toLowerCase() === 'admin1');
+    } catch (e) {
+      console.error('Error parsing token payload:', e);
     }
   }, [token]);
 
   useEffect(() => {
-    if (!token) return;
     const fetchRestaurants = async () => {
       try {
         const data = await sendGet('/api/restaurants', token);
@@ -137,9 +125,7 @@ export const Home = () => {
     fetchRestaurants();
     const intervalId = setInterval(fetchRestaurants, 1000);
     return () => clearInterval(intervalId);
-  }, [token]);
-
-  if (!token) return null;
+  }, []);
 
   const filtered = restaurants.filter((r) => {
     const searchLower = search.toLowerCase();
@@ -167,7 +153,6 @@ export const Home = () => {
 
   return (
     <SafeAreaView style={styles.wrapper}>
-
       {welcome && (
         <Animated.View style={[styles.toast, { opacity: toastOpacity }]}>
           <Text style={styles.toastTitle}>Welcome to WolterWhite</Text>

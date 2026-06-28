@@ -32,7 +32,8 @@ export default function RootLayout() {
               <Drawer.Screen
                 name="login"
                 options={{
-                  drawerItemStyle: { display: 'none' }, // hide from menu
+                  drawerItemStyle: { display: 'none' },
+                  headerShown: false,
                   title: 'Login',
                 }}
               />
