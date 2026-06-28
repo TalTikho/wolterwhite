@@ -13,8 +13,8 @@ import { useAuthContext } from '@/context/AuthContext';
 import { useRestaurantFilter } from '@/context/RestaurantFilterContext';
 import { useTheme } from '@/context/ThemeContext';
 import { Colors } from '@/constants/theme';
-import { RestaurantCard } from '@/components/RrestaurantCard'
-import { RestaurantDetailsModal } from '@/components/RestaurantDetailModal';
+import { RestaurantCard } from '@/components/RestaurantCard'
+import { RestaurantDetailsModal } from '@/components/RestaurantDetailsModal';
 import { sendGet } from '@/services/api';
 import { homeStyles } from '@/styles/homeStyles';
 
