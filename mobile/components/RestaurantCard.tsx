@@ -1,12 +1,13 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TouchableOpacity, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTheme } from '@/context/ThemeContext';
 import { Colors } from '@/constants/theme';
 import { restaurantCardStyles } from '@/styles/restaurantCardStyles';
 
 type Restaurant = {
-  id: string;
+  _id?: string;
+  id?: string;
   name: string;
   address?: string;
   image?: string;
@@ -23,22 +24,41 @@ export const RestaurantCard = ({ restaurant, onQuickView }: Props) => {
   const colors = isDarkMode ? Colors.dark : Colors.light;
   const styles = restaurantCardStyles(colors);
 
-  const { id, name, address, image } = restaurant;
+  const { name, address, image } = restaurant;
+  const targetId = restaurant.id || restaurant._id;
 
-  const imageUrl = image
-    ? `http://localhost:5000/api/images/${image}`
-    : null;
+  // Evaluates the image string and safely handles empty database entries
+  const getImageUrl = () => {
+    if (!image || image.trim() === '') return null;
+    if (image.startsWith('http://') || image.startsWith('https://')) {
+      return image;
+    }
+
+    // FIXED: Resolves localhost network bridging errors for physical devices and emulators
+    const baseUrl = Platform.select({
+      android: 'http://10.0.2.2:5000', // Redirects Android network internal requests to host PC
+      ios: 'http://localhost:5000',    // Standard default for macOS iOS Simulators
+      default: 'http://localhost:5000' // Fallback web address proxy
+    });
+
+    return `${baseUrl}/api/images/${image}`;
+  };
+
+  const finalImageUrl = getImageUrl();
 
   return (
     <TouchableOpacity
       style={styles.card}
-      onPress={() => router.push(`//${id}`)}
+      onPress={() => router.push(`/${targetId}` as any)} 
     >
-      <Image
-        source={imageUrl ? { uri: imageUrl } : require('../assets/images/knock.png')}
-        style={styles.image}
-        resizeMode="cover"
-      />
+      <View style={styles.imageWrapper}>
+        <Image
+          source={finalImageUrl ? { uri: finalImageUrl } : require('../assets/images/knock.png')}
+          style={styles.image}
+          resizeMode="cover"
+        />
+      </View>
+
       <View style={styles.body}>
         <Text style={[styles.name, { color: isDarkMode ? '#ffffff' : colors.text }]}>
           {name}

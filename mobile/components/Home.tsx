@@ -19,7 +19,7 @@ import { sendGet } from '@/services/api';
 import { homeStyles } from '@/styles/homeStyles';
 
 type Restaurant = {
-  id: string;
+  _id: string;
   name: string;
   address?: string;
   image?: string;
@@ -178,7 +178,7 @@ export const Home = ({ token }: { token: string }) => {
           {!loading && !error && (
             <FlatList
               data={filtered}
-              keyExtractor={(item) => item.id}
+              keyExtractor={(item) => item._id}
               renderItem={({ item }) => (
                 <RestaurantCard
                   restaurant={item}

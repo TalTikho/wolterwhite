@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  Platform,
 } from 'react-native';
 import { useTheme } from '@/context/ThemeContext';
 import { Colors } from '@/constants/theme';
@@ -31,9 +32,25 @@ export const RestaurantDetailsModal = ({ isOpen, onClose, restaurant }: Props) =
 
   if (!restaurant) return null;
 
-  const imageUrl = restaurant.image
-    ? `http://localhost:5000/uploads/${restaurant.image}`
-    : null;
+  // FIXED: Evaluates the image string and safely handles empty database entries
+  const getImageUrl = () => {
+    const { image } = restaurant;
+    if (!image || image.trim() === '') return null;
+    if (image.startsWith('http://') || image.startsWith('https://')) {
+      return image;
+    }
+
+    // FIXED: Resolves localhost network bridging errors for physical devices and emulators
+    const baseUrl = Platform.select({
+      android: 'http://10.0.2.2:5000', // Redirects Android network internal requests to host PC
+      ios: 'http://localhost:5000',    // Standard default for macOS iOS Simulators
+      default: 'http://localhost:5000' // Fallback web address proxy
+    });
+
+    return `${baseUrl}/api/images/${image}`; // Fixed from /uploads/ to /api/images/
+  };
+
+  const finalImageUrl = getImageUrl();
 
   return (
     <Modal
@@ -53,13 +70,14 @@ export const RestaurantDetailsModal = ({ isOpen, onClose, restaurant }: Props) =
           </View>
 
           <ScrollView>
-            {imageUrl && (
-              <Image
-                source={{ uri: imageUrl }}
-                style={styles.coverImage}
-                resizeMode="cover"
-              />
-            )}
+            {/* FIXED: Removed the condition that hid the image entirely if imageUrl was null, 
+                now it renders either the remote image or your fallback asset */}
+            <Image
+              source={finalImageUrl ? { uri: finalImageUrl } : require('../assets/images/knock.png')}
+              style={styles.coverImage}
+              resizeMode="cover"
+            />
+            
             <View style={styles.body}>
               <Text style={styles.hoursLabel}>
                 🕒 Opening Hours:{' '}
