@@ -10,9 +10,9 @@ export default function RootLayout() {
       <TokenProvider>
         <RestaurantFilterProvider>
           <GestureHandlerRootView style={{ flex: 1 }}>
-            <Stack>
-              <Stack.Screen name="login" options={{ headerShown: false }} />
-              <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="login" />
+              <Stack.Screen name="(drawer)" />
             </Stack>
           </GestureHandlerRootView>
         </RestaurantFilterProvider>
