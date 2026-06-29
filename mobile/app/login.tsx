@@ -18,7 +18,7 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     try {
-      const data = await sendPOST('/api/login', { username, password });
+      const data = await sendPOST('/api/tokens', { username, password });
       await tokenToStorage(data.token);
       router.replace('/');
     } catch (e: any) {

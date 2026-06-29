@@ -40,13 +40,17 @@ export const RestaurantCard = ({ restaurant, onQuickView }: Props) => {
         resizeMode="cover"
       />
       <View style={styles.body}>
-        <Text style={styles.name}>{name}</Text>
-        <Text style={styles.address}>
+        <Text style={[styles.name, { color: isDarkMode ? '#ffffff' : colors.text }]}>
+          {name}
+        </Text>
+        <Text style={[styles.address, { color: isDarkMode ? '#ffffff' : colors.text, opacity: 0.7 }]}>
           📍 {address || 'Address not available'}
         </Text>
         {onQuickView && (
           <TouchableOpacity style={styles.quickViewBtn} onPress={onQuickView}>
-            <Text style={styles.quickViewText}>Quick View</Text>
+            <Text style={[styles.quickViewText, { color: isDarkMode ? '#ffffff' : colors.text }]}>
+              Quick View
+            </Text>
           </TouchableOpacity>
         )}
       </View>

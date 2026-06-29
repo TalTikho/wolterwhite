@@ -68,7 +68,9 @@ export const RestaurantDetailsModal = ({ isOpen, onClose, restaurant }: Props) =
               {restaurant.description && (
                 <View style={styles.descSection}>
                   <Text style={styles.descTitle}>About Restaurant:</Text>
-                  <Text style={styles.descText}>{restaurant.description}</Text>
+                  <Text style={[styles.descText, { color: isDarkMode ? '#ffffff' : colors.text }]}>
+                    {restaurant.description}
+                  </Text>
                 </View>
               )}
             </View>
