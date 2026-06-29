@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { API_BASE_URL } from './apiConfig';
+
+export const API_BASE_URL = 'http://10.0.2.2:5000';
 
 const buildConfig = (method: string, jwt?: string | null, customHeaders = {}, body: any = null) => {
     const headers: any = {

@@ -1,5 +1,5 @@
 import { Text, View } from "react-native";
-import { ordersStyles } from "../styles/ordersStyles";
+import { ordersStyles } from "../../../styles/ordersStyles";
 
 export default function OrdersScreen() {
     return (
