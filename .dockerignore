@@ -1,0 +1,14 @@
+# .dockerignore
+node_modules/
+frontend/
+mobile/
+webServer/
+media/
+.git/
+build/
+README.md
+docker-compose.yml
+.gitignore
+Dockerfile.client
+Dockerfile.server
+.vscode/

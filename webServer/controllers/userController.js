@@ -33,11 +33,11 @@ export const registerUser = async (req, res) => {
     }
     catch (err) {
         //catch double username error. The ids are unique due to mongo.
-        if (err.code === 11000 && err.keyValue?.username) {
-            return res.status(409).json({
-                error: "This username is already taken."
-            });
-        }
+        return res.status(409).json({
+            errors: {
+                username: ["This username is already taken."]
+            }
+        });
         console.error("Server Error:", err); //Keeping this for logging.
         return res.status(500).json({
             error: "An unexpected error occurred. Please try again."

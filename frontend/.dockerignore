@@ -3,3 +3,5 @@ build
 dist
 .git
 .env
+README.md
+Dockerfile.front

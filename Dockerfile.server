@@ -8,7 +8,10 @@ RUN apt-get update && apt-get install -y cmake
 WORKDIR /usr/src/wolterwhite
 
 # Step 4: Copy all project files into the container
-COPY . .
+COPY src ./src
+COPY tests ./tests
+COPY data ./data
+COPY CMakeLists.txt .
 
 # Step 5: Create build folder and compile
 RUN mkdir -p build && cd build && \
