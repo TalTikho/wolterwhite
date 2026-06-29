@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Switch, Image, TouchableOpacity } from 'react-native';
+import { View, Text, Switch, Image, TouchableOpacity, Platform } from 'react-native';
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import { useRouter } from 'expo-router';
 import { useTheme } from '../context/ThemeContext';
@@ -16,17 +16,36 @@ export default function SideMenu(props: any) {
   const colors = isDarkMode ? Colors.dark : Colors.light;
 
   const [displayName, setDisplayName] = useState('Guest User');
+  const [userImage, setUserImage] = useState<string | null> (null);
 
   useEffect(() => {
     if (token) {
       try {
         const payload = JSON.parse(atob(token.split('.')[1]));
         setDisplayName(payload?.displayName || 'User');
+        setUserImage(payload?.profilePic || null);
       } catch (e) {
         console.error('Error parsing token in SideMenu:', e);
       }
     }
   }, [token]);
+
+  const getImageUrl = () => {
+    if (!userImage || userImage.trim() === '') return null;
+    if (userImage.startsWith('http://') || userImage.startsWith('https://')) {
+      return userImage;
+    }
+
+    const baseUrl = Platform.select({
+      android: 'http://10.0.2.2:5000',
+      ios: 'http://localhost:5000',
+      default: 'http://localhost:5000',
+    });
+
+    return `${baseUrl}/api/images/${userImage}`;
+  };
+
+  const finalImageUrl = getImageUrl();
 
   const handleLogout = async () => {
     await logOut();
@@ -42,7 +61,11 @@ export default function SideMenu(props: any) {
       {/* Profile section */}
       <View style={[sideMenuStyles.profileContainer, { borderBottomColor: colors.border }]}>
         <Image
-          source={{ uri: 'https://cdn-icons-png.flaticon.com/512/149/149071.png' }}
+          source={
+            finalImageUrl
+              ? { uri: finalImageUrl }
+              : { uri: 'https://cdn-icons-png.flaticon.com/512/149/149071.png' } // fallback stays as placeholder
+          }
           style={sideMenuStyles.avatar}
         />
         <Text style={[sideMenuStyles.userName, { color: colors.text }]}>{displayName}</Text>
