@@ -6,16 +6,13 @@ const buildConfig = (method: string, jwt?: string | null, customHeaders = {}, bo
         'Content-Type': 'application/json',
         ...customHeaders
     };
-
     if (jwt) {
         headers.Authorization = `Bearer ${jwt}`;
     }
-
     const config: any = {
         method: method,
         headers: headers,
     };
-
     if (body) {
         if (body instanceof FormData) {
             delete headers['Content-Type'];
@@ -24,34 +21,27 @@ const buildConfig = (method: string, jwt?: string | null, customHeaders = {}, bo
             config.body = JSON.stringify(body);
         }
     }
-
     return config;
 };
 
 const buildUrl = (uri: string, params: Record<string, any> = {}) => {
     const url = `${API_BASE_URL}${uri}`;
-    
     const queryString = Object.keys(params)
         .map(key => key + '=' + params[key])
         .join('&');
-        
     return queryString ? `${url}?${queryString}` : url;
 };
 
 const handleResponse = async (res: Response) => {
     if (!res.ok) {
-        const errorMessage = await res.text();
+        const errorText = await res.text();
         if (res.status === 401) {
              await AsyncStorage.removeItem('token');
-             throw new Error('Unauthorized'); 
         }
-        throw new Error(errorMessage || `HTTP error! Status: ${res.status}`);
+        throw { status: res.status, message: errorText };
     }
-
     if (res.status === 204) return null;
-
-    const data = await res.json();
-    return data;
+    return await res.json();
 };
 
 export const sendGet = async (uri: string, jwt?: string | null, params = {}, customHeaders = {}) => {
