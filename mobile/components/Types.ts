@@ -3,7 +3,7 @@ export type Product = {
   pname: string;
   pdescription: string;
   price: string;
-  image: number;
+  image: string;
 };
 
 export type Restaurant = {

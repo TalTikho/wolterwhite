@@ -1,17 +1,36 @@
 import React, { useState, useEffect } from "react";
 import { useAuthContext } from "../context/AuthContext";
-import "../style/ProductForm.css";
-
-export const ProductForm = ({ restaurantId, existingProduct = null, onSuccess, onCancel }) => {
+import { styles } from '@/styles/ProductForm'
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+}
+  from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import { ScrollView } from "react-native-gesture-handler";
+export const ProductForm = ({
+  restaurantId,
+  existingProduct = null,
+  onSuccess,
+  onCancel
+}: {
+  restaurantId: any;
+  existingProduct: any;
+  onSuccess: any;
+  onCancel: any;
+}) => {
   const { token } = useAuthContext();
   const [formData, setFormData] = useState({
     pname: "",
     pdescription: "",
     price: ""
   });
-  const [imageFile, setImageFile] = useState(null);
+  const [imageFile, setImageFile] = useState<ImagePicker.ImagePickerAsset | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (existingProduct) {
@@ -23,18 +42,28 @@ export const ProductForm = ({ restaurantId, existingProduct = null, onSuccess, o
     }
   }, [existingProduct]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  //update fields with explicit types.
+  const handleFieldUpdate = (fieldName: string, text: string) => {
+    setFormData((prev) => ({ ...prev, [fieldName]: text }));
   };
 
-  const handleFileChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setImageFile(e.target.files[0]);
+  //expo image picker usage for the form.
+  const pickImageAsync = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      quality: 1,
+      selectionLimit: 1,
+      mediaTypes: ["images"]
+    });
+
+    if (!result.canceled) {
+      //Save the image object to state
+      setImageFile(result.assets[0]);
+    } else {
+      Alert.alert("You cancelled the image picker");
     }
   };
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     setError(null);
 
@@ -55,9 +84,9 @@ export const ProductForm = ({ restaurantId, existingProduct = null, onSuccess, o
       setLoading(true);
       const isEdit = !!existingProduct;
       const productId = existingProduct ? (existingProduct.pId || existingProduct.id || existingProduct._id) : "";
-      
-      const url = isEdit 
-        ? `/api/restaurants/${restaurantId}/products/${productId}` 
+
+      const url = isEdit
+        ? `/api/restaurants/${restaurantId}/products/${productId}`
         : `/api/restaurants/${restaurantId}/products`;
       const method = isEdit ? "PATCH" : "POST";
 
@@ -67,12 +96,15 @@ export const ProductForm = ({ restaurantId, existingProduct = null, onSuccess, o
       data.append("pname", formData.pname);
       data.append("pdescription", formData.pdescription);
       data.append("price", formData.price);
-      
-      if (imageFile) {
-        data.append("image", imageFile);
-        console.log("Image file attached:", imageFile.name);
-      }
 
+      if (imageFile) {
+        //We construct the object exactly as a mobile server expects to receive a multipart/form-data file
+        data.append("image", {
+          uri: imageFile.uri,
+          name: imageFile.fileName || 'upload.jpg',
+          type: imageFile.mimeType || 'image/jpeg',
+        } as any);
+      }
       const response = await fetch(url, {
         method: method,
         headers: {
@@ -82,7 +114,7 @@ export const ProductForm = ({ restaurantId, existingProduct = null, onSuccess, o
       });
 
       // Debugging lines to capture full server outcome
-      const responseData = await response.json().catch(() => null); 
+      const responseData = await response.json().catch(() => null);
       console.log("Server Response Status:", response.status);
       console.log("Server Response Data Object:", responseData);
 
@@ -94,79 +126,61 @@ export const ProductForm = ({ restaurantId, existingProduct = null, onSuccess, o
       onSuccess();
     } catch (err) {
       console.error("Caught error in form submission block:", err);
-      setError(err.message || "Failed to process request. Please check your data.");
+      setError("Failed to process request. Please check your data.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="product-form-card">
-      <h4 className="product-form-title">
+    <ScrollView className="product-form-card">
+      <Text className="product-form-title">
         {existingProduct ? "Edit Product" : "Add New Product"}
-      </h4>
-      
-      {error && <div className="product-form-error">{error}</div>}
+      </Text>
 
-      <form onSubmit={handleSubmit} className="product-grid-form">
-        <div className="product-field-group">
-          <label className="product-field-label">Product Name *</label>
-          <input 
-            type="text" 
-            className="product-field-input" 
-            name="pname" 
-            value={formData.pname} 
-            onChange={handleChange} 
-            placeholder="e.g. Signature Fried Chicken" 
-            required 
-          />
-        </div>
-        
-        <div className="product-field-group">
-          <label className="product-field-label">Price ($) *</label>
-          <input 
-            type="number" 
-            step="0.01" 
-            className="product-field-input" 
-            name="price" 
-            value={formData.price} 
-            onChange={handleChange} 
-            placeholder="e.g. 14.99" 
-            required 
-          />
-        </div>
-        
-        <div className="product-field-group prod-field-full-width">
-          <label className="product-field-label">Product Image</label>
-          <input 
-            type="file" 
-            className="product-field-file" 
-            accept="image/*" 
-            onChange={handleFileChange} 
-          />
-        </div>
-        
-        <div className="product-field-group prod-field-full-width">
-          <label className="product-field-label">Description</label>
-          <textarea 
-            className="product-field-textarea" 
-            name="pdescription" 
-            value={formData.pdescription} 
-            onChange={handleChange} 
-            placeholder="Describe the item ingredients, allergens, or size..." 
-            rows="2"
-          ></textarea>
-        </div>
+      {error && <Text className="product-form-error">{error}</Text>}
+      {error && <Text>{error}</Text>}
+      <Text>Product Name *</Text>
+      <TextInput
+        style={styles.input}
+        value={formData.pname}
+        onChangeText={(text) => handleFieldUpdate("pname", text)}
+        placeholder="e.g. Signature Fried Chicken"
+      />
+      <Text>Price ($) *</Text>
+      <TextInput
+        style={styles.input}
+        value={formData.price}
+        onChangeText={(text) => handleFieldUpdate("price", text)}
+        placeholder="e.g. 14.99"
+      />
+      <Text>Product Image</Text>
+      <TouchableOpacity
+        onPress={pickImageAsync}
+      ><Text>Image picker</Text></TouchableOpacity>
 
-        <div className="product-actions-wrapper prod-field-full-width">
-          <button type="submit" className="product-submit-btn" disabled={loading}>
-            {loading ? "Saving..." : (existingProduct ? "Update Product" : "Create Product")}
-          </button>
-          <button type="button" className="product-cancel-btn" onClick={onCancel}>
-            Cancel
-          </button>
-        </div>
-      </form>
-    </div>
+      <Text>Description</Text>
+      <TextInput
+        style={styles.input}
+        value={formData.pdescription}
+        onChangeText={(text) => handleFieldUpdate("pdescription", text)}
+        placeholder="Describe the item ingredients, allergens, or size..."
+      />
+      <TouchableOpacity
+        onPress={handleSubmit}
+        disabled={loading}
+      >
+        <Text>{loading ? "Saving..." : (existingProduct ? "Update Changes" : "Create Restaurant")}</Text>
+          <TouchableOpacity 
+          onPress={handleSubmit}
+           disabled={loading}
+           >
+            <Text>{loading ? "Saving..." : (existingProduct ? "Update Product" : "Create Product")}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity  onPress={onCancel}>
+            <Text>Cancel</Text>
+          </TouchableOpacity>
+        </TouchableOpacity>
+    </ScrollView >
   );
 };
