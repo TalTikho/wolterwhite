@@ -3,10 +3,12 @@ import { Stack } from "expo-router";
 import { ThemeProvider } from '../context/ThemeContext';
 import { TokenProvider } from '../context/AuthContext';
 import { RestaurantFilterProvider } from '../context/RestaurantFilterContext';
+import { CartProvider } from '@/context/CartContext';
 
 export default function RootLayout() {
   return (
     <ThemeProvider>
+      <CartProvider>
       <TokenProvider>
         <RestaurantFilterProvider>
           <GestureHandlerRootView style={{ flex: 1 }}>
@@ -17,6 +19,7 @@ export default function RootLayout() {
           </GestureHandlerRootView>
         </RestaurantFilterProvider>
       </TokenProvider>
+      </CartProvider>
     </ThemeProvider>
   );
 }

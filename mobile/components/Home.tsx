@@ -166,7 +166,7 @@ export const Home = ({ token }: { token: string }) => {
       {cardsVisible && (
         <View style={styles.content}>
           {isAdmin && (
-            <TouchableOpacity style={styles.adminBtn} onPress={() => router.push('/')}>
+            <TouchableOpacity style={styles.adminBtn} onPress={() => router.push('/AdminPage')}>
               <Text style={styles.adminBtnText}>⚙️ Open Admin Dashboard</Text>
             </TouchableOpacity>
           )}
