@@ -144,7 +144,7 @@ Then in a new terminal:
 ```bash
 cd mobile
 npm install
-npx expo start --tunnel
+npx expo start -c --tunnel
 ```
 
 > ⚠️ Note that you opened your emulatorand it should be running beforehand. Press `a` in the Expo CLI to open the Android emulator, or scan the QR code with Expo Go on a physical device.
