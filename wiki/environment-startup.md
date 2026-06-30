@@ -64,7 +64,7 @@ Open a new terminal (keep Docker running in the other one):
 ```bash
 cd mobile
 npm install
-npx expo start --tunnel
+npx expo start -c --tunnel
 ```
 
 > ⚠️ Note that you opened your emulator and it should be running beforehand. Press `a` in the Expo CLI to open the Android emulator, or scan the QR code with Expo Go on a physical device.
