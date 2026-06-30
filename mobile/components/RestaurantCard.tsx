@@ -25,7 +25,7 @@ export const RestaurantCard = ({ restaurant, onQuickView }: Props) => {
   const styles = restaurantCardStyles(colors);
 
   const { name, address, image } = restaurant;
-  const targetId = restaurant.id || restaurant._id;
+  const targetId = restaurant._id;
 
   // Evaluates the image string and safely handles empty database entries
   const getImageUrl = () => {
@@ -49,7 +49,10 @@ export const RestaurantCard = ({ restaurant, onQuickView }: Props) => {
   return (
     <TouchableOpacity
       style={styles.card}
-      onPress={() => router.push(`/${targetId}` as any)} 
+      onPress={() => {
+        if (!targetId) return;
+        router.push({ pathname: '/RestaurantPage', params: { id: targetId } });
+      }}
     >
       <View style={styles.imageWrapper}>
         <Image

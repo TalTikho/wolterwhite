@@ -40,23 +40,26 @@ export const RestaurantForm = ({ existingRestaurant, onSuccess, onCancel }: {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null)
   const [errors, setErrors] = useState<Record<string, string>>({});
-  
+
   const validate = () => {
     const e: Record<string, string> = {};
 
     //validate neccesary fields and enter them into a dictionary.
-    if (!formData.name.trim()) e.name = "Restaurant name is required.";
-    if (!formData.address.trim()) e.address = "Address is required.";
-    if (!formData.hours.trim()) e.hours = "Hours are required.";
-    if (!formData.addressX.trim()) e.addressX = "Latitude is required.";
-    if (!formData.addressY.trim()) e.addressY = "Longitude is required.";
-    if (!formData.phone.trim()) e.phone = "phone number is required.";
-    if (!formData.description.trim()) e.description = "description is required.";
-    
-    if (formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+    if (!existingRestaurant && !formData.name.trim()) e.name = "Restaurant name is required.";
+    if (!existingRestaurant && !formData.address.trim()) e.address = "Address is required.";
+    if (!existingRestaurant && !formData.hours.trim()) e.hours = "Hours are required.";
+    if (!existingRestaurant && !formData.addressX.trim()) e.addressX = "Latitude is required.";
+    if (!existingRestaurant && !formData.addressY.trim()) e.addressY = "Longitude is required.";
+    if (!existingRestaurant && !formData.phone.trim()) e.phone = "phone number is required.";
+    if (!existingRestaurant && !formData.description.trim()) e.description = "description is required.";
+    if (!existingRestaurant && !formData.email) {
+      e.email = "email address is required.";
+    }
+
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       e.email = "Please enter a valid email address: losPollos@at.site";
     }
-    
+
     if (formData.addressX && isNaN(parseFloat(formData.addressX))) e.addressX = "Latitude must be a valid number.";
     if (formData.addressY && isNaN(parseFloat(formData.addressY))) e.addressY = "Longitude must be a valid number.";
 
@@ -66,8 +69,11 @@ export const RestaurantForm = ({ existingRestaurant, onSuccess, onCancel }: {
     }
 
     // Set a general error if absolutely any key exists inside our validation tracking dictionary
-    if (Object.keys(e).length > 0) {
+    if (Object.keys(e).length > 0 && !existingRestaurant) {
       e.general = "All required fields must be filled correctly.";
+    }
+    else if (Object.keys(e).length > 0 && existingRestaurant) {
+      e.general = "All edited fields must be filled correctly.";
     }
 
     setErrors(e);
@@ -147,7 +153,7 @@ export const RestaurantForm = ({ existingRestaurant, onSuccess, onCancel }: {
 
       //try editing or posting, error will be throughn through the api if the call is not good.
       if (isEdit) {
-        await sendPATCH(`/api/restaurants/${existingRestaurant._id}`, data, token);
+        await sendPATCH(url, data, token);
       } else {
         await sendPOST(`/api/restaurants`, data, token);
       }
@@ -182,7 +188,7 @@ export const RestaurantForm = ({ existingRestaurant, onSuccess, onCancel }: {
             value={formData.name}
             onChangeText={(text) => handleFieldUpdate("name", text)}
             placeholder="e.g. Los Pollos Hermanos"
-            placeholderTextColor={colors.text + '66'} 
+            placeholderTextColor={colors.text + '66'}
           />
           {errors.name && <Text style={styles.fieldErrorText}>{errors.name}</Text>}
         </View>
@@ -292,7 +298,7 @@ export const RestaurantForm = ({ existingRestaurant, onSuccess, onCancel }: {
           />
           {errors.description && <Text style={styles.fieldErrorText}>{errors.description}</Text>}
         </View>
-        
+
         {/* Render general error right before buttons */}
         {errors.general && <Text style={[styles.fieldErrorText, { marginBottom: 12, textAlign: 'center' }]}>{errors.general}</Text>}
 
@@ -306,7 +312,7 @@ export const RestaurantForm = ({ existingRestaurant, onSuccess, onCancel }: {
               {loading ? "Saving..." : (existingRestaurant ? "Update Changes" : "Create Restaurant")}
             </Text>
           </TouchableOpacity>
-          
+
           {onCancel && (
             <TouchableOpacity style={styles.cancelBtn} onPress={onCancel} disabled={loading}>
               <Text style={styles.cancelBtnText}>Cancel</Text>

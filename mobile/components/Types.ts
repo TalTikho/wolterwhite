@@ -14,4 +14,6 @@ export type Restaurant = {
   addressX?: number;
   addressY?: number;
   products?: { pname: string }[];
+  hours: string;
+  description: string;
 };

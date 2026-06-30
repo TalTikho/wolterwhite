@@ -20,7 +20,9 @@ import {
   Platform
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { adminStyles  } from "@/styles/adminstyles";
+import { adminStyles } from "@/styles/adminstyles";
+import { router, useRouter } from 'expo-router';
+import { routePatternToRegex } from "expo-router/build/fork/getStateFromPath-forks";
 
 export default function AdminPage() {
   //Accepts any image string (from a restaurant OR a product) and returns the native-safe URL
@@ -290,6 +292,11 @@ export default function AdminPage() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <View style={styles.headerRow}>
+        <TouchableOpacity style={styles.primaryActionBtn} onPress={() => { router.replace('/') }}>
+          <Text style={styles.primaryActionBtnText}>Back Home</Text>
+        </TouchableOpacity>
+      </View>
       <View style={styles.headerRow}>
         <Text style={styles.pageTitle}>Admin Dashboard</Text>
         <TouchableOpacity style={styles.primaryActionBtn} onPress={() => { setEditingRestaurant(null); setShowRestaurantForm(!showRestaurantForm); }}>

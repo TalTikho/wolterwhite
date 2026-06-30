@@ -33,6 +33,7 @@ export const ProductForm = ({
     pdescription: "",
     price: ""
   });
+  
   const [imageFile, setImageFile] = useState<ImagePicker.ImagePickerAsset | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -46,7 +47,9 @@ export const ProductForm = ({
       setFormData({
         pname: existingProduct.pname || existingProduct.name || "",
         pdescription: existingProduct.pdescription || existingProduct.description || "",
-        price: existingProduct.price || ""
+        //In the databse products prices' are saved as ints so to read them back in editing mode
+        //we need to convert back to string (typescript).
+        price: existingProduct.price ? String(existingProduct.price) : ""
       });
     }
   }, [existingProduct]);
@@ -94,6 +97,7 @@ export const ProductForm = ({
       const isEdit = !!existingProduct;
       const productId = existingProduct ? (existingProduct.pId || existingProduct.id || existingProduct._id) : "";
 
+      //url building and dbug setup.
       const url = isEdit
         ? `/api/restaurants/${restaurantId}/products/${productId}`
         : `/api/restaurants/${restaurantId}/products`;
