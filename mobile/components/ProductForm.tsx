@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { useAuthContext } from "../context/AuthContext";
-import { styles } from '@/styles/ProductForm'
+import { useTheme } from '@/context/ThemeContext';
+import { Colors } from '@/constants/theme';
+import { sharedFormStyles } from "@/styles/formStyles";
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
   Alert,
+  Image,
 }
   from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { ScrollView } from "react-native-gesture-handler";
+import { sendPOST, sendPATCH } from '@/services/api';
+
 export const ProductForm = ({
   restaurantId,
   existingProduct = null,
@@ -31,6 +36,10 @@ export const ProductForm = ({
   const [imageFile, setImageFile] = useState<ImagePicker.ImagePickerAsset | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  //dark mode setup.
+  const { isDarkMode } = useTheme();
+  const colors = isDarkMode ? Colors.dark : Colors.light;
+  const styles = sharedFormStyles(colors);
 
   useEffect(() => {
     if (existingProduct) {
@@ -51,7 +60,7 @@ export const ProductForm = ({
   const pickImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
-      quality: 1,
+      quality: 0.5,
       selectionLimit: 1,
       mediaTypes: ["images"]
     });
@@ -105,24 +114,12 @@ export const ProductForm = ({
           type: imageFile.mimeType || 'image/jpeg',
         } as any);
       }
-      const response = await fetch(url, {
-        method: method,
-        headers: {
-          "Authorization": `Bearer ${token}`
-        },
-        body: data,
-      });
-
-      // Debugging lines to capture full server outcome
-      const responseData = await response.json().catch(() => null);
-      console.log("Server Response Status:", response.status);
-      console.log("Server Response Data Object:", responseData);
-
-      if (!response.ok) {
-        throw new Error(responseData?.message || `Server rejected with status ${response.status}`);
+      //fetching product using the fetcher whether to edit/create.
+      if (isEdit) {
+        await sendPATCH(`/api/restaurants/${restaurantId}/products/${productId}`, data, token);
+      } else {
+        await sendPOST(`/api/restaurants/${restaurantId}/products`, data, token);
       }
-
-      console.log("Product saved successfully, executing onSuccess callback.");
       onSuccess();
     } catch (err) {
       console.error("Caught error in form submission block:", err);
@@ -133,54 +130,86 @@ export const ProductForm = ({
   };
 
   return (
-    <ScrollView className="product-form-card">
-      <Text className="product-form-title">
-        {existingProduct ? "Edit Product" : "Add New Product"}
-      </Text>
+    <ScrollView showsVerticalScrollIndicator={false}>
+      <View style={styles.card}>
+        <Text style={styles.title}>
+          {existingProduct ? "Edit Product" : "Add New Product"}
+        </Text>
 
-      {error && <Text className="product-form-error">{error}</Text>}
-      {error && <Text>{error}</Text>}
-      <Text>Product Name *</Text>
-      <TextInput
-        style={styles.input}
-        value={formData.pname}
-        onChangeText={(text) => handleFieldUpdate("pname", text)}
-        placeholder="e.g. Signature Fried Chicken"
-      />
-      <Text>Price ($) *</Text>
-      <TextInput
-        style={styles.input}
-        value={formData.price}
-        onChangeText={(text) => handleFieldUpdate("price", text)}
-        placeholder="e.g. 14.99"
-      />
-      <Text>Product Image</Text>
-      <TouchableOpacity
-        onPress={pickImageAsync}
-      ><Text>Image picker</Text></TouchableOpacity>
+        {error && (
+          <View style={styles.errorBlock}>
+            <Text style={styles.errorText}>{error}</Text>
+          </View>
+        )}
 
-      <Text>Description</Text>
-      <TextInput
-        style={styles.input}
-        value={formData.pdescription}
-        onChangeText={(text) => handleFieldUpdate("pdescription", text)}
-        placeholder="Describe the item ingredients, allergens, or size..."
-      />
-      <TouchableOpacity
-        onPress={handleSubmit}
-        disabled={loading}
-      >
-        <Text>{loading ? "Saving..." : (existingProduct ? "Update Changes" : "Create Restaurant")}</Text>
-          <TouchableOpacity 
-          onPress={handleSubmit}
-           disabled={loading}
-           >
-            <Text>{loading ? "Saving..." : (existingProduct ? "Update Product" : "Create Product")}</Text>
+        <View style={styles.fieldGroup}>
+          <Text style={styles.label}>Product Name *</Text>
+          <TextInput
+            style={styles.input}
+            value={formData.pname}
+            onChangeText={(text) => handleFieldUpdate("pname", text)}
+            placeholder="e.g. Signature Fried Chicken"
+            placeholderTextColor={colors.text + '66'}
+          />
+        </View>
+
+        <View style={styles.fieldGroup}>
+          <Text style={styles.label}>Price ($) *</Text>
+          <TextInput
+            style={styles.input}
+            value={formData.price}
+            onChangeText={(text) => handleFieldUpdate("price", text)}
+            placeholder="e.g. 14.99"
+            keyboardType="numeric"
+            placeholderTextColor={colors.text + '66'}
+          />
+        </View>
+
+        <View style={styles.fieldGroup}>
+          <Text style={styles.label}>Product Image</Text>
+          <TouchableOpacity style={styles.filePickerBtn} onPress={pickImageAsync}>
+            <Text style={styles.filePickerText}>Choose File...</Text>
           </TouchableOpacity>
-          <TouchableOpacity  onPress={onCancel}>
-            <Text>Cancel</Text>
+          {imageFile && (
+            <Image
+              source={{ uri: imageFile.uri }}
+              style={styles.imagePreview}
+              resizeMode="cover"
+            />
+          )}
+        </View>
+
+        <View style={styles.fieldGroup}>
+          <Text style={styles.label}>Description</Text>
+          <TextInput
+            style={[styles.input, styles.textarea]}
+            value={formData.pdescription}
+            onChangeText={(text) => handleFieldUpdate("pdescription", text)}
+            placeholder="Describe the item ingredients, allergens, or size..."
+            multiline={true}
+            numberOfLines={3}
+            placeholderTextColor={colors.text + '66'}
+          />
+        </View>
+
+        <View style={styles.actionsWrapper}>
+          <TouchableOpacity
+            style={[styles.submitBtn, { opacity: loading ? 0.6 : 1 }]}
+            onPress={handleSubmit}
+            disabled={loading}
+          >
+            <Text style={styles.submitBtnText}>
+              {loading ? "Saving..." : (existingProduct ? "Update Product" : "Create Product")}
+            </Text>
           </TouchableOpacity>
-        </TouchableOpacity>
-    </ScrollView >
+
+          {onCancel && (
+            <TouchableOpacity style={styles.cancelBtn} onPress={onCancel} disabled={loading}>
+              <Text style={styles.cancelBtnText}>Cancel</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+      </View>
+    </ScrollView>
   );
 };

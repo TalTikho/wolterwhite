@@ -1,3 +1,4 @@
+// admin.tsx
 import React, { useEffect, useState } from "react";
 import { sendGet, sendDELETE } from '@/services/api';
 import { RestaurantForm } from "@/components/RestaurantForm";
@@ -41,7 +42,7 @@ export default function AdminPage() {
   const { token } = useAuthContext();
   const { isDarkMode } = useTheme();
   const colors = isDarkMode ? Colors.dark : Colors.light;
-  const styles = adminStyles (colors);
+  const styles = adminStyles(colors);
 
   //Restaurant and Product arrays as defined in Types according to their schemas in webServer moddels.
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
@@ -209,20 +210,20 @@ export default function AdminPage() {
   if (selectedRestaurantForMenu) {
     const restaurantId = selectedRestaurantForMenu._id;
     return (
-      <SafeAreaView style={styles.container} >
-        <TouchableOpacity className="admin-back-btn" onPress={() => {
+      <SafeAreaView style={styles.container}>
+        <TouchableOpacity style={styles.backBtn} onPress={() => {
           setSelectedRestaurantForMenu(null);
           removeRestFromMem();
           setShowProductForm(false);
           setProducts([]);
         }}>
-          <Text style={styles.text}>← Back to Restaurants</Text>
+          <Text style={styles.backBtnText}>← Back to Restaurants</Text>
         </TouchableOpacity>
 
-        <View>
-          <Text style={styles.headerText}>Menu: {selectedRestaurantForMenu.name}</Text>
-          <TouchableOpacity onPress={() => { setEditingProduct(null); setShowProductForm(!showProductForm); }}>
-            <Text style={styles.text}>{showProductForm ? "Cancel" : "+ Add Product"}</Text>
+        <View style={styles.headerRow}>
+          <Text style={styles.pageTitle} numberOfLines={1}>Menu: {selectedRestaurantForMenu.name}</Text>
+          <TouchableOpacity style={styles.primaryActionBtn} onPress={() => { setEditingProduct(null); setShowProductForm(!showProductForm); }}>
+            <Text style={styles.primaryActionBtnText}>{showProductForm ? "Cancel" : "+ Add Product"}</Text>
           </TouchableOpacity>
         </View>
 
@@ -236,60 +237,71 @@ export default function AdminPage() {
         )}
         <View />
 
-        <View >
+        <View style={styles.tableWrapper}>
           <FlatList
             data={products}
 
             // If products is empty, FlatList automatically renders this:
-            ListEmptyComponent={<Text style={styles.text}>No products found.</Text>}
+            ListEmptyComponent={<Text style={styles.tableEmpty}>No products found.</Text>}
 
             keyExtractor={(item) => item._id}
             ListHeaderComponent={
               <View style={styles.tableHeaderRow}>
-                <Text style={styles.headerText}>Image</Text>
-                <Text style={styles.headerText}>Name</Text>
-                <Text style={styles.headerText}>Description</Text>
-                <Text style={styles.headerText}>Price</Text>
-                <Text style={styles.headerText}>Actions</Text>
+                <Text style={[styles.tableHeaderText, styles.imageCol]}>Image</Text>
+                <Text style={[styles.tableHeaderText, styles.nameCol]}>Name</Text>
+                <Text style={[styles.tableHeaderText, styles.priceCol]}>Price</Text>
+                <Text style={[styles.tableHeaderText, styles.actionsCol, { textAlign: 'right' }]}>Actions</Text>
               </View>
             }
             renderItem={({ item }) => {
               const finalImageUrl = getNativeImageUrl(item.image);
               return (
-                <View style={styles.row}>
-                  <Image
-                    source={finalImageUrl ? { uri: finalImageUrl } : require('@/assets/images/knock.png')}
-                    style={styles.image}
-                    resizeMode="cover"
-                  />
-                  <Text style={styles.text}>{item.pname}</Text>
-                  <Text style={styles.text}>{item.pdescription}</Text>
-                  <Text style={styles.text}> ${item.price}</Text>
-                  <TouchableOpacity onPress={() => { setEditingProduct(item); setShowProductForm(true); }}>
-                    <Text style={styles.actionText}>Edit</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => handleDeleteProduct(item._id)}>
-                    <Text style={styles.deleteText}>Delete</Text>
-                  </TouchableOpacity>
+                <View style={styles.tableRow}>
+                  <View style={styles.imageCol}>
+                    <Image
+                      source={finalImageUrl ? { uri: finalImageUrl } : require('@/assets/images/knock.png')}
+                      style={styles.productThumb}
+                      resizeMode="cover"
+                    />
+                  </View>
+                  <View style={styles.nameCol}>
+                    <Text style={styles.itemImportant}>{item.pname}</Text>
+                    <Text style={styles.itemMuted} numberOfLines={2}>{item.pdescription}</Text>
+                  </View>
+                  <View style={styles.priceCol}>
+                    <Text style={styles.itemImportant}>${item.price}</Text>
+                  </View>
+                  <View style={styles.actionsCol}>
+                    <TouchableOpacity style={[styles.rowBtn, styles.btnEdit]} onPress={() => { setEditingProduct(item); setShowProductForm(true); }}>
+                      <Text style={styles.rowBtnText}>Edit</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={[styles.rowBtn, styles.btnDelete]} onPress={() => handleDeleteProduct(item._id)}>
+                      <Text style={styles.rowBtnText}>Delete</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               );
             }}
           />
         </View>
       </SafeAreaView>
-    ); 
+    );
   }
 
   return (
-    <SafeAreaView style={ styles.container}>
-      <View>
-        <Text style={styles.adminText}>Admin Dashboard</Text>
-        <TouchableOpacity onPress={() => { setEditingRestaurant(null); setShowRestaurantForm(!showRestaurantForm); }}>
-          <Text style={styles.text}>{showRestaurantForm ? "Cancel" : "+ Add New Restaurant"}</Text>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.headerRow}>
+        <Text style={styles.pageTitle}>Admin Dashboard</Text>
+        <TouchableOpacity style={styles.primaryActionBtn} onPress={() => { setEditingRestaurant(null); setShowRestaurantForm(!showRestaurantForm); }}>
+          <Text style={styles.primaryActionBtnText}>{showRestaurantForm ? "Cancel" : "+ Add New Restaurant"}</Text>
         </TouchableOpacity>
       </View>
 
-      {error && <Text>{error}</Text>}
+      {error && (
+        <View style={styles.alertError}>
+          <Text style={styles.alertErrorText}>{error}</Text>
+        </View>
+      )}
 
       {showRestaurantForm && (
         <RestaurantForm
@@ -300,36 +312,39 @@ export default function AdminPage() {
       )}
 
       {loading ? (
-        <Text>Loading data...</Text>
+        <Text style={styles.loadingText}>Loading data...</Text>
       ) : (
-        <View >
+        <View style={styles.tableWrapper}>
           <FlatList
             data={restaurants}
 
             // If products is empty, FlatList automatically renders this:
-            ListEmptyComponent={<Text>No restaurants found.</Text>}
+            ListEmptyComponent={<Text style={styles.tableEmpty}>No restaurants found.</Text>}
 
             keyExtractor={(item) => item._id}
             ListHeaderComponent={
               <View style={styles.tableHeaderRow}>
-                <Text style={styles.headerText}>Image</Text>
-                <Text style={styles.headerText}>Name</Text>
-                <Text style={styles.headerText}>Actions</Text>
+                <Text style={[styles.tableHeaderText, styles.nameCol]}>Name</Text>
+                <Text style={[styles.tableHeaderText, styles.actionsCol, { textAlign: 'right' }]}>Actions</Text>
               </View>
             }
             renderItem={({ item }) => {
-              const finalImageUrl = getNativeImageUrl(item.image);
               return (
-                <View style={styles.row}>
-                  <Image
-                    source={finalImageUrl ? { uri: finalImageUrl } : require('@/assets/images/knock.png')}
-                    style={styles.image}
-                    resizeMode="cover"
-                  />
-                  <Text>{item.name}</Text>
-                  <View><TouchableOpacity onPress={() => handleManageMenu(item)}><Text style={styles.menuText}>Menu</Text></TouchableOpacity> </View>
-                  <TouchableOpacity onPress={() => { setEditingRestaurant(item); setShowRestaurantForm(true); }}><Text style={styles.actionText}>Edit</Text></TouchableOpacity>
-                  <TouchableOpacity onPress={() => handleDeleteRestaurant(item._id)}><Text style ={styles.deleteText}>Delete</Text></TouchableOpacity>
+                <View style={styles.tableRow}>
+                  <View style={styles.nameCol}>
+                    <Text style={styles.itemImportant}>{item.name}</Text>
+                  </View>
+                  <View style={styles.actionsCol}>
+                    <TouchableOpacity style={[styles.rowBtn, styles.btnMenu]} onPress={() => handleManageMenu(item)}>
+                      <Text style={styles.rowBtnText}>Menu</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={[styles.rowBtn, styles.btnEdit]} onPress={() => { setEditingRestaurant(item); setShowRestaurantForm(true); }}>
+                      <Text style={styles.rowBtnText}>Edit</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={[styles.rowBtn, styles.btnDelete]} onPress={() => handleDeleteRestaurant(item._id)}>
+                      <Text style={styles.rowBtnText}>Delete</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               );
 

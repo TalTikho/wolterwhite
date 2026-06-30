@@ -6,11 +6,14 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  View,
+  ScrollView
 } from 'react-native';
-import { styles } from "@/styles/RestaurantForm";
+import { sharedFormStyles } from "@/styles/formStyles";
 import * as ImagePicker from 'expo-image-picker';
-import { ScrollView } from "react-native";
 import { sendPOST, sendPATCH } from '@/services/api';
+import { useTheme } from '@/context/ThemeContext';
+import { Colors } from '@/constants/theme';
 
 export const RestaurantForm = ({ existingRestaurant, onSuccess, onCancel }: {
   existingRestaurant: any;
@@ -18,6 +21,9 @@ export const RestaurantForm = ({ existingRestaurant, onSuccess, onCancel }: {
   onCancel: any;
 }) => {
   const { token } = useAuthContext();
+  const { isDarkMode } = useTheme();
+  const colors = isDarkMode ? Colors.dark : Colors.light;
+  const styles = sharedFormStyles(colors);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -34,23 +40,40 @@ export const RestaurantForm = ({ existingRestaurant, onSuccess, onCancel }: {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null)
   const [errors, setErrors] = useState<Record<string, string>>({});
+  
   const validate = () => {
     const e: Record<string, string> = {};
 
-    if (!formData.name.trim())
-      e.name = "Restaurant name is required.";
-    if (!formData.address.trim())
-      e.address = "Address is required.";
-    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
-      e.email = "Please enter a valid email address.";
-    if (formData.addressX && isNaN(parseFloat(formData.addressX)))
-      e.addressX = "Latitude must be a valid number.";
-    if (formData.addressY && isNaN(parseFloat(formData.addressY)))
-      e.addressY = "Longitude must be a valid number.";
+    //validate neccesary fields and enter them into a dictionary.
+    if (!formData.name.trim()) e.name = "Restaurant name is required.";
+    if (!formData.address.trim()) e.address = "Address is required.";
+    if (!formData.hours.trim()) e.hours = "Hours are required.";
+    if (!formData.addressX.trim()) e.addressX = "Latitude is required.";
+    if (!formData.addressY.trim()) e.addressY = "Longitude is required.";
+    if (!formData.phone.trim()) e.phone = "phone number is required.";
+    if (!formData.description.trim()) e.description = "description is required.";
+    
+    if (formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      e.email = "Please enter a valid email address: losPollos@at.site";
+    }
+    
+    if (formData.addressX && isNaN(parseFloat(formData.addressX))) e.addressX = "Latitude must be a valid number.";
+    if (formData.addressY && isNaN(parseFloat(formData.addressY))) e.addressY = "Longitude must be a valid number.";
+
+    // Only require an image if we are creating a brand new restaurant
+    if (!existingRestaurant && !imageFile) {
+      e.image = "An image is required for new restaurants.";
+    }
+
+    // Set a general error if absolutely any key exists inside our validation tracking dictionary
+    if (Object.keys(e).length > 0) {
+      e.general = "All required fields must be filled correctly.";
+    }
 
     setErrors(e);
     return Object.keys(e).length === 0; //true = valid
   };
+
   useEffect(() => {
     if (existingRestaurant) {
       setFormData({
@@ -69,16 +92,14 @@ export const RestaurantForm = ({ existingRestaurant, onSuccess, onCancel }: {
   const handleFieldUpdate = (fieldName: string, text: string) => {
     setFormData((prev) => ({ ...prev, [fieldName]: text }));
     //clear errors as user types
-    if (errors[fieldName]) {
-      setErrors((prev) => ({ ...prev, [fieldName]: '' }));
-    }
+    setErrors((prev) => ({ ...prev, [fieldName]: '', general: '' }));
   };
 
   //expo image picker usage for the form.
   const pickImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
-      quality: 1,
+      quality: 0.5,
       selectionLimit: 1,
       mediaTypes: ["images"]
     });
@@ -86,6 +107,8 @@ export const RestaurantForm = ({ existingRestaurant, onSuccess, onCancel }: {
     if (!result.canceled) {
       //Save the image object to state
       setImageFile(result.assets[0]);
+      // Clear image error if they pick one
+      setErrors((prev) => ({ ...prev, image: '', general: '' }));
     } else {
       Alert.alert("You cancelled the image picker");
     }
@@ -140,100 +163,158 @@ export const RestaurantForm = ({ existingRestaurant, onSuccess, onCancel }: {
   };
 
   return (
-    <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
-      <Text style={styles.headerText}>
-        {existingRestaurant ? "Edit Restaurant" : "Add New Restaurant"}
-      </Text>
+    <ScrollView showsVerticalScrollIndicator={false}>
+      <View style={styles.card}>
+        <Text style={styles.title}>
+          {existingRestaurant ? "Edit Restaurant" : "Add New Restaurant"}
+        </Text>
 
-      {error && <Text>{error}</Text>}
-      <Text>Restaurant Name</Text>
-      <TextInput
-        style={[styles.input, errors.name ? { borderColor: 'red' } : null]}
-        value={formData.name}
-        onChangeText={(text) => handleFieldUpdate("name", text)}
-        placeholder="e.g. Los Pollos Hermanos"
-      />
-      {errors.name && <Text style={styles.error}>{errors.name}</Text>}
-      <Text>Phone Number</Text>
-      <TextInput
-        style={styles.input}
-        value={formData.phone}
-        onChangeText={(text) => handleFieldUpdate("phone", text)}
-        placeholder="e.g. 505-142-5678"
-      />
-      <Text>Email Address</Text>
-      <TextInput
-        style={[styles.input, errors.email ? { borderColor: 'red' } : null]}
-        value={formData.email}
-        onChangeText={(text) => handleFieldUpdate("email", text)}
-        placeholder="e.g. info@lospollos.com"
-      />
-      {errors.email && <Text style={styles.error}>{errors.email}</Text>}
-      <Text>Address *(Text)</Text>
-      <TextInput
-        style={[styles.input, errors.address ? { borderColor: 'red' } : null]}
-        value={formData.address}
-        onChangeText={(text) => handleFieldUpdate("address", text)}
-        placeholder="e.g. 12000 Candelaria Rd NE, Albuquerque"
-      />
-      {errors.address && <Text style={styles.error}>{errors.address}</Text>}
-      <Text>Address X (Latitude)</Text>
-      <TextInput
-        style={[styles.input, errors.addressX ? { borderColor: 'red' } : null]}
-        value={formData.addressX}
-        onChangeText={(text) => handleFieldUpdate("addressX", text)}
-        placeholder="e.g. 35.118"
-      />
-      {errors.addressX && <Text style={styles.error}>{errors.addressX}</Text>}
-      <Text>Address Y (Longitude)</Text>
-      <TextInput
-        style={[styles.input, errors.addressX ? { borderColor: 'red' } : null]}
-        value={formData.addressY}
-        onChangeText={(text) => handleFieldUpdate("addressY", text)}
-        placeholder="e.g. -106.601"
-      />
-      {errors.addressY && <Text style={styles.error}>{errors.addressY}</Text>}
-      <Text>Restaurant Image</Text>
-      <TouchableOpacity
-        onPress={pickImageAsync}
-      ><Text>Image picker</Text></TouchableOpacity>
-      //Show Image preview.
-      {imageFile && (
-        <Image
-          source={{ uri: imageFile.uri }}
-          style={{ width: '100%', height: 200, borderRadius: 8, marginTop: 8 }}
-          resizeMode="cover"
-        />
-      )}
+        {error && (
+          <View style={styles.errorBlock}>
+            <Text style={styles.errorText}>{error}</Text>
+          </View>
+        )}
 
-      <Text>Opening Hours</Text>
-      <TextInput
-        style={styles.input}
-        value={formData.hours}
-        onChangeText={(text) => handleFieldUpdate("hours", text)}
-        placeholder="e.g. Mon-Sat: 08:00 - 22:00"
-      />
-      <Text>Description</Text>
-      <TextInput
-        style={styles.input}
-        value={formData.description}
-        onChangeText={(text) => handleFieldUpdate("description", text)}
-        placeholder="Describe your restaurant, specialties, or flavor profiles..."
-      />
+        <View style={styles.fieldGroup}>
+          <Text style={styles.label}>Restaurant Name *</Text>
+          <TextInput
+            style={[styles.input, errors.name ? styles.inputError : null]}
+            value={formData.name}
+            onChangeText={(text) => handleFieldUpdate("name", text)}
+            placeholder="e.g. Los Pollos Hermanos"
+            placeholderTextColor={colors.text + '66'} 
+          />
+          {errors.name && <Text style={styles.fieldErrorText}>{errors.name}</Text>}
+        </View>
 
+        <View style={styles.fieldGroup}>
+          <Text style={styles.label}>Phone Number</Text>
+          <TextInput
+            style={[styles.input, errors.phone ? styles.inputError : null]}
+            value={formData.phone}
+            onChangeText={(text) => handleFieldUpdate("phone", text)}
+            placeholder="e.g. 505-142-5678"
+            keyboardType="phone-pad"
+            placeholderTextColor={colors.text + '66'}
+          />
+          {errors.phone && <Text style={styles.fieldErrorText}>{errors.phone}</Text>}
+        </View>
 
-      <TouchableOpacity
-        onPress={handleSubmit}
-        disabled={loading}
-      >
-        <Text>{loading ? "Saving..." : (existingRestaurant ? "Update Changes" : "Create Restaurant")}</Text>
-      </TouchableOpacity>
-      {onCancel && (
-        < TouchableOpacity onPress={onCancel}>
-          <Text>Cancel</Text>
-        </TouchableOpacity>
+        <View style={styles.fieldGroup}>
+          <Text style={styles.label}>Email Address</Text>
+          <TextInput
+            style={[styles.input, errors.email ? styles.inputError : null]}
+            value={formData.email}
+            onChangeText={(text) => handleFieldUpdate("email", text)}
+            placeholder="e.g. info@lospollos.com"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            placeholderTextColor={colors.text + '66'}
+          />
+          {errors.email && <Text style={styles.fieldErrorText}>{errors.email}</Text>}
+        </View>
 
-      )}
+        <View style={styles.fieldGroup}>
+          <Text style={styles.label}>Address (Text) *</Text>
+          <TextInput
+            style={[styles.input, errors.address ? styles.inputError : null]}
+            value={formData.address}
+            onChangeText={(text) => handleFieldUpdate("address", text)}
+            placeholder="e.g. 12000 Candelaria Rd NE, Albuquerque"
+            placeholderTextColor={colors.text + '66'}
+          />
+          {errors.address && <Text style={styles.fieldErrorText}>{errors.address}</Text>}
+        </View>
+
+        <View style={styles.fieldGroup}>
+          <Text style={styles.label}>Address X (Latitude) *</Text>
+          <TextInput
+            style={[styles.input, errors.addressX ? styles.inputError : null]}
+            value={formData.addressX}
+            onChangeText={(text) => handleFieldUpdate("addressX", text)}
+            placeholder="e.g. 35.118"
+            keyboardType="numeric"
+            placeholderTextColor={colors.text + '66'}
+          />
+          {errors.addressX && <Text style={styles.fieldErrorText}>{errors.addressX}</Text>}
+        </View>
+
+        <View style={styles.fieldGroup}>
+          <Text style={styles.label}>Address Y (Longitude) *</Text>
+          <TextInput
+            style={[styles.input, errors.addressY ? styles.inputError : null]}
+            value={formData.addressY}
+            onChangeText={(text) => handleFieldUpdate("addressY", text)}
+            placeholder="e.g. -106.601"
+            keyboardType="numeric"
+            placeholderTextColor={colors.text + '66'}
+          />
+          {errors.addressY && <Text style={styles.fieldErrorText}>{errors.addressY}</Text>}
+        </View>
+
+        <View style={styles.fieldGroup}>
+          <Text style={styles.label}>Restaurant Image *</Text>
+          <TouchableOpacity style={[styles.filePickerBtn, errors.image ? styles.inputError : null]} onPress={pickImageAsync}>
+            <Text style={styles.filePickerText}>Choose File...</Text>
+          </TouchableOpacity>
+          {errors.image && <Text style={styles.fieldErrorText}>{errors.image}</Text>}
+          {imageFile && (
+            <Image
+              source={{ uri: imageFile.uri }}
+              style={styles.imagePreview}
+              resizeMode="cover"
+            />
+          )}
+        </View>
+
+        <View style={styles.fieldGroup}>
+          <Text style={styles.label}>Opening Hours *</Text>
+          <TextInput
+            style={[styles.input, errors.hours ? styles.inputError : null]}
+            value={formData.hours}
+            onChangeText={(text) => handleFieldUpdate("hours", text)}
+            placeholder="e.g. Mon-Sat: 08:00 - 22:00"
+            placeholderTextColor={colors.text + '66'}
+          />
+          {errors.hours && <Text style={styles.fieldErrorText}>{errors.hours}</Text>}
+        </View>
+
+        <View style={styles.fieldGroup}>
+          <Text style={styles.label}>Description</Text>
+          <TextInput
+            style={[styles.input, styles.textarea, errors.hours ? styles.inputError : null]}
+            value={formData.description}
+            onChangeText={(text) => handleFieldUpdate("description", text)}
+            placeholder="Describe your restaurant, specialties, or flavor profiles..."
+            multiline={true}
+            numberOfLines={3}
+            placeholderTextColor={colors.text + '66'}
+          />
+          {errors.description && <Text style={styles.fieldErrorText}>{errors.description}</Text>}
+        </View>
+        
+        {/* Render general error right before buttons */}
+        {errors.general && <Text style={[styles.fieldErrorText, { marginBottom: 12, textAlign: 'center' }]}>{errors.general}</Text>}
+
+        <View style={styles.actionsWrapper}>
+          <TouchableOpacity
+            style={[styles.submitBtn, { opacity: loading ? 0.6 : 1 }]}
+            onPress={handleSubmit}
+            disabled={loading}
+          >
+            <Text style={styles.submitBtnText}>
+              {loading ? "Saving..." : (existingRestaurant ? "Update Changes" : "Create Restaurant")}
+            </Text>
+          </TouchableOpacity>
+          
+          {onCancel && (
+            <TouchableOpacity style={styles.cancelBtn} onPress={onCancel} disabled={loading}>
+              <Text style={styles.cancelBtnText}>Cancel</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+
+      </View>
     </ScrollView>
   );
 };
