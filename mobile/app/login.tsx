@@ -19,46 +19,27 @@ export default function LoginScreen() {
   const [error, setError] = useState('');
 
   const handleLogin = async () => {
+    setError('');
     try {
       const data = await sendPOST('/api/tokens', { username, password });
       await tokenToStorage(data.token);
       router.replace('/(drawer)/(tabs)');
-    } catch (e) {
-      setError(String(e));
+    } catch (e: any) {
+      setError(e.status === 401 ? 'Invalid username or password' : 'Login failed, try again');
     }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>WolterWhite 🏠</Text>
-
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
-
-      <TextInput
-        style={styles.input}
-        placeholder="Username"
-        placeholderTextColor={colors.icon}
-        value={username}
-        onChangeText={setUsername}
-        autoCapitalize="none"
-      />
-      <TextInput
-        style={[styles.input, styles.passwordInput]}
-        placeholder="Password"
-        placeholderTextColor={colors.icon}
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-
+      <TextInput style={styles.input} placeholder="Username" placeholderTextColor={colors.icon} value={username} onChangeText={setUsername} autoCapitalize="none" />
+      <TextInput style={[styles.input, styles.passwordInput]} placeholder="Password" placeholderTextColor={colors.icon} value={password} onChangeText={setPassword} secureTextEntry />
       <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
         <Text style={styles.loginButtonText}>Log In</Text>
       </TouchableOpacity>
-
       <TouchableOpacity style={styles.registerContainer} onPress={() => router.push('/register')}>
-        <Text style={styles.registerText}>
-          Don't have an account? <Text style={styles.registerLink}>Register here</Text>
-        </Text>
+        <Text style={styles.registerText}>Don't have an account? <Text style={styles.registerLink}>Register here</Text></Text>
       </TouchableOpacity>
     </View>
   );
