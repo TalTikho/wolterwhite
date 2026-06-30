@@ -5,11 +5,13 @@ import { useAuthContext } from '@/context/AuthContext';
 import { sendPOST } from '@/services/api';
 import { useTheme } from '@/context/ThemeContext';
 import { Colors } from '@/constants/theme';
+import { getStyles } from '@/styles/loginStyles';
 
 export default function LoginScreen() {
   const { tokenToStorage } = useAuthContext();
   const { isDarkMode } = useTheme();
   const colors = isDarkMode ? Colors.dark : Colors.light;
+  const styles = getStyles(colors);
   const router = useRouter();
 
   const [username, setUsername] = useState('');
@@ -20,24 +22,20 @@ export default function LoginScreen() {
     try {
       const data = await sendPOST('/api/tokens', { username, password });
       await tokenToStorage(data.token);
-      router.replace('/');
-    } catch (e: any) {
-      setError(e.message || 'Login failed');
+      router.replace('/(drawer)/(tabs)');
+    } catch (e) {
+      setError(String(e));
     }
   };
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', padding: 24, backgroundColor: colors.background }}>
-      <Text style={{ fontSize: 24, fontWeight: 'bold', color: colors.text, marginBottom: 24 }}>
-        WolterWhite 🏠
-      </Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>WolterWhite 🏠</Text>
 
-      {error ? (
-        <Text style={{ color: '#ff6b6b', marginBottom: 12 }}>{error}</Text>
-      ) : null}
+      {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
       <TextInput
-        style={{ borderWidth: 1, borderColor: colors.icon, borderRadius: 8, padding: 12, color: colors.text, marginBottom: 12 }}
+        style={styles.input}
         placeholder="Username"
         placeholderTextColor={colors.icon}
         value={username}
@@ -45,7 +43,7 @@ export default function LoginScreen() {
         autoCapitalize="none"
       />
       <TextInput
-        style={{ borderWidth: 1, borderColor: colors.icon, borderRadius: 8, padding: 12, color: colors.text, marginBottom: 24 }}
+        style={[styles.input, styles.passwordInput]}
         placeholder="Password"
         placeholderTextColor={colors.icon}
         value={password}
@@ -53,11 +51,14 @@ export default function LoginScreen() {
         secureTextEntry
       />
 
-      <TouchableOpacity
-        style={{ backgroundColor: colors.tint, borderRadius: 8, padding: 14, alignItems: 'center' }}
-        onPress={handleLogin}
-      >
-        <Text style={{ color: colors.background, fontWeight: 'bold', fontSize: 16 }}>Log In</Text>
+      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+        <Text style={styles.loginButtonText}>Log In</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.registerContainer} onPress={() => router.push('/register')}>
+        <Text style={styles.registerText}>
+          Don't have an account? <Text style={styles.registerLink}>Register here</Text>
+        </Text>
       </TouchableOpacity>
     </View>
   );

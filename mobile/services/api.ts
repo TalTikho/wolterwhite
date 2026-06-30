@@ -40,23 +40,18 @@ const buildUrl = (uri: string, params: Record<string, any> = {}) => {
 
 const handleResponse = async (res: Response) => {
     if (!res.ok) {
+        const errorMessage = await res.text();
         if (res.status === 401) {
              await AsyncStorage.removeItem('token');
              throw new Error('Unauthorized'); 
         }
-        
-        const errorMessage = await res.text();
         throw new Error(errorMessage || `HTTP error! Status: ${res.status}`);
     }
 
     if (res.status === 204) return null;
 
-    const contentType = res.headers.get("content-type");
-    if (contentType && contentType.includes("image")) {
-        return await res.blob();
-    }
-
-    return res.json();
+    const data = await res.json();
+    return data;
 };
 
 export const sendGet = async (uri: string, jwt?: string | null, params = {}, customHeaders = {}) => {
