@@ -1,101 +1,114 @@
-# 📘 WOLTerWhite 📘
+# 📘 WOLTerWhite
 
-WOLTerWhite is an Advanced Programming course project. It seamlessly connects a modern React web dashboard to a high-performance C++ algorithmic recommendation engine via an intermediate Node.js/Express REST API gateway.
+WOLTerWhite is an Advanced Programming course project that seamlessly connects a **React web dashboard** and a **React Native mobile app** to a high-performance **C++ algorithmic recommendation engine** via a **Node.js/Express REST API gateway**.
+
+> 📖 **Graders:** See the [`wiki/`](./wiki) folder for step-by-step walkthroughs — environment startup, login flows, and full CRUD verification across web and mobile. Also - the Project is on WSL and the emulator is on windows
 
 ---
 
 ## 👥 Authors
 
-- 👨‍💻 [Tal Tkhonov](https://github.com/TalTikho)
-- 👨‍💻 [Yotam Harari Lifshits](https://github.com/yhtl350)
-- 👨‍💻 [Liam Homay](https://github.com/LiamHomay)
+| Name | GitHub |
+| ------ | -------- |
+| Tal Tkhonov | [@TalTikho](https://github.com/TalTikho) |
+| Yotam Harari Lifshits | [@yhtl350](https://github.com/yhtl350) |
+| Liam Homay | [@LiamHomay](https://github.com/LiamHomay) |
 
 ---
 
-## 🌿 Project Evolution & Milestones
+## 🌿 Project Milestones
 
 | Branch | Exercise | Description |
 | -------- | ---------- | ------------- |
-| `finished-ex1` | Exercise 1 - Algorithmic Core | CLI recommendation system |
-| `finished-ex2` | Exercise 2 - Networking Foundation | TCP client-server system (CPP & Python) |
-| `finished-ex3` | Exercise 3 - API Gateway Layer | Node.js / Express web routing layer using an MVC architecture |
-| `finished-ex4` | Exercise 4 - Frontend Web Application | Dynamic React UI with Context State Engines & Token Auth |
+| `finished-ex1` | Exercise 1 | CLI recommendation system (C++ core) |
+| `finished-ex2` | Exercise 2 | TCP client-server system (C++ & Python) |
+| `finished-ex3` | Exercise 3 | Node.js/Express API gateway (MVC) |
+| `finished-ex4` | Exercise 4 | React web frontend with Context & JWT auth |
+| `finished-ex5` | Exercise 5 | React native mobile app (Expo) |
+| `main` | - | - |
 
-> ⚠️ **NOTE**: Do not modify `finished-ex1 / finished-ex2 / finished-ex3 / finished-ex4` branches after submission
-> to preserve grace days.
-
----
-
-## 🏗️ System Design & Structural Topology
-
-1. **Dynamic React Frontend** (`/frontend`):
-
-    Built as an interactive, web dashboard that handles content rendering conditionally based on user authentication vectors.
-
-    - Global State Architecture: Leverages a unified React Context framework (`AuthContext, ThemeContext, RestaurantFilterContext, CardContext`) to avoid prop-drilling. State triggers propagate changes across the dashboard instantly.
-
-    - Live Synchronization (Polling Engines): Features automated background data polling intervals to synchronize new catalog additions to the viewport without requiring manual page reloads.
-
-    - Theme Controls: Integrates localized theme switching states mapped directly to custom CSS properties (Variables).
-
-2. **Node.js REST API Gateway** (`/webServer`)
-
-    Acts as the central router and data orchestrator, abstracting backend persistence mechanisms behind structured endpoints.
-
-    - Architectural Pattern: Model-View-Controller (MVC).
-
-    - Communication Pipelines: Instantiates and maintains a persistent TCP socket connection (`cppClient.js`) targeting the background C++ runtime.
-
-    - In-Memory Store: Serves fast, isolated structural collections resetting dynamically across container deployment lifecycles for clean integration testing.
-
-3. **High-Performance C++ Core** (`/src`)
-
-    A native operational engine optimized for tracking data histories and serving product recommendations.
-
-    - Persistent I/O Store: Commits analytics rows directly to disk within the filesystem volume (`data/`).
-
-    - Command Dispatch Processor: Runs custom request parsers supporting `POST, PATCH, and DELETE` commands to process analytical vectors.
+> ⚠️ Do not modify `finished-ex1` through `finished-ex5` branches after submission.
 
 ---
 
-## 📂 Project Directory Structure
+## 🏗️ System Architecture
 
-```PlainText
+``` bash
+┌─────────────────────┐     ┌─────────────────────┐
+│   React Web App     │     │  React Native App   │
+│   (port 3000)       │     │  (Expo / Android)   │
+└──────────┬──────────┘     └──────────┬──────────┘
+           │                           │
+           └─────────────┬─────────────┘
+                         ▼
+            ┌────────────────────────┐
+            │  Node.js/Express       │
+            │  REST API Gateway      │
+            │  (port 5000)           │
+            └────────────┬───────────┘
+                         ▼
+            ┌────────────────────────┐
+            │  C++ TCP Server        │
+            │  Recommendation Engine │
+            └────────────────────────┘
+```
+
+1. **React Web Frontend** (`/frontend`) — Interactive dashboard with auth, restaurant browsing, ordering, admin controls, dark/light theme, and live polling.
+
+2. **React Native Mobile App** (`/mobile`) — Cross-platform Expo app mirroring all core web flows with drawer + tab navigation.
+3. **Node.js REST API** (`/webServer`) — MVC gateway handling JWT auth, in-memory data store, and TCP bridge to the C++ engine.
+4. **C++ Core** (`/src`) — High-performance recommendation engine with persistent disk I/O and custom command dispatch.
+
+---
+
+## 📂 Directory Structure
+
+``` bash
 .
-├── src/                  # 🖥️ Native C++ Engine Architecture
-│   ├── client/           # Legacy client hooks
-│   ├── include/          # Header Declarations
-│   └── source/           # Core Algorithmic implementations
+├── src/                  # 🖥️ C++ Engine
+│   ├── include/          # Header declarations
+│   └── source/           # Core algorithm implementations
 │
-├── webServer/            # 🌐 Node.js / Express REST Engine (MVC)
-│   ├── controllers/      # Logic Handlers (Auth, Restaurants, Orders)
-│   ├── models/           # Structural In-Memory Entity Schemas
-│   ├── routes/           # Express REST Endpoints
-│   └── cppClient.js      # Persistent TCP Socket Manager
+├── webServer/            # 🌐 Node.js/Express REST API (MVC)
+│   ├── controllers/      # Auth, Restaurants, Orders logic
+│   ├── models/           # In-memory entity schemas
+│   ├── routes/           # Express REST endpoints
+│   └── cppClient.js      # Persistent TCP socket to C++ server
 │
 ├── frontend/             # 🎨 React Web Application
-│   ├── public/           # Visual Media Components & Logos
-│   ├── src/
-│   │   ├── components/   # Reusable Viewports (Navbar, Cards, BG)
-│   │   ├── context/      # Global State Engines (Auth, Filters)
-│   │   ├── hooks/        # Custom Function Librarie (useSound)
-│   │   ├── pages/        # Primary App Components (Home, Login)
-│   │   └── services/           
-│   └── package.json
+│   └── src/
+│       ├── components/   # Navbar, Cards, modals
+│       ├── context/      # AuthContext, ThemeContext, FilterContext
+│       ├── hooks/        # useSound and other custom hooks
+│       ├── pages/        # Home, Login, Orders, Restaurant
+│       └── services/     # API layer
 │
-├── data/                 # 💾  C++ Output Volume
-├── docker-compose.yml    # Microservice Orchestration
-├── CMakeLists.txt        # C++ Build Configuration
+├── mobile/               # 📱 React Native / Expo App
+│   ├── app/
+│   │   ├── (drawer)/     # Drawer navigator
+│   │   │   └── (tabs)/   # Tab navigator (Home, My Orders)
+│   │   └── login.tsx
+│   ├── components/       # RestaurantCard, ProductCard, SideMenu
+│   ├── context/          # Auth, Theme, Filter contexts
+│   ├── styles/           # StyleSheet definitions (themed)
+│   └── services/         # api.ts + apiConfig.ts
+│
+├── wiki/                 # 📖 Grader documentation
+│   ├── environment-startup.md
+│   ├── login-registration.md
+│   └── crud-walkthrough.md
+│
+├── data/                 # 💾 C++ persistent output volume
+├── docker-compose.yml    # Multi-container orchestration
+├── CMakeLists.txt        # C++ build config
 └── README.md
 ```
 
 ---
 
-## 🛠️ Deployment & Execution Quickstart
+## 🚀 Quick Start
 
-### Option A: Fully Containerized Stack (Production Test)
-
-Ensure Docker Desktop is active, clone the codebase, and boot the multi-tier container configuration:
+### Step 1 — Web + Backend (Docker)
 
 ```bash
 git clone https://github.com/TalTikho/wolterwhite
@@ -103,118 +116,119 @@ cd wolterwhite
 docker-compose up --build
 ```
 
-Once initialized, access your live local instances:
+| Service       | URL                     |
+| ------------- | ----------------------- |
+| Web Frontend  | `http://localhost:3000` |
+| REST API      | `http://localhost:5000` |
 
-- Frontend Site Application: `http://localhost:3000`
-- Backend API Gateway: `http://localhost:5000`
+### Step 2 — Mobile App (Android Emulator)
 
-### Option B: Optimized Hybrid Layout (Recommended for Frontend Devs)
+> 💡 **Why not Docker for mobile?** The Android emulator communicates with Metro bundler via `10.0.2.2` (host machine). Running Metro inside Docker breaks this bridge and requires complex ADB port forwarding — so the mobile app runs directly on the host instead.
 
-After clonning the repository, To enable instantaneous Hot Module Replacement (HMR) and immediate viewport compilation without rebuilding full containers on every layout modification open **TWO** terminals:
+**First, create the required API config file** (excluded from repo via `.gitignore`):
 
-1. Spin up your backend infrastructure via Docker:
+Create `mobile/services/apiConfig.ts` with this content:
 
-    ```bash
-    # (Terminal I)
-    docker compose up --build wolterwhite-server wolterwhite-web
-    ```
+```typescript
+import { Platform } from 'react-native';
 
-2. Configure your localized environmental target: Create a .env file within your `frontend/` subdirectory:
+export const API_BASE_URL = Platform.select({
+  android: 'http://10.0.2.2:5000',
+  ios: 'http://localhost:5000',
+  default: 'http://localhost:5000',
+});
+```
 
-    ```bash
-    REACT_APP_API_BASE_URL=http://localhost:5000/api
-    ```
+Then in a new terminal:
 
-3. Install dependencies and launch the local React compiler engine:
+```bash
+cd mobile
+npm install
+npx expo start --tunnel
+```
 
-    ```bash
-    # Move into the frontend folder (Terminal II)
-    cd frontend
+> ⚠️ Note that you opened your emulatorand it should be running beforehand. Press `a` in the Expo CLI to open the Android emulator, or scan the QR code with Expo Go on a physical device.
 
-    # Install the required modules listed in package.json
-    npm install
-
-    # Run the app in development mode at http://localhost:3000
-    npm start
-    ```
-
-> ⚠️ **NOTE**: To  shut down the docker/web, in each terminal press `ctrl c` until you are back to the regular wsl line. Then `docker-compose down`
+>⚠️ To shut down: press `Ctrl+C` in each terminal, then run `docker-compose down`.
 
 ---
 
-### 📝 Technical Implementation Details
+## 📝 Technical Highlights
 
-- Authentication Protocol: JSON Web Tokens (JWT) handled via cryptographically encoded base64 payloads parsed client-side inside standard Context layers.
-
-- Audio Layer: Integrates highly contextual layout interactions leveraging internal event hooks (`useSound()`) to fire custom media files based on runtime statuses.
-
-- Docker Port Mapping: Dev servers map runtime boundaries utilizing `ALLOWED_HOSTS=all` parameters to let external routing structures cross-communicate inside development configurations safely.
-
-- Design Principles: Strict alignment with **SOLID** principles and isolated, decoupled module design patterns.
+- **JWT Auth:** Token-based authentication across all clients. Web stores in React Context; mobile stores in AsyncStorage. Automatic logout on 401.
+- **Live Polling:** Web frontend polls the API at intervals to sync new restaurant/product additions without page reloads.
+- **Theming:** Full dark/light mode on both web (CSS variables) and mobile (StyleSheet functions with a shared color system).
+- **C++ Bridge:** Node.js maintains a persistent TCP socket to the C++ engine for recommendation queries.
+- **SOLID Design:** All modules follow single-responsibility and dependency-inversion principles throughout.
 
 ---
 
-### ⏯️ Examples
+### ⏯️ Screenshots
 
-#### Home Page after login as Admin
+#### Web Showcase Section
 
-![homePage](./media/homePageLoginAdmin.png)
+- Home Page — Admin Login:
+    ![homePage](./media/homePageLoginAdmin.png)
 
-#### Admin Page
+- Admin Panel:
+    ![adminPage](./media/adminPageDarkMode.png)
 
-![adminPage](./media/adminPageDarkMode.png)
+- Home Page with Restaurants:
+    ![homeWithRestaurants](./media/homePageWithRestaurantsDarkMode.png)
 
-#### Creating new restaurant
+- Regular User Home Dashboard:
+    ![regularUserHome](./media/regularUserHomePage.png)
 
-![newRestaurant](./media/newRestaurantLightMode.png)
+#### Mobile (Green Text Files) Showcase Section
 
-#### Restaurant was created
+- Admin Home Page (Clear View):
+    ![Admin Home Mobile](./media/Admin-Home-Page-Clear-Mobile.png)
 
-![showingRestaurant](./media/showingRestaurants.png)
+- Admin Home Page with Content:
+    ![Admin Restaurants Mobile](./media/Admin-Home-Page-With-Restaurants-Mobile.png)
 
-#### Creating new Product
+- Mobile Restaurant Admin Management:
+    ![Restaurants Admin Mobile](./media/Restaurants-In-Admin-Page.png)
 
-![newProduct](./media/newProductDarkMode.png)
+- Creating a Restaurant
+    ![newRestaurant](./media/newRestaurantLightMode.png)
 
-#### Optional filtering
+- Restaurant Created
+    ![showingRestaurant](./media/showingRestaurants.png)
 
-![optionalFiltering](./media/optionalFiltering.png)
+- Creating a Product
+    ![newProduct](./media/newProductDarkMode.png)
 
-#### Home page With the Restaurants
+- Search & Filter
+    ![optionalFiltering](./media/optionalFiltering.png)
 
-![homeWithRestaurants](./media/homePageWithRestaurantsDarkMode.png)
+- Home Page with Restaurants
+    ![homeWithRestaurants](./media/homePageWithRestaurantsDarkMode.png)
 
-#### Restaurant Page
+- Restaurant Page
+    ![restaurant](./media/restaurantPageLightMode.png)
 
-![restaurant](./media/restaurantPageLightMode.png)
+- Order Page
+    ![orderPage](./media/orderPageLightMode.png)
 
-#### Order Page
+- Orders History
+    ![orderOrderedPage](./media/orderedOrdersLightMode.png)
 
-![orderPage](./media/orderPageLightMode.png)
+- Quick View
+    ![quickView](./media/restaurantQuickViewLightMode.png)
 
-#### Order ordered Page
+- Regular User Login
+    ![regularUserLogin](./media/loginRegularUserLightMode.png)
 
-![orderOrderedPage](./media/orderedOrdersLightMode.png)
+- Regular User Home
+    ![regularUserHome](./media/regularUserHomePage.png)
 
-#### Restaurant as Quick View
-
-![quickView](./media/restaurantQuickViewLightMode.png)
-
-#### Regular User Login
-
-![regularUserLogin](./media/loginRegularUserLightMode.png)
-
-#### Regular User Home Page
-
-![regularUserLogin](./media/regularUserHomePage.png)
-
-#### Starting and Closing
-
-![docker-compose_up_--build](./media/docker-compose_up_--build.png)
-![docker-compose_down](./media/docker-compose_down.png)
+- Docker Up & Down
+    ![docker up](./media/docker-compose_up_--build.png)
+    ![docker down](./media/docker-compose_down.png)
 
 ---
 
-### 📄 License
+## 📄 License
 
-- This project was developed as part of an advanced systems programming assignment
+Developed as part of an Advanced Systems Programming course assignment.
